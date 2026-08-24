@@ -1678,36 +1678,132 @@ def build_mobile_split_screen_html():
       syncRailActive(activeDay);
     }}
 
+    let isManualScrolling = false;
+    let manualScrollTimer = null;
+
     function syncRailActive(dayNum) {{
       document.querySelectorAll('.m-rail-pill').forEach(p => p.classList.remove('active'));
       const target = document.getElementById('rail-pill-' + dayNum);
       if (target) {{
         target.classList.add('active');
+        if (target.scrollIntoView) {{
+          target.scrollIntoView({{ behavior: 'smooth', block: 'nearest' }});
+        }}
       }}
     }}
 
     function quickJumpDay(dayNum, btn) {{
+      isManualScrolling = true;
       syncRailActive(dayNum);
 
       if (currentViewTab === 'timeline') {{
-        mFocusDay(dayNum);
+        mFocusDay(dayNum, false);
       }} else if (currentViewTab === 'dining') {{
-        mFocusDineDay(dayNum);
+        mFocusDineDay(dayNum, false);
       }} else if (currentViewTab === 'birding') {{
-        mFocusBirdDay(dayNum);
+        mFocusBirdDay(dayNum, false);
       }} else if (currentViewTab === 'culture') {{
-        mFocusHeritDay(dayNum);
+        mFocusHeritDay(dayNum, false);
+      }}
+
+      clearTimeout(manualScrollTimer);
+      manualScrollTimer = setTimeout(() => {{
+        isManualScrolling = false;
+      }}, 800);
+    }}
+
+    // 页面滚动实时侦测：同步点亮当前屏幕可视卡片对应的左侧 D 按钮与卡片高亮
+    function detectCurrentVisibleDay() {{
+      const container = document.getElementById('m-content-container');
+      if (!container) return;
+
+      const containerRect = container.getBoundingClientRect();
+      const triggerY = containerRect.top + 70; // 视口偏上 70px 作为最佳触发判定线
+
+      let selector = '';
+      if (currentViewTab === 'timeline') {{
+        selector = '.m-card';
+      }} else if (currentViewTab === 'dining') {{
+        selector = '.m-dining-day-group';
+      }} else if (currentViewTab === 'birding') {{
+        selector = '.m-birding-card';
+      }} else if (currentViewTab === 'culture') {{
+        selector = '.m-herit-card';
+      }}
+
+      if (!selector) return;
+
+      const elements = document.querySelectorAll(selector);
+      let bestEl = null;
+      let minDistance = Infinity;
+
+      elements.forEach(el => {{
+        const r = el.getBoundingClientRect();
+        if (r.top <= triggerY && r.bottom >= triggerY) {{
+          bestEl = el;
+          minDistance = 0;
+        }} else if (minDistance > 0) {{
+          const dist = Math.abs(r.top - triggerY);
+          if (dist < minDistance) {{
+            minDistance = dist;
+            bestEl = el;
+          }}
+        }}
+      }});
+
+      if (bestEl) {{
+        const elId = bestEl.id; // e.g. "m-day-3", "dine-day-5", "bird-day-2", "herit-day-11-1"
+        const match = elId.match(/day-(\d+)/);
+        if (match) {{
+          const dayNum = parseInt(match[1], 10);
+          syncRailActive(dayNum);
+
+          // 保持对应卡片高亮
+          if (currentViewTab === 'timeline') {{
+            document.querySelectorAll('.m-card').forEach(c => c.classList.remove('active'));
+            bestEl.classList.add('active');
+          }} else if (currentViewTab === 'dining') {{
+            document.querySelectorAll('.m-dining-day-group').forEach(g => g.classList.remove('active'));
+            bestEl.classList.add('active');
+          }} else if (currentViewTab === 'birding') {{
+            document.querySelectorAll('.m-birding-card').forEach(c => c.classList.remove('active'));
+            bestEl.classList.add('active');
+          }} else if (currentViewTab === 'culture') {{
+            document.querySelectorAll('.m-herit-card').forEach(c => c.classList.remove('active'));
+            bestEl.classList.add('active');
+          }}
+        }}
       }}
     }}
 
+    function setupScrollSpy() {{
+      const container = document.getElementById('m-content-container');
+      if (!container) return;
+
+      let scrollTicking = false;
+      container.addEventListener('scroll', () => {{
+        if (isManualScrolling) return;
+
+        if (!scrollTicking) {{
+          window.requestAnimationFrame(() => {{
+            detectCurrentVisibleDay();
+            scrollTicking = false;
+          }});
+          scrollTicking = true;
+        }}
+      }}, {{ passive: true }});
+    }}
+
     // 行程卡片全反差色高亮与聚焦
-    function mFocusDay(dayNum) {{
+    function mFocusDay(dayNum, shouldScroll = true) {{
       syncRailActive(dayNum);
       document.querySelectorAll('.m-card').forEach(c => c.classList.remove('active'));
       const activeCard = document.getElementById('m-day-' + dayNum);
       if (activeCard) {{
         activeCard.classList.add('active');
-        activeCard.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+        if (shouldScroll) {{
+          activeCard.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+        }}
       }}
 
       const target = mMarkers.find(m => m.day === dayNum);
@@ -1793,13 +1889,15 @@ def build_mobile_split_screen_html():
       }}
     }}
 
-    function mFocusDineDay(dayNum) {{
+    function mFocusDineDay(dayNum, shouldScroll = true) {{
       syncRailActive(dayNum);
       document.querySelectorAll('.m-dining-day-group').forEach(g => g.classList.remove('active'));
       const activeGroup = document.getElementById('dine-day-' + dayNum);
       if (activeGroup) {{
         activeGroup.classList.add('active');
-        activeGroup.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+        if (shouldScroll) {{
+          activeGroup.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+        }}
       }}
       showDiningDayOnMap(dayNum, 'lunch', 0);
     }}
@@ -1822,7 +1920,7 @@ def build_mobile_split_screen_html():
     }}
 
     function focusDineMapMarker(dayNum, mealKey, idx) {{
-      mFocusDineDay(dayNum);
+      mFocusDineDay(dayNum, true);
       showDiningDayOnMap(dayNum, mealKey, idx);
       const target = currentDineMarkers.find(m => m.idx === idx);
       if (target) {{
@@ -1866,13 +1964,15 @@ def build_mobile_split_screen_html():
       mMap.flyTo([b.lat, b.lng], 13, {{ duration: 0.6 }});
     }}
 
-    function mFocusBirdDay(dayNum) {{
+    function mFocusBirdDay(dayNum, shouldScroll = true) {{
       syncRailActive(dayNum);
       document.querySelectorAll('.m-birding-card').forEach(c => c.classList.remove('active'));
       const activeCard = document.getElementById('bird-day-' + dayNum);
       if (activeCard) {{
         activeCard.classList.add('active');
-        activeCard.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+        if (shouldScroll) {{
+          activeCard.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+        }}
       }}
       showBirdingDayOnMap(dayNum);
     }}
@@ -1970,14 +2070,16 @@ def build_mobile_split_screen_html():
       }}
     }}
 
-    function mFocusHeritDay(dayNum) {{
+    function mFocusHeritDay(dayNum, shouldScroll = true) {{
       syncRailActive(dayNum);
       document.querySelectorAll('.m-herit-card').forEach(c => c.classList.remove('active'));
       
       let targetCard = document.getElementById('herit-day-' + dayNum + '-1') || document.querySelector('[id^="herit-day-' + dayNum + '"]');
       if (targetCard) {{
         targetCard.classList.add('active');
-        targetCard.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+        if (shouldScroll) {{
+          targetCard.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+        }}
         showHeritageDayOnMap(dayNum);
       }} else {{
         // 若当日无重点国保，则平滑滚向最近的国保日
@@ -1986,7 +2088,9 @@ def build_mobile_split_screen_html():
         targetCard = document.getElementById('herit-day-' + closest + '-1') || document.querySelector('[id^="herit-day-' + closest + '"]');
         if (targetCard) {{
           targetCard.classList.add('active');
-          targetCard.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+          if (shouldScroll) {{
+            targetCard.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+          }}
           showHeritageDayOnMap(closest);
           syncRailActive(closest);
         }}
@@ -2222,6 +2326,9 @@ def build_mobile_split_screen_html():
           card.addEventListener('click', () => {{ mFocusHeritDay(h.day); }});
         }}
       }});
+
+      // 初始化滚动实时侦测 (Scroll Spy)
+      setupScrollSpy();
 
       // 初始化并激活 Day 1
       updateQuickNavRail('timeline', 1);
