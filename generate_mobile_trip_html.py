@@ -3,7 +3,7 @@
 """
 generate_mobile_trip_html.py — 专为手机端打造的自驾全景路书 (trip_mobile.html)
 核心特性：
-1. 【大地图独立全屏视图】：保持纯净的大地图全屏探索，不受左侧快捷栏干扰。
+1. 【大地图真正全屏显示】：修复 flex 容器布局，大地图彻底填满整个视口，顶部横向滑动条 + 底部防遮挡详情浮层。
 2. 【左侧动态快捷导航条】：
    - 行程/餐饮：显示 D1 ~ D14
    - 观鸟/国保：仅动态显示有实际内容的 Day 按钮（如国保仅显示 D1, D8, D9, D10, D11, D12, D13，自动隐藏无内容天数）
@@ -185,7 +185,7 @@ def build_mobile_split_screen_html():
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>新疆14天自驾路书 (动态快捷导航 + 反差色联动)</title>
+  <title>新疆14天自驾路书 (全屏大地图 + 动态快捷导航 + 反差色联动)</title>
   <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -225,6 +225,7 @@ def build_mobile_split_screen_html():
       height: 100dvh;
       width: 100%;
       position: relative;
+      overflow: hidden;
     }}
 
     /* Compact Top Header */
@@ -720,18 +721,22 @@ def build_mobile_split_screen_html():
     .m-btn.amap {{ background: #2563eb; color: #fff; }}
 
     /* ========================================================
-       TAB 2: DEDICATED FULLSCREEN MAP EXPLORER
+       TAB 2: DEDICATED FULLSCREEN MAP EXPLORER (真正 100% 全屏铺满)
        ======================================================== */
     .m-dedicated-map-view {{
       display: none;
+      flex: 1 1 auto;
       width: 100%;
       height: 100%;
       position: relative;
       background: #0f172a;
+      overflow: hidden;
     }}
     #m-dedicated-map {{
       width: 100%;
       height: 100%;
+      position: absolute;
+      inset: 0;
       z-index: 1;
     }}
 
@@ -1392,7 +1397,7 @@ def build_mobile_split_screen_html():
     </div>
 
     <!-- 主体布局区域（含左侧动态快捷按钮列） -->
-    <div class="m-main-content-layout">
+    <div class="m-main-content-layout" id="m-main-layout">
 
       <!-- 左侧动态快捷导航条 (按当前页面内容动态填充仅有内容的天数) -->
       <div class="m-quick-nav-rail" id="m-quick-nav-rail"></div>
@@ -1482,7 +1487,7 @@ def build_mobile_split_screen_html():
 
     </div>
 
-    <!-- ==================== 2. 独立全屏大地图探索台 (纯净全屏视图) ==================== -->
+    <!-- ==================== 2. 独立全屏大地图探索台 (真正 100% 全屏铺满) ==================== -->
     <div class="m-dedicated-map-view" id="m-view-map">
       <div id="m-dedicated-map"></div>
 
@@ -1989,7 +1994,7 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
-    // 5. 初始化独立全屏大地图探索台 (纯净大地图)
+    // 5. 初始化独立全屏大地图探索台 (真正 100% 全屏)
     // ==========================================
     let dedicatedMap = null;
     let transitLayer = null;
@@ -2131,22 +2136,24 @@ def build_mobile_split_screen_html():
       }}
 
       const mapZone = document.getElementById('m-map-zone');
-      const contentContainer = document.getElementById('m-content-container');
+      const mainLayout = document.getElementById('m-main-layout');
       const dedicatedMapView = document.getElementById('m-view-map');
       const rail = document.getElementById('m-quick-nav-rail');
 
-      // 大地图纯净全屏展示，彻底隐藏左侧快捷栏与顶部小地图
+      // 大地图真正 100% 全屏铺满展示
       if (viewId === 'map') {{
         mapZone.classList.add('mode-hidden');
+        if (mainLayout) mainLayout.style.display = 'none';
         if (rail) rail.style.display = 'none';
-        contentContainer.style.display = 'none';
         dedicatedMapView.style.display = 'block';
         initDedicatedMap();
-        setTimeout(() => {{ dedicatedMap.invalidateSize(); }}, 200);
+        setTimeout(() => {{
+          if (dedicatedMap) dedicatedMap.invalidateSize();
+        }}, 150);
         return;
       }} else {{
         dedicatedMapView.style.display = 'none';
-        contentContainer.style.display = 'block';
+        if (mainLayout) mainLayout.style.display = 'flex';
       }}
 
       if (viewId === 'tips') {{
@@ -2276,7 +2283,7 @@ def main():
     content = build_mobile_split_screen_html()
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(content)
-    print(f"🎉 包含左侧动态快捷导航条与大地图纯净全屏的手机版路书已生成: {out_path}")
+    print(f"🎉 包含真正全屏大地图与动态快捷导航条的手机版路书已生成: {out_path}")
 
 
 if __name__ == "__main__":
