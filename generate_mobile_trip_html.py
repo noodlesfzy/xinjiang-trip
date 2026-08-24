@@ -3,11 +3,11 @@
 """
 generate_mobile_trip_html.py — 专为手机端打造的自驾全景路书 (trip_mobile.html)
 集成：
-1. 国保地图对应点位增加代表性小照片（带序号圆形微缩图 + 点名 + 到达时刻）
-2. 国保卡片增加斯飞坐标实景照片 Header
-3. 餐饮 210 家老店街道坐标联动与高亮聚焦
+1. 100% 真实国保古建筑与遗址实景照片（16:9 黄金宽屏无畸变比例展示）
+2. 地图点位带真实实景微缩图标牌与 16:9 弹出大图卡
+3. 210家多年口碑老店真实街道坐标与实时聚焦
 4. 观鸟精简地标
-5. 大地图底部面板防遮挡
+5. 大地图全屏探索防遮挡
 """
 
 import os
@@ -179,7 +179,7 @@ def build_mobile_split_screen_html():
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>新疆14天自驾路书 (国保照片预览 + 观鸟 + 美食地图)</title>
+  <title>新疆14天自驾路书 (真实国保照片预览 + 观鸟 + 美食地图)</title>
   <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -368,7 +368,7 @@ def build_mobile_split_screen_html():
       box-shadow: 0 3px 8px rgba(0,0,0,0.6);
     }}
 
-    /* 国保带照片微缩图的地标样式 */
+    /* 国保带真实照片微缩图的地标样式 */
     .custom-herit-photo-marker {{
       display: flex;
       align-items: center;
@@ -970,7 +970,7 @@ def build_mobile_split_screen_html():
     }}
 
     /* ========================================================
-       TAB 5: CULTURE (国保超深度研学 + 实景大图卡片)
+       TAB 5: CULTURE (国保超深度研学 + 16:9 真实高清大图卡片)
        ======================================================== */
     .m-culture-view {{
       display: none;
@@ -990,46 +990,69 @@ def build_mobile_split_screen_html():
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 14px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+      margin-bottom: 18px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.4);
       cursor: pointer;
       overflow: hidden;
     }}
-    .m-herit-img-header {{
-      height: 130px;
-      background-size: cover;
-      background-position: center;
+
+    /* 16:9 比例实景照片卡容器 */
+    .m-herit-photo-wrapper {{
+      width: 100%;
+      aspect-ratio: 16 / 9;
       position: relative;
+      background: #0b101c;
+      overflow: hidden;
+    }}
+    .m-herit-photo-img {{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      transition: transform 0.4s ease;
+    }}
+    .m-herit-photo-wrapper:active .m-herit-photo-img {{
+      transform: scale(1.03);
+    }}
+    .m-herit-photo-overlay {{
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(9, 13, 22, 0.95) 0%, rgba(9, 13, 22, 0.2) 50%, rgba(0, 0, 0, 0.4) 100%);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       padding: 10px 12px;
+      pointer-events: none;
     }}
     .m-herit-img-badge {{
       align-self: flex-start;
-      background: rgba(0,0,0,0.65);
+      background: rgba(126, 34, 206, 0.85);
       backdrop-filter: blur(4px);
-      color: #e9d5ff;
-      font-size: 9.5px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      border: 1px solid rgba(192, 132, 252, 0.4);
-    }}
-    .m-herit-img-title {{
       color: #fff;
-      font-size: 15.5px;
+      font-size: 10px;
       font-weight: 700;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.85);
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(192, 132, 252, 0.5);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
     }}
-    .m-herit-body-inner {{
-      padding: 12px 14px 14px;
+    .m-herit-photo-caption {{
+      color: #f1f5f9;
+      font-size: 11.5px;
+      font-weight: 600;
+      line-height: 1.35;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.9);
     }}
 
+    .m-herit-body-inner {{
+      padding: 14px 14px 16px;
+    }}
     .m-herit-top {{
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }}
     .m-herit-day-tag {{
       font-size: 13px;
@@ -1047,14 +1070,19 @@ def build_mobile_split_screen_html():
       border-radius: 4px;
       font-weight: 600;
     }}
+    .m-herit-title {{
+      font-size: 16px;
+      color: #fff;
+      margin-bottom: 4px;
+    }}
     .m-herit-batch {{
-      font-size: 11px;
+      font-size: 11.5px;
       color: #fbbf24;
       font-weight: 600;
       margin-bottom: 4px;
     }}
     .m-herit-sifei {{
-      font-size: 10.5px;
+      font-size: 11px;
       color: #94a3b8;
       margin-bottom: 10px;
       padding-bottom: 6px;
@@ -1247,11 +1275,11 @@ def build_mobile_split_screen_html():
         {birding_html}
       </div>
 
-      <!-- ==================== 5. 国保超深度研学专区 (斯飞坐标/华夏古迹图) ==================== -->
+      <!-- ==================== 5. 国保超深度研学专区 (真实实景大图卡片) ==================== -->
       <div class="m-culture-view" id="m-view-culture">
         <div class="m-culture-intro">
-          🏛️ <b>全国重点文物保护单位 ✕ 斯飞坐标收录实景：</b><br>
-          上方地图已标出各处国保的<b>代表性实景微缩照片、行进路线、前进方向箭头与点对点距离/耗时标牌</b>！
+          🏛️ <b>全国重点文物保护单位 ✕ 维基百科/国家文物局收录实景：</b><br>
+          上方地图已标出各处国保的<b>真实实景微缩照片、行进路线、前进方向箭头与点对点距离/耗时标牌</b>！
         </div>
         {heritage_html}
       </div>
@@ -1603,7 +1631,7 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
-    // 4. 国保专区 (带代表性小照片的预览标牌与时间路线)
+    // 4. 国保专区 (带真实照片微缩图标牌与 16:9 弹出大图)
     // ==========================================
     function showHeritageDayOnMap(dayNum) {{
       const routeInfo = mTripData.heritage_routes[dayNum];
@@ -1618,7 +1646,7 @@ def build_mobile_split_screen_html():
       routeInfo.stops.forEach((s, idx) => {{
         pts.push([s.lat, s.lng]);
         
-        // 代表性小照片预览标牌
+        // 真实照片圆形微缩预览标牌
         const html = `
           <div class="custom-herit-photo-marker">
             <div class="herit-marker-thumb" style="background-image: url('${{s.img}}');">
@@ -1633,9 +1661,13 @@ def build_mobile_split_screen_html():
         const icon = L.divIcon({{ className: 'herit-photo-div-icon', html: html, iconSize: null, iconAnchor: [35, 18] }});
 
         const mk = L.marker([s.lat, s.lng], {{ icon: icon }}).addTo(dynamicLayers);
+        
+        // 16:9 比例大图弹出窗口
         mk.bindPopup(`
-          <div style="font-size:12px; line-height:1.45; color:#0f172a; min-width:200px;">
-            <img src="${{s.img}}" style="width:100%; height:95px; object-fit:cover; border-radius:6px; margin-bottom:6px; display:block;" onerror="this.style.display='none';" />
+          <div style="font-size:12px; line-height:1.45; color:#0f172a; width:220px;">
+            <div style="width:100%; aspect-ratio:16/9; overflow:hidden; border-radius:6px; margin-bottom:6px; background:#000;">
+              <img src="${{s.img}}" style="width:100%; height:100%; object-fit:cover; display:block;" />
+            </div>
             <b style="color:#7e22ce;">第${{s.order}}站：${{s.name}}</b><br/>
             <small style="color:#64748b;">📷 ${{s.caption || ''}}</small><br/>
             ⏰ 计划到达: <b>${{s.time}}</b><br/>
@@ -1978,7 +2010,7 @@ def main():
     content = build_mobile_split_screen_html()
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(content)
-    print(f"🎉 包含国保实景照片标牌的手机版路书已生成: {out_path}")
+    print(f"🎉 包含真实国保实景照片与16:9比例大图卡的手机版路书已生成: {out_path}")
 
 
 if __name__ == "__main__":

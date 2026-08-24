@@ -539,11 +539,17 @@ def build_full_html():
     .m-bird-nav-btn {{ display: inline-block; background: #059669; color: #fff; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-size: 11.5px; font-weight: 600; }}
 
     /* Heritage Styles in Desktop */
-    .m-herit-card {{ background: #181d33; border: 1px solid var(--card-border); border-radius: 12px; padding: 18px; margin-bottom: 18px; }}
+    .m-herit-card {{ background: #181d33; border: 1px solid var(--card-border); border-radius: 14px; margin-bottom: 20px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }}
+    .m-herit-photo-wrapper {{ width: 100%; aspect-ratio: 16 / 9; position: relative; background: #0b101c; overflow: hidden; }}
+    .m-herit-photo-img {{ width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }}
+    .m-herit-photo-overlay {{ position: absolute; inset: 0; background: linear-gradient(to top, rgba(9, 13, 22, 0.95) 0%, rgba(9, 13, 22, 0.2) 50%, rgba(0, 0, 0, 0.4) 100%); display: flex; flex-direction: column; justify-content: space-between; padding: 12px 16px; pointer-events: none; }}
+    .m-herit-img-badge {{ align-self: flex-start; background: rgba(126, 34, 206, 0.85); backdrop-filter: blur(4px); color: #fff; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 4px; border: 1px solid rgba(192, 132, 252, 0.5); }}
+    .m-herit-photo-caption {{ color: #f1f5f9; font-size: 13px; font-weight: 600; line-height: 1.4; text-shadow: 0 2px 8px rgba(0,0,0,0.9); }}
+    .m-herit-body-inner {{ padding: 18px 20px 20px; }}
     .m-herit-top {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }}
     .m-herit-day-tag {{ font-size: 13px; font-weight: 700; color: #fca5a5; background: rgba(150, 56, 45, 0.25); padding: 2px 7px; border-radius: 5px; }}
     .m-herit-city-tag {{ font-size: 11.5px; color: #c084fc; background: rgba(147, 51, 234, 0.15); padding: 2px 7px; border-radius: 4px; font-weight: 600; }}
-    .m-herit-title {{ font-size: 16px; color: #fff; margin-bottom: 4px; }}
+    .m-herit-title {{ font-size: 17px; color: #fff; margin-bottom: 4px; }}
     .m-herit-batch {{ font-size: 12px; color: #fbbf24; font-weight: 600; margin-bottom: 4px; }}
     .m-herit-sifei {{ font-size: 11px; color: #94a3b8; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px dashed var(--card-border); }}
     .m-herit-schedule-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(0,0,0,0.25); border-radius: 8px; padding: 10px 12px; font-size: 12px; margin-bottom: 12px; }}
