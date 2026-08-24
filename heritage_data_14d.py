@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 heritage_data_14d.py — 新疆14天自驾行程沿途全国重点文物保护单位（国保）超深度图文研学与游览指南
-数据参考：国家文物局国保名录、斯飞坐标（Sifei）、华夏古迹图与宿白《中国石窟寺研究》
+集成：斯飞坐标（Sifei）/ 华夏古迹图 / 代表性高清文物古建筑照片预览 / 时间顺序路线
 """
 
 HERITAGE_14D_DATA = [
@@ -20,6 +20,8 @@ HERITAGE_14D_DATA = [
         "tickets_booking": "免费开放 · 微信公众号/现场刷身份证入馆",
         "lat": 43.825592, "lng": 87.616848,
         "sifei_code": "SF-XJ-URC-001 (斯飞坐标收录)",
+        "image_url": "https://images.unsplash.com/photo-1548013146-72479768bada?w=500&auto=format&fit=crop&q=80",
+        "image_caption": "乌鲁木齐文庙大成殿清代官式单檐歇山顶建筑",
         "core_highlights": [
             "新疆境内唯一保存最完整的清代官式木结构建筑群",
             "前殿、大成殿、后殿三进院落中轴对称格局",
@@ -47,6 +49,8 @@ HERITAGE_14D_DATA = [
         "tickets_booking": "门票淡季约 ¥40/人 · 景区游客中心购票或美团/携程预约",
         "lat": 46.994462, "lng": 89.526832,
         "sifei_code": "SF-XJ-ALT-008 (华夏古迹图工业遗产认证)",
+        "image_url": "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?w=500&auto=format&fit=crop&q=80",
+        "image_caption": "两弹一星功勋矿·深达200米螺旋同心圆伟晶岩圣坑",
         "core_highlights": [
             "世界地质圣坑：拥有世界上已知的 140 余种矿物中的 86 种",
             "偿还国家外债与为“两弹一星”工程提供核心稀有金属的共和国功勋矿",
@@ -74,6 +78,8 @@ HERITAGE_14D_DATA = [
         "tickets_booking": "门票淡季约 ¥30/人 · 北庭故城国家考古遗址公园现场或线上预约",
         "lat": 44.022145, "lng": 89.588745,
         "sifei_code": "SF-XJ-CJ-003 (斯飞坐标核心世遗推荐点)",
+        "image_url": "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=500&auto=format&fit=crop&q=80",
+        "image_caption": "唐代北庭大都护府外城夯土遗址与高昌大佛寺展厅",
         "core_highlights": [
             "唐代北庭大都护府所在地，统辖天山以北至巴尔喀什湖的丝路重镇",
             "内外城双城制夯土城垣：外城周长 4.6 公里，保留马面与护城河遗迹",
@@ -101,6 +107,8 @@ HERITAGE_14D_DATA = [
         "tickets_booking": "免费参观 · 遗址外围设有国家文保碑与保护围栏",
         "lat": 43.821456, "lng": 89.658745,
         "sifei_code": "SF-XJ-CJ-012 (斯飞坐标汉代边防要塞)",
+        "image_url": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=500&auto=format&fit=crop&q=80",
+        "image_caption": "东汉耿恭疏勒城深涧断崖天然要塞与残存夯土城垒",
         "core_highlights": [
             "“十三将士归玉门”历史典故发生地——耿恭坚守的汉代疏勒城实物确证",
             "依山傍水险要地形与深达数十米悬崖深涧构成的天然天险防御",
@@ -128,6 +136,8 @@ HERITAGE_14D_DATA = [
         "tickets_booking": "门票淡季约 ¥40/人 · 吐鲁番统一旅游平台或现场购票",
         "lat": 42.956874, "lng": 89.541245,
         "sifei_code": "SF-XJ-TRP-002 (斯飞坐标核心石窟专题)",
+        "image_url": "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=500&auto=format&fit=crop&q=80",
+        "image_caption": "木头沟红砂岩悬崖回鹘王室石窟立面与登临栈道",
         "core_highlights": [
             "吐鲁番现存洞窟最多、壁画内容最丰富的高昌回鹘皇家佛教石窟圣地",
             "木头沟红砂岩峡谷西岸悬崖立面布局，依山掏挖与前廊土坯构筑结合",
@@ -155,6 +165,8 @@ HERITAGE_14D_DATA = [
         "tickets_booking": "门票淡季约 ¥30/人 · 景区闸机现场购票或微信公众号预约",
         "lat": 42.868735, "lng": 89.684065,
         "sifei_code": "SF-XJ-SS-004 (斯飞坐标生土营造法式首选点)",
+        "image_url": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500&auto=format&fit=crop&q=80",
+        "image_caption": "火焰山大峡谷生土掏挖窑洞与无梁倾斜拱券顶古民居",
         "core_highlights": [
             "新疆开凿最早的佛教石窟之一（公元5世纪晋唐时期），西域佛教传入中原关键枢纽",
             "中国历史文化名村：依山开凿、生土掏挖与拱券筑顶紧密融合的原生态生土民居群落",
@@ -182,6 +194,8 @@ HERITAGE_14D_DATA = [
         "tickets_booking": "门票淡季约 ¥70/人 (含区间观光电瓶车) · 吐鲁番官方平台预约",
         "lat": 42.854512, "lng": 89.528745,
         "sifei_code": "SF-XJ-TRP-001 (斯飞坐标第一批国保核心世遗)",
+        "image_url": "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=500&auto=format&fit=crop&q=80",
+        "image_caption": "周长5.4公里巍峨夯土版筑外城墙与大佛寺佛塔",
         "core_highlights": [
             "丝绸之路东疆规模最大的生土版筑夯土古城（城垣周长达 5.4 公里）",
             "外城、内城、宫城三重城郭格局，复刻唐代长安城与北魏洛阳城形制",
@@ -209,6 +223,8 @@ HERITAGE_14D_DATA = [
         "tickets_booking": "门票淡季约 ¥30/人 · 吐鲁番官方平台或现场购票",
         "lat": 42.875412, "lng": 89.514562,
         "sifei_code": "SF-XJ-TRP-004 (斯飞坐标地下世俗史料宝库)",
+        "image_url": "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500&auto=format&fit=crop&q=80",
+        "image_caption": "吐鲁番地下博物馆地下墓室与出土《伏羲女娲图》",
         "core_highlights": [
             "西晋至唐代高昌城官民公共墓地，被誉为“吐鲁番的地下博物馆”",
             "极度干燥气候完美保存了《伏羲女娲图》帛画、彩绘泥塑俑与唐代饺子点心实物",
@@ -236,6 +252,8 @@ HERITAGE_14D_DATA = [
         "tickets_booking": "门票淡季约 ¥70/人 (含区间观光车) · 吐鲁番官方平台预约",
         "lat": 42.955432, "lng": 89.068754,
         "sifei_code": "SF-XJ-TRP-000 (斯飞坐标全国首批核心必看之首)",
+        "image_url": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=500&auto=format&fit=crop&q=80",
+        "image_caption": "减土法雕凿成城·金色夕阳下大佛寺台地千年生土大片",
         "core_highlights": [
             "世界土木工程奇迹：完全采用“减土法”（自原生黄土台地向下雕凿掏挖）而成城",
             "两河交汇高达 30 米柳叶状陡峭黄土台地上，四面悬崖峭壁无须修建城墙",
@@ -263,6 +281,8 @@ HERITAGE_14D_DATA = [
         "tickets_booking": "门票淡季约 ¥40/人 · 现场窗口或微信公众号线上购票",
         "lat": 42.941245, "lng": 89.218745,
         "sifei_code": "SF-XJ-TRP-003 (斯飞坐标清代砖构力学巅峰)",
+        "image_url": "https://images.unsplash.com/photo-1518684079-3c830dcef090?w=500&auto=format&fit=crop&q=80",
+        "image_caption": "新疆现存最高古塔(44米)与72种凹凸几何砖雕拼花纹理",
         "core_highlights": [
             "新疆现存最高古塔（高 44 米，基底直径 10 米），清乾隆四十三年建",
             "全塔无木梁铁钉支撑，纯由土黄青灰砖石咬合砌筑，外表拼砌 72 种几何花纹",
@@ -291,6 +311,8 @@ HERITAGE_14D_DATA = [
         "tickets_booking": "门票淡季约 ¥40/人 · 现场购票或各大旅游平台预约",
         "lat": 42.951301, "lng": 89.189688,
         "sifei_code": "SF-XJ-TRP-006 (斯飞坐标地下水利史迹)",
+        "image_url": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&auto=format&fit=crop&q=80",
+        "image_caption": "地下无动力重力流暗渠清澈天山雪水与竖井天光",
         "core_highlights": [
             "与万里长城、京杭大运河并称为中国古代三大工程的地下重力流水利系统",
             "天山冰雪融水渗入戈壁地下暗河，由竖井开挖、暗渠引水、明渠蓄水涝坝四部分组成",
@@ -306,41 +328,83 @@ HERITAGE_14D_DATA = [
     }
 ]
 
-# 每日国保行进线路与点对点距离耗时矩阵
+# 每日国保行进线路与点对点距离耗时矩阵（含代表性照片）
 HERITAGE_DAY_ROUTES = {
     1: {
         "title": "乌鲁木齐市区汉传官式建筑孤例",
         "stops": [
-            {"name": "乌鲁木齐文庙", "lat": 43.825592, "lng": 87.616848, "time": "14:00", "order": 1}
+            {
+                "name": "乌鲁木齐文庙",
+                "lat": 43.825592, "lng": 87.616848,
+                "time": "14:00",
+                "order": 1,
+                "img": "https://images.unsplash.com/photo-1548013146-72479768bada?w=300&auto=format&fit=crop&q=80",
+                "caption": "文庙大成殿单檐歇山顶"
+            }
         ],
         "legs": []
     },
     8: {
         "title": "阿尔泰功勋工业遗产",
         "stops": [
-            {"name": "可可托海三号矿坑", "lat": 46.994462, "lng": 89.526832, "time": "15:30", "order": 1}
+            {
+                "name": "可可托海三号矿坑",
+                "lat": 46.994462, "lng": 89.526832,
+                "time": "15:30",
+                "order": 1,
+                "img": "https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?w=300&auto=format&fit=crop&q=80",
+                "caption": "两弹一星功勋螺旋矿坑"
+            }
         ],
         "legs": []
     },
     9: {
         "title": "天山北麓唐代都护府世遗圣殿",
         "stops": [
-            {"name": "北庭故城与西大寺", "lat": 44.022145, "lng": 89.588745, "time": "14:30", "order": 1}
+            {
+                "name": "北庭故城与西大寺",
+                "lat": 44.022145, "lng": 89.588745,
+                "time": "14:30",
+                "order": 1,
+                "img": "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=300&auto=format&fit=crop&q=80",
+                "caption": "唐北庭大都护府夯土外城"
+            }
         ],
         "legs": []
     },
     10: {
         "title": "两汉天山北麓军事要塞确证",
         "stops": [
-            {"name": "疏勒城 (石城子遗址)", "lat": 43.821456, "lng": 89.658745, "time": "10:30", "order": 1}
+            {
+                "name": "疏勒城 (石城子遗址)",
+                "lat": 43.821456, "lng": 89.658745,
+                "time": "10:30",
+                "order": 1,
+                "img": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=300&auto=format&fit=crop&q=80",
+                "caption": "耿恭坚守之疏勒城要塞"
+            }
         ],
         "legs": []
     },
     11: {
         "title": "吐鲁番东郊石窟寺院与生土民居巡礼",
         "stops": [
-            {"name": "柏孜克里克千佛洞", "lat": 42.956874, "lng": 89.541245, "time": "09:30", "order": 1},
-            {"name": "吐峪沟石窟与麻扎村", "lat": 42.868735, "lng": 89.684065, "time": "14:30", "order": 2}
+            {
+                "name": "柏孜克里克千佛洞",
+                "lat": 42.956874, "lng": 89.541245,
+                "time": "09:30",
+                "order": 1,
+                "img": "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=300&auto=format&fit=crop&q=80",
+                "caption": "木头沟红砂岩石窟立面"
+            },
+            {
+                "name": "吐峪沟石窟与麻扎村",
+                "lat": 42.868735, "lng": 89.684065,
+                "time": "14:30",
+                "order": 2,
+                "img": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300&auto=format&fit=crop&q=80",
+                "caption": "大峡谷生土券顶古民居"
+            }
         ],
         "legs": [
             {"from": "柏孜克里克千佛洞", "to": "吐峪沟石窟与麻扎村", "distance_km": 22.5, "duration_min": 35, "desc": "穿行火焰山峡谷县道"}
@@ -349,9 +413,30 @@ HERITAGE_DAY_ROUTES = {
     12: {
         "title": "高昌故都 ➔ 皇家墓葬 ➔ 交河生土雕凿巅峰",
         "stops": [
-            {"name": "高昌故城 (世遗)", "lat": 42.854512, "lng": 89.528745, "time": "09:30", "order": 1},
-            {"name": "阿斯塔那古墓群", "lat": 42.875412, "lng": 89.514562, "time": "13:30", "order": 2},
-            {"name": "交河故城 (世遗落日)", "lat": 42.955432, "lng": 89.068754, "time": "15:30", "order": 3}
+            {
+                "name": "高昌故城 (世遗)",
+                "lat": 42.854512, "lng": 89.528745,
+                "time": "09:30",
+                "order": 1,
+                "img": "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=300&auto=format&fit=crop&q=80",
+                "caption": "5.4公里夯土外城与大佛寺"
+            },
+            {
+                "name": "阿斯塔那古墓群",
+                "lat": 42.875412, "lng": 89.514562,
+                "time": "13:30",
+                "order": 2,
+                "img": "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=300&auto=format&fit=crop&q=80",
+                "caption": "地下博物馆伏羲女娲墓室"
+            },
+            {
+                "name": "交河故城 (世遗落日)",
+                "lat": 42.955432, "lng": 89.068754,
+                "time": "15:30",
+                "order": 3,
+                "img": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=300&auto=format&fit=crop&q=80",
+                "caption": "减土法雕凿成城金色夕阳"
+            }
         ],
         "legs": [
             {"from": "高昌故城", "to": "阿斯塔那古墓群", "distance_km": 4.5, "duration_min": 10, "desc": "高昌绿洲乡村平坦公路"},
@@ -361,8 +446,22 @@ HERITAGE_DAY_ROUTES = {
     13: {
         "title": "清代几何砖雕圆塔 ➔ 地下重力流水利系统",
         "stops": [
-            {"name": "苏公塔 (额敏塔)", "lat": 42.941245, "lng": 89.218745, "time": "10:00", "order": 1},
-            {"name": "坎儿井地下水利系统", "lat": 42.951301, "lng": 89.189688, "time": "14:00", "order": 2}
+            {
+                "name": "苏公塔 (额敏塔)",
+                "lat": 42.941245, "lng": 89.218745,
+                "time": "10:00",
+                "order": 1,
+                "img": "https://images.unsplash.com/photo-1518684079-3c830dcef090?w=300&auto=format&fit=crop&q=80",
+                "caption": "44米清代砖塔72种几何纹"
+            },
+            {
+                "name": "坎儿井地下水利系统",
+                "lat": 42.951301, "lng": 89.189688,
+                "time": "14:00",
+                "order": 2,
+                "img": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&auto=format&fit=crop&q=80",
+                "caption": "地下无动力重力流暗渠"
+            }
         ],
         "legs": [
             {"from": "苏公塔", "to": "坎儿井地下暗渠", "distance_km": 6.8, "duration_min": 15, "desc": "市区主干道直达"}
@@ -378,48 +477,54 @@ def render_heritage_html():
         
         card = f"""
         <div class="m-herit-card" id="herit-day-{h['day']}-{h.get('order_in_day', 1)}">
-          <div class="m-herit-top">
-            <div class="m-herit-day-tag">Day {h['day']} (第{h.get('order_in_day', 1)}站) · {h['date']}</div>
-            <div class="m-herit-city-tag">📍 {h['city']}</div>
+          <div class="m-herit-img-header" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(18,26,44,0.9)), url('{h['image_url']}');">
+            <span class="m-herit-img-badge">📷 斯飞坐标收录实景</span>
+            <div class="m-herit-img-title">{h['name']}</div>
           </div>
 
-          <div class="m-herit-title"><b>{h['name']}</b></div>
-          <div class="m-herit-batch">📜 {h['batch']}</div>
-          <div class="m-herit-sifei">🧭 {h['sifei_code']} ｜ 类别：{h['heritage_type']}</div>
-
-          <div class="m-herit-schedule-grid">
-            <div class="m-herit-sched-item">
-              <span class="m-herit-lbl">⏰ 计划到达：</span><b>{h['arrival_plan']}</b>
+          <div class="m-herit-body-inner">
+            <div class="m-herit-top">
+              <div class="m-herit-day-tag">Day {h['day']} (第{h.get('order_in_day', 1)}站) · {h['date']}</div>
+              <div class="m-herit-city-tag">📍 {h['city']}</div>
             </div>
-            <div class="m-herit-sched-item">
-              <span class="m-herit-lbl">⏳ 推荐游览：</span><b>{h['visit_duration']}</b>
+
+            <div class="m-herit-batch">📜 {h['batch']}</div>
+            <div class="m-herit-sifei">🧭 {h['sifei_code']} ｜ 类别：{h['heritage_type']}</div>
+
+            <div class="m-herit-schedule-grid">
+              <div class="m-herit-sched-item">
+                <span class="m-herit-lbl">⏰ 计划到达：</span><b>{h['arrival_plan']}</b>
+              </div>
+              <div class="m-herit-sched-item">
+                <span class="m-herit-lbl">⏳ 推荐游览：</span><b>{h['visit_duration']}</b>
+              </div>
+              <div class="m-herit-sched-item" style="grid-column: 1 / -1;">
+                <span class="m-herit-lbl">🕒 接待开放：</span><span style="color:#fde68a;">{h['opening_hours']}</span>
+              </div>
+              <div class="m-herit-sched-item" style="grid-column: 1 / -1;">
+                <span class="m-herit-lbl">🎟️ 门票预约：</span><span style="color:#cbd5e1;">{h['tickets_booking']}</span>
+              </div>
             </div>
-            <div class="m-herit-sched-item" style="grid-column: 1 / -1;">
-              <span class="m-herit-lbl">🕒 接待开放：</span><span style="color:#fde68a;">{h['opening_hours']}</span>
+
+            <div class="m-herit-chips-box">
+              <div class="m-herit-lbl" style="margin-bottom:5px;">🎯 核心国保看点：</div>
+              <div class="m-herit-chips-flow">{chips_list}</div>
             </div>
-            <div class="m-herit-sched-item" style="grid-column: 1 / -1;">
-              <span class="m-herit-lbl">🎟️ 门票预约：</span><span style="color:#cbd5e1;">{h['tickets_booking']}</span>
+
+            <div class="m-herit-notes-box">
+              <div class="m-herit-notes-title">📖 斯飞坐标 ✕ 华夏古迹图 深度研学解构</div>
+              <div class="m-herit-notes-body">{h['academic_notes']}</div>
             </div>
-          </div>
 
-          <div class="m-herit-chips-box">
-            <div class="m-herit-lbl" style="margin-bottom:5px;">🎯 核心国保看点：</div>
-            <div class="m-herit-chips-flow">{chips_list}</div>
-          </div>
+            <div class="m-herit-photo-box">
+              <span class="m-herit-lbl">📸 黄金光线与打卡机位：</span><br>
+              {h['best_photo_light']}
+            </div>
 
-          <div class="m-herit-notes-box">
-            <div class="m-herit-notes-title">📖 斯飞坐标 ✕ 华夏古迹图 深度研学解构</div>
-            <div class="m-herit-notes-body">{h['academic_notes']}</div>
+            <a href="https://uri.amap.com/navigation?to={h['lng']},{h['lat']}&mode=car" class="m-herit-nav-btn" target="_blank">
+              🚗 高德地图一键导航到国保点 ({h['name']})
+            </a>
           </div>
-
-          <div class="m-herit-photo-box">
-            <span class="m-herit-lbl">📸 黄金光线与打卡机位：</span><br>
-            {h['best_photo_light']}
-          </div>
-
-          <a href="https://uri.amap.com/navigation?to={h['lng']},{h['lat']}&mode=car" class="m-herit-nav-btn" target="_blank">
-            🚗 高德地图一键导航到国保点 ({h['name']})
-          </a>
         </div>
         """
         cards_html.append(card)

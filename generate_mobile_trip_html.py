@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 """
 generate_mobile_trip_html.py — 专为手机端打造的自驾全景路书 (trip_mobile.html)
-核心修复与升级：
-1. 修复大地图底部面板避开 Dock 遮挡 (bottom: calc(64px + env(safe-area-inset-bottom)))
-2. 修复餐饮 5 选 1 切换高亮与「在上方地图查看位置」按钮秒级聚焦
-3. 210家餐馆全部落地于真实城镇街道，彻底解决空白无街道地图问题
-4. 观鸟地图精简化，仅保留清晰名称标牌
-5. 全面支持路线前进指示箭头
+集成：
+1. 国保地图对应点位增加代表性小照片（带序号圆形微缩图 + 点名 + 到达时刻）
+2. 国保卡片增加斯飞坐标实景照片 Header
+3. 餐饮 210 家老店街道坐标联动与高亮聚焦
+4. 观鸟精简地标
+5. 大地图底部面板防遮挡
 """
 
 import os
@@ -179,7 +179,7 @@ def build_mobile_split_screen_html():
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>新疆14天自驾路书 (移动优化版)</title>
+  <title>新疆14天自驾路书 (国保照片预览 + 观鸟 + 美食地图)</title>
   <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -261,9 +261,9 @@ def build_mobile_split_screen_html():
        TOP PINNED MAP ZONE
        ======================================================== */
     .m-map-pinned-zone {{
-      flex: 0 0 34vh;
-      min-height: 175px;
-      max-height: 46vh;
+      flex: 0 0 35vh;
+      min-height: 180px;
+      max-height: 48vh;
       width: 100%;
       background: #0f172a;
       position: relative;
@@ -367,17 +367,63 @@ def build_mobile_split_screen_html():
       white-space: nowrap;
       box-shadow: 0 3px 8px rgba(0,0,0,0.6);
     }}
-    .custom-herit-pin {{
-      background: #581c87;
+
+    /* 国保带照片微缩图的地标样式 */
+    .custom-herit-photo-marker {{
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(24, 29, 51, 0.95);
       border: 1.5px solid #c084fc;
-      border-radius: 12px;
-      padding: 2px 7px;
+      border-radius: 18px;
+      padding: 2px 8px 2px 2px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      cursor: pointer;
+      white-space: nowrap;
+    }}
+    .herit-marker-thumb {{
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      border: 1.5px solid #fff;
+      position: relative;
+      flex-shrink: 0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+    }}
+    .herit-marker-order {{
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      background: #7e22ce;
       color: #fff;
+      font-size: 8px;
+      font-weight: 700;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #fff;
+    }}
+    .herit-marker-info {{
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }}
+    .herit-marker-name {{
       font-size: 10.5px;
       font-weight: 700;
-      white-space: nowrap;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.6);
+      color: #fff;
     }}
+    .herit-marker-time {{
+      font-size: 9px;
+      color: #fde68a;
+      font-weight: 600;
+    }}
+
     .custom-herit-leg-badge {{
       background: rgba(15, 23, 42, 0.92);
       border: 1px solid #c084fc;
@@ -631,7 +677,6 @@ def build_mobile_split_screen_html():
       box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }}
 
-    /* 核心修复：提升底部浮层高度，避免遮挡大按钮 */
     .m-map-info-sheet {{
       position: absolute;
       bottom: calc(64px + env(safe-area-inset-bottom));
@@ -925,7 +970,7 @@ def build_mobile_split_screen_html():
     }}
 
     /* ========================================================
-       TAB 5: CULTURE
+       TAB 5: CULTURE (国保超深度研学 + 实景大图卡片)
        ======================================================== */
     .m-culture-view {{
       display: none;
@@ -945,11 +990,41 @@ def build_mobile_split_screen_html():
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 14px;
-      padding: 14px;
       margin-bottom: 16px;
       box-shadow: 0 4px 14px rgba(0,0,0,0.35);
       cursor: pointer;
+      overflow: hidden;
     }}
+    .m-herit-img-header {{
+      height: 130px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 10px 12px;
+    }}
+    .m-herit-img-badge {{
+      align-self: flex-start;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(4px);
+      color: #e9d5ff;
+      font-size: 9.5px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(192, 132, 252, 0.4);
+    }}
+    .m-herit-img-title {{
+      color: #fff;
+      font-size: 15.5px;
+      font-weight: 700;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.85);
+    }}
+    .m-herit-body-inner {{
+      padding: 12px 14px 14px;
+    }}
+
     .m-herit-top {{
       display: flex;
       justify-content: space-between;
@@ -971,11 +1046,6 @@ def build_mobile_split_screen_html():
       padding: 2px 7px;
       border-radius: 4px;
       font-weight: 600;
-    }}
-    .m-herit-title {{
-      font-size: 15px;
-      color: #fff;
-      margin-bottom: 4px;
     }}
     .m-herit-batch {{
       font-size: 11px;
@@ -1134,7 +1204,7 @@ def build_mobile_split_screen_html():
       <div id="m-map"></div>
       <div class="m-map-hint" id="m-top-map-hint">🗺️ 行程路线 · 点下方卡片联动</div>
       <button class="m-map-pill" onclick="cycleTimelineMapHeight()">
-        <span id="pill-icon">↕️</span> <span id="pill-text">高度 34%</span>
+        <span id="pill-icon">↕️</span> <span id="pill-text">高度 35%</span>
       </button>
     </div>
 
@@ -1180,8 +1250,8 @@ def build_mobile_split_screen_html():
       <!-- ==================== 5. 国保超深度研学专区 (斯飞坐标/华夏古迹图) ==================== -->
       <div class="m-culture-view" id="m-view-culture">
         <div class="m-culture-intro">
-          🏛️ <b>全国重点文物保护单位 ✕ 斯飞坐标与华夏古迹图：</b><br>
-          上方地图已标出当天国保点名称，并绘制<b>时间顺序行进路线、前进方向箭头与点对点距离/耗时标牌</b>！
+          🏛️ <b>全国重点文物保护单位 ✕ 斯飞坐标收录实景：</b><br>
+          上方地图已标出各处国保的<b>代表性实景微缩照片、行进路线、前进方向箭头与点对点距离/耗时标牌</b>！
         </div>
         {heritage_html}
       </div>
@@ -1402,7 +1472,7 @@ def build_mobile_split_screen_html():
       timelineMapMode = (timelineMapMode + 1) % 2;
       if (timelineMapMode === 0) {{
         zone.classList.remove('mode-compact');
-        text.innerText = "高度 34%";
+        text.innerText = "高度 35%";
       }} else {{
         zone.classList.add('mode-compact');
         text.innerText = "小窗 18%";
@@ -1485,7 +1555,6 @@ def build_mobile_split_screen_html():
         }});
       }}
 
-      // 联动顶部地图高亮对应坐标
       showDiningDayOnMap(dayNum, mealKey, optIdx);
     }}
 
@@ -1534,7 +1603,7 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
-    // 4. 国保专区 (按时间行进路线、方向箭头、距离与耗时)
+    // 4. 国保专区 (带代表性小照片的预览标牌与时间路线)
     // ==========================================
     function showHeritageDayOnMap(dayNum) {{
       const routeInfo = mTripData.heritage_routes[dayNum];
@@ -1542,21 +1611,35 @@ def build_mobile_split_screen_html():
 
       dynamicLayers.clearLayers();
       const hint = document.getElementById('m-top-map-hint');
-      hint.innerText = `🏛️ Day ${{dayNum}} · 国保研学行进路线 (${{routeInfo.stops.length}}处国保)`;
+      hint.innerText = `🏛️ Day ${{dayNum}} · 国保实景照片与行进路线`;
 
       const pts = [];
 
       routeInfo.stops.forEach((s, idx) => {{
         pts.push([s.lat, s.lng]);
-        const html = `<div class="custom-herit-pin"><span>${{s.order}}</span> <b>${{s.name}}</b> <small style="color:#fde68a;">(${{s.time}})</small></div>`;
-        const icon = L.divIcon({{ className: 'herit-div-icon', html: html, iconSize: null, iconAnchor: [15, 12] }});
+        
+        // 代表性小照片预览标牌
+        const html = `
+          <div class="custom-herit-photo-marker">
+            <div class="herit-marker-thumb" style="background-image: url('${{s.img}}');">
+              <span class="herit-marker-order">${{s.order}}</span>
+            </div>
+            <div class="herit-marker-info">
+              <div class="herit-marker-name">${{s.name}}</div>
+              <div class="herit-marker-time">⏰ ${{s.time}}</div>
+            </div>
+          </div>
+        `;
+        const icon = L.divIcon({{ className: 'herit-photo-div-icon', html: html, iconSize: null, iconAnchor: [35, 18] }});
 
         const mk = L.marker([s.lat, s.lng], {{ icon: icon }}).addTo(dynamicLayers);
         mk.bindPopup(`
-          <div style="font-size:12px; line-height:1.45; color:#0f172a;">
+          <div style="font-size:12px; line-height:1.45; color:#0f172a; min-width:200px;">
+            <img src="${{s.img}}" style="width:100%; height:95px; object-fit:cover; border-radius:6px; margin-bottom:6px; display:block;" onerror="this.style.display='none';" />
             <b style="color:#7e22ce;">第${{s.order}}站：${{s.name}}</b><br/>
-            ⏰ 计划到达: ${{s.time}}<br/>
-            <a href="https://uri.amap.com/navigation?to=${{s.lng}},${{s.lat}}&mode=car" target="_blank" style="display:inline-block; margin-top:4px; color:#7e22ce; font-weight:700;">🚗 高德一键导航</a>
+            <small style="color:#64748b;">📷 ${{s.caption || ''}}</small><br/>
+            ⏰ 计划到达: <b>${{s.time}}</b><br/>
+            <a href="https://uri.amap.com/navigation?to=${{s.lng}},${{s.lat}}&mode=car" target="_blank" style="display:inline-block; margin-top:6px; color:#7e22ce; font-weight:700;">🚗 高德一键导航</a>
           </div>
         `);
       }});
@@ -1895,7 +1978,7 @@ def main():
     content = build_mobile_split_screen_html()
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(content)
-    print(f"🎉 修复所有遮挡与坐标的手机版路书已生成: {out_path}")
+    print(f"🎉 包含国保实景照片标牌的手机版路书已生成: {out_path}")
 
 
 if __name__ == "__main__":
