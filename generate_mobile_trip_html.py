@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 generate_mobile_trip_html.py — 专为手机端打造的自驾全景路书 (trip_mobile.html)
-集成：分屏常驻地图 + 独立大地图探索台 + 每餐5选1老店指南 + 每日观鸟与野生动物观测 + 提醒(海拔与极寒装备整合)
+集成：分屏常驻地图 + 独立大地图探索台 + 每餐5选1老店指南 + 每日观鸟与野生动物观测 + 14天全国重点文保(国保)超深度研学指南 + 提醒整合
 """
 
 import os
@@ -10,9 +10,11 @@ import json
 
 from dining_data_210 import TRIP_DATA, DINING_210_DATA
 from birding_data_14d import BIRDING_14D_DATA, render_birding_html
+from heritage_data_14d import HERITAGE_14D_DATA, render_heritage_html
 
 TRIP_DATA["dining_guide"] = DINING_210_DATA
 TRIP_DATA["birding_guide"] = BIRDING_14D_DATA
+TRIP_DATA["heritage_guide"] = HERITAGE_14D_DATA
 
 
 def render_dining_html_5_options():
@@ -102,6 +104,10 @@ def render_dining_html_5_options():
 
 def build_mobile_split_screen_html():
     days_cards_html = []
+    
+    # 哪些天有重点国保
+    heritage_days = {h["day"] for h in HERITAGE_14D_DATA}
+
     for d in TRIP_DATA["days"]:
         chips = "".join([f'<span class="m-chip">{h}</span>' for h in d["highlights"]])
         
@@ -109,6 +115,11 @@ def build_mobile_split_screen_html():
         if d.get("warnings"):
             w_text = "<br>".join(d["warnings"])
             warn = f'<div class="m-warn">⚠️ {w_text}</div>'
+
+        herit_btn = ""
+        day_num = d["day"]
+        if day_num in heritage_days:
+            herit_btn = f'<button onclick="event.stopPropagation(); jumpToHeritage({day_num})" class="m-btn-herit">🏛️ 国保</button>'
 
         card = f"""
         <div class="m-card" id="m-day-{d['day']}" onclick="mFocusDay({d['day']})">
@@ -137,8 +148,9 @@ def build_mobile_split_screen_html():
           <div class="m-card-footer">
             <div class="m-stay">🏨 <b>{d['stay']}</b></div>
             <div class="m-nav-btns">
-              <button onclick="event.stopPropagation(); jumpToDining({d['day']})" class="m-btn-dine">🍴 美食(5选1)</button>
+              <button onclick="event.stopPropagation(); jumpToDining({d['day']})" class="m-btn-dine">🍴 美食</button>
               <button onclick="event.stopPropagation(); jumpToBirding({d['day']})" class="m-btn-bird">🦉 观鸟</button>
+              {herit_btn}
               <a href="https://uri.amap.com/navigation?from={d['from']['lng']},{d['from']['lat']}&to={d['to']['lng']},{d['to']['lat']}&mode=car" class="m-btn amap" target="_blank">导航</a>
             </div>
           </div>
@@ -150,6 +162,7 @@ def build_mobile_split_screen_html():
     rules_html = "".join([f"<li>{r}</li>" for r in TRIP_DATA["critical_safeties"]])
     dining_html = render_dining_html_5_options()
     birding_html = render_birding_html()
+    heritage_html = render_heritage_html()
     json_dump = json.dumps(TRIP_DATA, ensure_ascii=False)
 
     html = f"""<!DOCTYPE html>
@@ -157,7 +170,7 @@ def build_mobile_split_screen_html():
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>新疆14天自驾路书 (移动专版·观鸟与野生动物+提醒整合)</title>
+  <title>新疆14天自驾路书 (国保斯飞级深度研学 + 观鸟 + 美食5选1)</title>
   <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -416,38 +429,50 @@ def build_mobile_split_screen_html():
     .m-stay {{ font-size: 11.5px; color: var(--text-muted); }}
     .m-stay b {{ color: #f8fafc; font-weight: 500; }}
     
-    .m-nav-btns {{ display: flex; gap: 5px; }}
+    .m-nav-btns {{ display: flex; gap: 4px; }}
     .m-btn-dine {{
-      flex: 1.2;
+      flex: 1;
       text-align: center;
       padding: 6px 0;
       border-radius: 6px;
       background: rgba(245, 158, 11, 0.2);
       border: 1px solid rgba(245, 158, 11, 0.4);
       color: #fcd34d;
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
       cursor: pointer;
     }}
     .m-btn-bird {{
-      flex: 1.1;
+      flex: 1;
       text-align: center;
       padding: 6px 0;
       border-radius: 6px;
       background: rgba(16, 185, 129, 0.2);
       border: 1px solid rgba(16, 185, 129, 0.4);
       color: #6ee7b7;
-      font-size: 11px;
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }}
+    .m-btn-herit {{
+      flex: 1;
+      text-align: center;
+      padding: 6px 0;
+      border-radius: 6px;
+      background: rgba(147, 51, 234, 0.2);
+      border: 1px solid rgba(147, 51, 234, 0.4);
+      color: #c084fc;
+      font-size: 10.5px;
       font-weight: 700;
       cursor: pointer;
     }}
     .m-btn {{
-      flex: 0.9;
+      flex: 0.85;
       text-align: center;
       padding: 6px 0;
       border-radius: 6px;
       text-decoration: none;
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 600;
     }}
     .m-btn.amap {{ background: #2563eb; color: #fff; }}
@@ -803,7 +828,7 @@ def build_mobile_split_screen_html():
     }}
 
     /* ========================================================
-       TAB 5: CULTURE (国保)
+       TAB 5: CULTURE (国保超深度研学专区)
        ======================================================== */
     .m-culture-view {{
       display: none;
@@ -811,6 +836,136 @@ def build_mobile_split_screen_html():
       overflow-y: auto;
       height: calc(100% - 52px - env(safe-area-inset-bottom));
       -webkit-overflow-scrolling: touch;
+    }}
+    .m-culture-intro {{
+      background: linear-gradient(135deg, rgba(147, 51, 234, 0.18) 0%, rgba(217, 119, 6, 0.18) 100%);
+      border: 1px solid rgba(147, 51, 234, 0.4);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      font-size: 11.5px;
+      color: #e9d5ff;
+      line-height: 1.5;
+    }}
+    .m-herit-card {{
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    }}
+    .m-herit-top {{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }}
+    .m-herit-day-tag {{
+      font-size: 13px;
+      font-weight: 700;
+      color: #fca5a5;
+      background: rgba(150, 56, 45, 0.25);
+      padding: 2px 7px;
+      border-radius: 5px;
+    }}
+    .m-herit-city-tag {{
+      font-size: 11px;
+      color: #c084fc;
+      background: rgba(147, 51, 234, 0.15);
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 600;
+    }}
+    .m-herit-title {{
+      font-size: 15px;
+      color: #fff;
+      margin-bottom: 4px;
+    }}
+    .m-herit-batch {{
+      font-size: 11px;
+      color: #fbbf24;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }}
+    .m-herit-sifei {{
+      font-size: 10.5px;
+      color: #94a3b8;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed var(--card-border);
+    }}
+    .m-herit-schedule-grid {{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: rgba(0,0,0,0.25);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 11px;
+      margin-bottom: 10px;
+    }}
+    .m-herit-sched-item b {{ color: #60a5fa; }}
+    .m-herit-lbl {{ font-weight: 700; color: #94a3b8; font-size: 11px; }}
+
+    .m-herit-chips-box {{
+      margin-bottom: 10px;
+    }}
+    .m-herit-chips-flow {{
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }}
+    .m-herit-chip {{
+      font-size: 11px;
+      color: #cbd5e1;
+      background: rgba(255,255,255,0.03);
+      padding: 3px 6px;
+      border-radius: 4px;
+      border-left: 2px solid #a855f7;
+    }}
+
+    .m-herit-notes-box {{
+      background: rgba(147, 51, 234, 0.08);
+      border: 1px solid rgba(147, 51, 234, 0.25);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+    }}
+    .m-herit-notes-title {{
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #d8b4fe;
+      margin-bottom: 6px;
+    }}
+    .m-herit-notes-body {{
+      font-size: 11.5px;
+      color: #cbd5e1;
+      line-height: 1.55;
+    }}
+
+    .m-herit-photo-box {{
+      background: rgba(217, 119, 6, 0.12);
+      border: 1px solid rgba(217, 119, 6, 0.3);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 11.5px;
+      color: #fde68a;
+      line-height: 1.45;
+      margin-bottom: 10px;
+    }}
+
+    .m-herit-nav-btn {{
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: #7e22ce;
+      color: #fff;
+      padding: 7px 0;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
     }}
 
     /* ========================================================
@@ -961,7 +1116,7 @@ def build_mobile_split_screen_html():
       {dining_html}
     </div>
 
-    <!-- ==================== 4. 观鸟与野生动物页 (全新上线) ==================== -->
+    <!-- ==================== 4. 观鸟与野生动物页 ==================== -->
     <div class="m-birding-view" id="m-view-birding">
       <div class="m-birding-intro">
         🦉 <b>小红书 ✕ 中国观鸟记录中心实战纪录：</b><br>
@@ -970,29 +1125,13 @@ def build_mobile_split_screen_html():
       {birding_html}
     </div>
 
-    <!-- ==================== 5. 国保专题页 ==================== -->
+    <!-- ==================== 5. 国保超深度研学专区 (斯飞坐标/华夏古迹图) ==================== -->
     <div class="m-culture-view" id="m-view-culture">
-      <div class="m-sub-card">
-        <h3>🏛️ 吐鲁番四大国保研学专题</h3>
-        <div style="font-size:11.5px; color:#cbd5e1; display:flex; flex-direction:column; gap:10px;">
-          <div>
-            <b style="color:#60a5fa;">1. 石窟寺院专题 (Day 11)</b><br>
-            柏孜克里克千佛洞、吐峪沟千佛洞：回鹘王室壁画艺术与洞窟形制演变。
-          </div>
-          <div>
-            <b style="color:#34d399;">2. 古城防御专题 (Day 12)</b><br>
-            交河故城（减土法）vs 高昌故城（夯土版筑）：实测千年掏土成城生土力学极限。
-          </div>
-          <div>
-            <b style="color:#fbbf24;">3. 地下水利专题 (Day 13)</b><br>
-            坎儿井地下暗渠：重力引天山冰雪融水水力智慧。
-          </div>
-          <div>
-            <b style="color:#f472b6;">4. 清代砖构专题 (Day 13)</b><br>
-            苏公塔 44 米圆塔 72 种几何拼砖力学细部顺光实测。
-          </div>
-        </div>
+      <div class="m-culture-intro">
+        🏛️ <b>全国重点文物保护单位 ✕ 斯飞坐标与华夏古迹图深度研学：</b><br>
+        严格梳理沿途<b>10大核心国保与世界文化遗产</b>。详细标注每日计划到达时间、推荐游览时长、接待开放时间、门票预约、建筑营造法式力学解构与最佳摄影光线！
       </div>
+      {heritage_html}
     </div>
 
     <!-- ==================== 6. 提醒页 (海拔剖面 + 极寒装备 + 安全整合) ==================== -->
@@ -1023,7 +1162,7 @@ def build_mobile_split_screen_html():
         <div style="font-size:11.5px; color:#fde68a; line-height:1.6;">
           • <b>防暗冰：</b>喀纳斯/禾木盘山公路背阴弯道易结暗冰，使用低速挡平稳减速，严禁猛打方向。<br>
           • <b>闭馆时间：</b>可可托海 08:30 启程避开极寒；北庭故城 14:30 抵达避开冬季提前闭馆。<br>
-          • <b>大风区：</b>返程经达坂城百里风区预留横风减速缓冲。
+          • <b>达坂城横风缓冲：</b>返程预留百里风区车速控制与安检时间。
         </div>
       </div>
     </div>
@@ -1316,6 +1455,15 @@ def build_mobile_split_screen_html():
       }}, 100);
     }}
 
+    function jumpToHeritage(dayNum) {{
+      const cultureDock = document.querySelectorAll('.m-dock-item')[4];
+      mSwitch('culture', cultureDock);
+      setTimeout(() => {{
+        const targetHerit = document.getElementById('herit-day-' + dayNum);
+        if (targetHerit) targetHerit.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+      }}, 100);
+    }}
+
     let mChartInstance = null;
     function renderMChart() {{
       if (mChartInstance) return;
@@ -1371,7 +1519,7 @@ def main():
     content = build_mobile_split_screen_html()
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(content)
-    print(f"🎉 包含观鸟生态与整合提醒的手机版路书已生成: {out_path}")
+    print(f"🎉 包含斯飞级国保超深度研学指南的手机版路书已生成: {out_path}")
 
 
 if __name__ == "__main__":

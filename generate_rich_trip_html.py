@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-generate_rich_trip_html.py — 全景自驾路书（支持桌面双栏 + 移动端自适应 + 14天每餐5选1口碑老店 + 每日观鸟与野生动物推荐 + 提醒整合）
+generate_rich_trip_html.py — 全景自驾路书（支持桌面双栏 + 移动端自适应 + 14天每餐5选1口碑老店 + 每日观鸟动物 + 斯飞级国保超深度研学 + 提醒整合）
 """
 
 import os
 import json
 from generate_mobile_trip_html import TRIP_DATA, render_dining_html_5_options
 from birding_data_14d import render_birding_html
+from heritage_data_14d import HERITAGE_14D_DATA, render_heritage_html
 
 
 def render_day_card(d):
@@ -17,6 +18,12 @@ def render_day_card(d):
     if d.get("warnings"):
         w_lines = "".join([f'<div>{w}</div>' for w in d["warnings"]])
         warning_html = f'<div class="card-warning">{w_lines}</div>'
+
+    heritage_days = {h["day"] for h in HERITAGE_14D_DATA}
+    herit_btn = ""
+    day_num = d["day"]
+    if day_num in heritage_days:
+        herit_btn = f'<button onclick="event.stopPropagation(); jumpToHeritageTab({day_num})" class="btn-nav" style="background:rgba(147,51,234,0.25); color:#d8b4fe; border-color:rgba(147,51,234,0.5); font-weight:700; cursor:pointer;">🏛️ 国保研学</button>'
 
     card = f"""
       <div class="day-card" id="day-card-{d['day']}" onclick="focusDay({d['day']})">
@@ -60,6 +67,7 @@ def render_day_card(d):
           <div class="nav-links">
             <button onclick="event.stopPropagation(); jumpToDiningTab({d['day']})" class="btn-nav" style="background:rgba(245,158,11,0.25); color:#fcd34d; border-color:rgba(245,158,11,0.5); font-weight:700; cursor:pointer;">🍴 美食 (5选1)</button>
             <button onclick="event.stopPropagation(); jumpToBirdingTab({d['day']})" class="btn-nav" style="background:rgba(16,185,129,0.25); color:#6ee7b7; border-color:rgba(16,185,129,0.5); font-weight:700; cursor:pointer;">🦉 观鸟/动物</button>
+            {herit_btn}
             <a class="btn-nav" href="https://uri.amap.com/navigation?from={d['from']['lng']},{d['from']['lat']}&to={d['to']['lng']},{d['to']['lat']}&mode=car" target="_blank">高德导航</a>
           </div>
         </div>
@@ -73,6 +81,7 @@ def build_full_html():
     rules_rendered = "\n".join([f"<li>{r}</li>" for r in TRIP_DATA["critical_safeties"]])
     dining_rendered = render_dining_html_5_options()
     birding_rendered = render_birding_html()
+    heritage_rendered = render_heritage_html()
     json_dump = json.dumps(TRIP_DATA, ensure_ascii=False)
 
     html = f"""<!DOCTYPE html>
@@ -447,7 +456,7 @@ def build_full_html():
     .m-meal-desc-box {{ font-size: 12px; color: #cbd5e1; line-height: 1.5; margin-bottom: 8px; }}
     .m-dine-nav-btn {{ display: inline-block; background: #2563eb; color: #fff; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-size: 11.5px; font-weight: 600; }}
 
-    /* Birding Styles */
+    /* Birding Styles in Desktop */
     .m-birding-card {{ background: #151d30; border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }}
     .m-bird-card-top {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }}
     .m-bird-day-tag {{ font-size: 13px; font-weight: 700; color: #fca5a5; background: rgba(150, 56, 45, 0.25); padding: 2px 7px; border-radius: 5px; }}
@@ -460,6 +469,25 @@ def build_full_html():
     .m-bird-species-chip {{ font-size: 11.5px; padding: 3px 8px; border-radius: 5px; background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.35); font-weight: 600; }}
     .m-bird-notes-box {{ font-size: 12px; color: #cbd5e1; line-height: 1.5; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; margin-bottom: 10px; }}
     .m-bird-nav-btn {{ display: inline-block; background: #059669; color: #fff; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-size: 11.5px; font-weight: 600; }}
+
+    /* Heritage Styles in Desktop */
+    .m-herit-card {{ background: #181d33; border: 1px solid var(--card-border); border-radius: 12px; padding: 18px; margin-bottom: 18px; }}
+    .m-herit-top {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }}
+    .m-herit-day-tag {{ font-size: 13px; font-weight: 700; color: #fca5a5; background: rgba(150, 56, 45, 0.25); padding: 2px 7px; border-radius: 5px; }}
+    .m-herit-city-tag {{ font-size: 11.5px; color: #c084fc; background: rgba(147, 51, 234, 0.15); padding: 2px 7px; border-radius: 4px; font-weight: 600; }}
+    .m-herit-title {{ font-size: 16px; color: #fff; margin-bottom: 4px; }}
+    .m-herit-batch {{ font-size: 12px; color: #fbbf24; font-weight: 600; margin-bottom: 4px; }}
+    .m-herit-sifei {{ font-size: 11px; color: #94a3b8; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px dashed var(--card-border); }}
+    .m-herit-schedule-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(0,0,0,0.25); border-radius: 8px; padding: 10px 12px; font-size: 12px; margin-bottom: 12px; }}
+    .m-herit-sched-item b {{ color: #60a5fa; }}
+    .m-herit-chips-box {{ margin-bottom: 12px; }}
+    .m-herit-chips-flow {{ display: flex; flex-direction: column; gap: 6px; }}
+    .m-herit-chip {{ font-size: 12px; color: #cbd5e1; background: rgba(255,255,255,0.03); padding: 4px 8px; border-radius: 4px; border-left: 3px solid #a855f7; }}
+    .m-herit-notes-box {{ background: rgba(147, 51, 234, 0.08); border: 1px solid rgba(147, 51, 234, 0.25); border-radius: 8px; padding: 12px 14px; margin-bottom: 12px; }}
+    .m-herit-notes-title {{ font-size: 12.5px; font-weight: 700; color: #d8b4fe; margin-bottom: 6px; }}
+    .m-herit-notes-body {{ font-size: 12px; color: #cbd5e1; line-height: 1.6; }}
+    .m-herit-photo-box {{ background: rgba(217, 119, 6, 0.12); border: 1px solid rgba(217, 119, 6, 0.3); border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #fde68a; line-height: 1.5; margin-bottom: 12px; }}
+    .m-herit-nav-btn {{ display: inline-block; background: #7e22ce; color: #fff; padding: 7px 16px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; }}
 
     @media print {{
       body {{ background: #fff; color: #000; }}
@@ -513,7 +541,7 @@ def build_full_html():
     <button class="tab-btn active" onclick="switchTab('timeline')">📅 每日详单与地图联动</button>
     <button class="tab-btn" onclick="switchTab('dining')">🍽️ 每日三餐口碑老店 (每餐5选1)</button>
     <button class="tab-btn" onclick="switchTab('birding')">🦉 每日观鸟与野生动物观测</button>
-    <button class="tab-btn" onclick="switchTab('culture')">🏛️ 吐鲁番四大国保专题</button>
+    <button class="tab-btn" onclick="switchTab('culture')">🏛️ 全国重点文保 (国保超深度研学)</button>
     <button class="tab-btn" onclick="switchTab('tips')">🔔 提醒 (海拔+极寒自检+安全)</button>
   </div>
 
@@ -564,38 +592,15 @@ def build_full_html():
     </div>
   </div>
 
+  <!-- Heritage Tab in Desktop -->
   <div style="max-width:1500px; margin:20px auto; padding:0 20px; display:none;" id="tab-culture">
     <div class="chart-container">
-      <h3 style="font-size:18px; margin-bottom:16px; color:#f87171;">🏛️ 吐鲁番国保集群超深度研学四大专题体系指南</h3>
-      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:16px;">
-        <div style="background:#1e293b; padding:16px; border-radius:10px; border:1px solid #334155;">
-          <h4 style="color:#60a5fa; margin-bottom:6px;">1. 石窟寺院专题 (Day 11)</h4>
-          <p style="font-size:12px; color:#cbd5e1; line-height:1.5;">
-            <b>核心点：</b>柏孜克里克千佛洞、吐峪沟千佛洞<br>
-            <b>研学焦点：</b>高昌回鹘王室供养人壁画艺术、汉风与印度/粟特交融的洞窟形制演变。
-          </p>
-        </div>
-        <div style="background:#1e293b; padding:16px; border-radius:10px; border:1px solid #334155;">
-          <h4 style="color:#34d399; margin-bottom:6px;">2. 古城防御专题 (Day 12)</h4>
-          <p style="font-size:12px; color:#cbd5e1; line-height:1.5;">
-            <b>核心点：</b>交河故城（减土法）vs 高昌故城（夯土版筑）<br>
-            <b>研学焦点：</b>交河故城自上而下掏土成城的生土力学极限；高昌故城周长 5 公里外城与大佛寺夯土防御体系。
-          </p>
-        </div>
-        <div style="background:#1e293b; padding:16px; border-radius:10px; border:1px solid #334155;">
-          <h4 style="color:#fbbf24; margin-bottom:6px;">3. 地下水利专题 (Day 13)</h4>
-          <p style="font-size:12px; color:#cbd5e1; line-height:1.5;">
-            <b>核心点：</b>吐鲁番坎儿井地下暗渠系统<br>
-            <b>研学焦点：</b>竖井开挖、暗渠重力引天山冰雪融水、明渠蓄水涝坝的无动力水力学智慧。
-          </p>
-        </div>
-        <div style="background:#1e293b; padding:16px; border-radius:10px; border:1px solid #334155;">
-          <h4 style="color:#f472b6; margin-bottom:6px;">4. 清代砖构与古墓 (Day 12-13)</h4>
-          <p style="font-size:12px; color:#cbd5e1; line-height:1.5;">
-            <b>核心点：</b>苏公塔（额敏塔）、阿斯塔那古墓群<br>
-            <b>研学焦点：</b>苏公塔 44 米圆塔 72 种几何拼砖与受力穹顶；阿斯塔那地下墓室规制与伏羲女娲图。
-          </p>
-        </div>
+      <h3 style="font-size:18px; margin-bottom:12px; color:#c084fc;">🏛️ 14天自驾沿线全国重点文物保护单位（国保）超深度研学指南</h3>
+      <p style="font-size:12px; color:#d8b4fe; margin-bottom:16px; background:rgba(147,51,234,0.15); padding:10px 14px; border-radius:8px; border:1px solid rgba(147,51,234,0.3);">
+        参考<b>斯飞坐标（Sifei）与华夏古迹图</b>实战田野数据：涵盖乌鲁木齐文庙、可可托海三号功勋矿、北庭故城（世遗）、疏勒城（石城子）、柏孜克里克千佛洞、吐峪沟麻扎村、高昌故城（世遗）、阿斯塔那古墓群、交河故城（世遗）与清代苏公塔。
+      </p>
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap:16px;">
+        {heritage_rendered}
       </div>
     </div>
   </div>
@@ -740,6 +745,17 @@ def build_full_html():
       }}, 100);
     }}
 
+    function jumpToHeritageTab(dayNum) {{
+      const btn = document.querySelectorAll('.tab-btn')[3];
+      switchTab('culture');
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      setTimeout(() => {{
+        const el = document.getElementById('herit-day-' + dayNum);
+        if (el) el.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+      }}, 100);
+    }}
+
     function switchTab(tabId) {{
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       if (event && event.target && event.target.classList) {{
@@ -817,7 +833,7 @@ def main():
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(html_content)
 
-    print(f"🎉 包含观鸟生态与提醒整合的通用版路书已重新编译: {out_path}")
+    print(f"🎉 包含斯飞级国保超深度研学指南的通用版路书已重新编译: {out_path}")
 
 
 if __name__ == "__main__":
