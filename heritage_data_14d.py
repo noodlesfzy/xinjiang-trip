@@ -11,6 +11,7 @@ HERITAGE_14D_DATA = [
         "date": "10/25",
         "city": "乌鲁木齐市区",
         "name": "乌鲁木齐文庙",
+        "order_in_day": 1,
         "batch": "第七批全国重点文物保护单位（国保编号 7-1473）",
         "heritage_type": "古建筑 · 清代汉传官式木构群",
         "arrival_plan": "14:00 (提车检修完毕后顺路探访)",
@@ -37,6 +38,7 @@ HERITAGE_14D_DATA = [
         "date": "11/01",
         "city": "阿勒泰地区 · 富蕴县",
         "name": "可可托海三号矿坑与可可托海工业遗产",
+        "order_in_day": 1,
         "batch": "第八批全国重点文物保护单位（国保编号 8-0728）",
         "heritage_type": "近现代重要史迹及代表性建筑 · 两弹一星功勋工业遗产",
         "arrival_plan": "15:30 (游览完额河大峡谷后探访)",
@@ -63,6 +65,7 @@ HERITAGE_14D_DATA = [
         "date": "11/02",
         "city": "昌吉州 · 吉木萨尔县",
         "name": "北庭故城遗址 (含高昌回鹘佛寺西大寺)",
+        "order_in_day": 1,
         "batch": "第三批全国重点文物保护单位（国保编号 3-0217）· 世界文化遗产（丝绸之路：长安-天山廊道路网）",
         "heritage_type": "古遗址 · 唐代大都护府与高昌回鹘王家佛寺",
         "arrival_plan": "14:30 (紧扣冬季闭馆时间窗准时抵达)",
@@ -89,6 +92,7 @@ HERITAGE_14D_DATA = [
         "date": "11/03",
         "city": "昌吉州 · 奇台县",
         "name": "石城子遗址 (汉代疏勒城)",
+        "order_in_day": 1,
         "batch": "第八批全国重点文物保护单位（国保编号 8-0158）· 2019全国十大考古新发现",
         "heritage_type": "古遗址 · 汉代天山北麓军事生土要塞",
         "arrival_plan": "10:30 (翻越天山前探访)",
@@ -115,6 +119,7 @@ HERITAGE_14D_DATA = [
         "date": "11/04",
         "city": "吐鲁番市 · 高昌区东郊",
         "name": "柏孜克里克千佛洞",
+        "order_in_day": 1,
         "batch": "第二批全国重点文物保护单位（国保编号 2-0014）",
         "heritage_type": "石窟寺及石刻 · 回鹘佛教石窟寺",
         "arrival_plan": "09:30 (上午顺光进峡谷)",
@@ -141,6 +146,7 @@ HERITAGE_14D_DATA = [
         "date": "11/04",
         "city": "吐鲁番市 · 鄯善县",
         "name": "吐峪沟石窟与麻扎村古建筑群",
+        "order_in_day": 2,
         "batch": "第六批全国重点文物保护单位（石窟国保 6-0873）/ 第七批国保（古民居群 7-1480）",
         "heritage_type": "石窟寺及古民居 · 西域早期佛教石窟与生土券顶民居标本",
         "arrival_plan": "14:30 (下午深入大峡谷民居实测)",
@@ -167,6 +173,7 @@ HERITAGE_14D_DATA = [
         "date": "11/05",
         "city": "吐鲁番市 · 高昌区东南",
         "name": "高昌故城",
+        "order_in_day": 1,
         "batch": "第一批全国重点文物保护单位（国保编号 1-0154）· 世界文化遗产（丝绸之路：长安-天山廊道路网）",
         "heritage_type": "古遗址 · 丝绸之路东疆第一大古城遗址",
         "arrival_plan": "09:30 (上午留足3小时全景研学)",
@@ -193,6 +200,7 @@ HERITAGE_14D_DATA = [
         "date": "11/05",
         "city": "吐鲁番市 · 高昌区东南",
         "name": "阿斯塔那古墓群",
+        "order_in_day": 2,
         "batch": "第三批全国重点文物保护单位（国保编号 3-0240）",
         "heritage_type": "古墓葬 · “地下博物馆”唐代西州世俗档案宝库",
         "arrival_plan": "13:30 (高昌故城出城后顺路参观)",
@@ -219,6 +227,7 @@ HERITAGE_14D_DATA = [
         "date": "11/05",
         "city": "吐鲁番市 · 高昌区以西",
         "name": "交河故城",
+        "order_in_day": 3,
         "batch": "第一批全国重点文物保护单位（国保编号 1-0153）· 世界文化遗产（丝绸之路：长安-天山廊道路网）",
         "heritage_type": "古遗址 · 世界上最大、最古老、保存最完好的生土雕凿之城",
         "arrival_plan": "15:30 (守候全疆最震撼的落日金光生土大片)",
@@ -245,6 +254,7 @@ HERITAGE_14D_DATA = [
         "date": "11/06",
         "city": "吐鲁番市 · 高昌区东郊",
         "name": "苏公塔 (额敏塔) 与苏公塔清真寺",
+        "order_in_day": 1,
         "batch": "第三批全国重点文物保护单位（国保编号 3-0145）",
         "heritage_type": "古建筑 · 清代伊斯兰砖构圆塔与拱券礼拜寺",
         "arrival_plan": "10:00 (上午顺光细看砖雕花纹)",
@@ -271,7 +281,8 @@ HERITAGE_14D_DATA = [
         "day": 13,
         "date": "11/06",
         "city": "吐鲁番市 · 高昌区以西",
-        "name": "吐鲁番坎儿井地下水利系统 (坎儿井民俗园/乐园)",
+        "name": "吐鲁番坎儿井地下水利系统",
+        "order_in_day": 2,
         "batch": "第六批全国重点文物保护单位（国保编号 6-1076）",
         "heritage_type": "古建筑及重要水利史迹 · “地下长城”重力流水力奇迹",
         "arrival_plan": "14:00 (下午探秘地下清凉暗渠)",
@@ -295,6 +306,70 @@ HERITAGE_14D_DATA = [
     }
 ]
 
+# 每日国保行进线路与点对点距离耗时矩阵
+HERITAGE_DAY_ROUTES = {
+    1: {
+        "title": "乌鲁木齐市区汉传官式建筑孤例",
+        "stops": [
+            {"name": "乌鲁木齐文庙", "lat": 43.825592, "lng": 87.616848, "time": "14:00", "order": 1}
+        ],
+        "legs": []
+    },
+    8: {
+        "title": "阿尔泰功勋工业遗产",
+        "stops": [
+            {"name": "可可托海三号矿坑", "lat": 46.994462, "lng": 89.526832, "time": "15:30", "order": 1}
+        ],
+        "legs": []
+    },
+    9: {
+        "title": "天山北麓唐代都护府世遗圣殿",
+        "stops": [
+            {"name": "北庭故城与西大寺", "lat": 44.022145, "lng": 89.588745, "time": "14:30", "order": 1}
+        ],
+        "legs": []
+    },
+    10: {
+        "title": "两汉天山北麓军事要塞确证",
+        "stops": [
+            {"name": "疏勒城 (石城子遗址)", "lat": 43.821456, "lng": 89.658745, "time": "10:30", "order": 1}
+        ],
+        "legs": []
+    },
+    11: {
+        "title": "吐鲁番东郊石窟寺院与生土民居巡礼",
+        "stops": [
+            {"name": "柏孜克里克千佛洞", "lat": 42.956874, "lng": 89.541245, "time": "09:30", "order": 1},
+            {"name": "吐峪沟石窟与麻扎村", "lat": 42.868735, "lng": 89.684065, "time": "14:30", "order": 2}
+        ],
+        "legs": [
+            {"from": "柏孜克里克千佛洞", "to": "吐峪沟石窟与麻扎村", "distance_km": 22.5, "duration_min": 35, "desc": "穿行火焰山峡谷县道"}
+        ]
+    },
+    12: {
+        "title": "高昌故都 ➔ 皇家墓葬 ➔ 交河生土雕凿巅峰",
+        "stops": [
+            {"name": "高昌故城 (世遗)", "lat": 42.854512, "lng": 89.528745, "time": "09:30", "order": 1},
+            {"name": "阿斯塔那古墓群", "lat": 42.875412, "lng": 89.514562, "time": "13:30", "order": 2},
+            {"name": "交河故城 (世遗落日)", "lat": 42.955432, "lng": 89.068754, "time": "15:30", "order": 3}
+        ],
+        "legs": [
+            {"from": "高昌故城", "to": "阿斯塔那古墓群", "distance_km": 4.5, "duration_min": 10, "desc": "高昌绿洲乡村平坦公路"},
+            {"from": "阿斯塔那古墓群", "to": "交河故城", "distance_km": 45.0, "duration_min": 50, "desc": "经吐鲁番市区横贯至西郊台地"}
+        ]
+    },
+    13: {
+        "title": "清代几何砖雕圆塔 ➔ 地下重力流水利系统",
+        "stops": [
+            {"name": "苏公塔 (额敏塔)", "lat": 42.941245, "lng": 89.218745, "time": "10:00", "order": 1},
+            {"name": "坎儿井地下水利系统", "lat": 42.951301, "lng": 89.189688, "time": "14:00", "order": 2}
+        ],
+        "legs": [
+            {"from": "苏公塔", "to": "坎儿井地下暗渠", "distance_km": 6.8, "duration_min": 15, "desc": "市区主干道直达"}
+        ]
+    }
+}
+
 
 def render_heritage_html():
     cards_html = []
@@ -302,9 +377,9 @@ def render_heritage_html():
         chips_list = "".join([f'<span class="m-herit-chip">🏛️ {c}</span>' for c in h["core_highlights"]])
         
         card = f"""
-        <div class="m-herit-card" id="herit-day-{h['day']}">
+        <div class="m-herit-card" id="herit-day-{h['day']}-{h.get('order_in_day', 1)}">
           <div class="m-herit-top">
-            <div class="m-herit-day-tag">Day {h['day']} · {h['date']}</div>
+            <div class="m-herit-day-tag">Day {h['day']} (第{h.get('order_in_day', 1)}站) · {h['date']}</div>
             <div class="m-herit-city-tag">📍 {h['city']}</div>
           </div>
 

@@ -2,7 +2,13 @@
 # -*- coding: utf-8 -*-
 """
 generate_mobile_trip_html.py — 专为手机端打造的自驾全景路书 (trip_mobile.html)
-集成：分屏常驻地图 + 独立大地图探索台 + 每餐5选1老店指南 + 每日观鸟与野生动物观测 + 14天全国重点文保(国保)超深度研学指南 + 提醒整合
+集成：
+1. 顶部全功能自适应常驻小地图（支持行程/餐饮/观鸟/国保多场景联动切换）
+2. 路线虚线带前进方向指示箭头（点到点指向）
+3. 餐饮页：地图同步标记当天备选餐馆与名称、点击联动
+4. 观鸟页：地图同步标记当天最佳观鸟点与物种
+5. 国保页：地图标记各点名称、按时间行进路线、方向箭头、点对点距离(km)与耗时(min)
+6. 独立大地图探索台与老店5选1
 """
 
 import os
@@ -10,11 +16,12 @@ import json
 
 from dining_data_210 import TRIP_DATA, DINING_210_DATA
 from birding_data_14d import BIRDING_14D_DATA, render_birding_html
-from heritage_data_14d import HERITAGE_14D_DATA, render_heritage_html
+from heritage_data_14d import HERITAGE_14D_DATA, HERITAGE_DAY_ROUTES, render_heritage_html
 
 TRIP_DATA["dining_guide"] = DINING_210_DATA
 TRIP_DATA["birding_guide"] = BIRDING_14D_DATA
 TRIP_DATA["heritage_guide"] = HERITAGE_14D_DATA
+TRIP_DATA["heritage_routes"] = HERITAGE_DAY_ROUTES
 
 
 def render_dining_html_5_options():
@@ -68,9 +75,14 @@ def render_dining_html_5_options():
                     <span class="m-order-lbl">🍲 必点招牌：</span>{orders_str}
                   </div>
                   <div class="m-meal-desc-box">{opt['highlight']}</div>
-                  <a href="https://uri.amap.com/navigation?to={opt['lng']},{opt['lat']}&mode=car" class="m-dine-nav-btn" target="_blank">
-                    🚗 高德地图一键导航到店 ({opt['restaurant'].split('(')[0]})
-                  </a>
+                  <div style="display:flex; gap:6px;">
+                    <button onclick="focusDineMapMarker({day_num}, '{m_key}', {idx})" class="m-dine-locate-btn">
+                      📍 在上方地图查看位置
+                    </button>
+                    <a href="https://uri.amap.com/navigation?to={opt['lng']},{opt['lat']}&mode=car" class="m-dine-nav-btn" target="_blank">
+                      🚗 高德导航
+                    </a>
+                  </div>
                 </div>
                 """
                 cards_html.append(card_content)
@@ -89,10 +101,10 @@ def render_dining_html_5_options():
             meals_html_blocks.append(meal_section)
 
         day_group = f"""
-        <div class="m-dining-day-group" id="dine-day-{day_num}">
+        <div class="m-dining-day-group" id="dine-day-{day_num}" onclick="showDiningDayOnMap({day_num})">
           <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day {day_num} · {date_str}</span>
-            <span class="m-dine-city-badge">📍 {city_str}</span>
+            <span class="m-dine-city-badge">📍 {city_str} (点击看地图)</span>
           </div>
           {"".join(meals_html_blocks)}
         </div>
@@ -104,8 +116,6 @@ def render_dining_html_5_options():
 
 def build_mobile_split_screen_html():
     days_cards_html = []
-    
-    # 哪些天有重点国保
     heritage_days = {h["day"] for h in HERITAGE_14D_DATA}
 
     for d in TRIP_DATA["days"]:
@@ -170,10 +180,12 @@ def build_mobile_split_screen_html():
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>新疆14天自驾路书 (国保斯飞级深度研学 + 观鸟 + 美食5选1)</title>
+  <title>新疆14天自驾路书 (方向箭头 + 餐饮/观鸟/国保地图联动)</title>
   <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <!-- Leaflet PolylineDecorator for Directional Arrows -->
+  <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.min.js"></script>
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -214,7 +226,7 @@ def build_mobile_split_screen_html():
     .m-header {{
       flex: 0 0 auto;
       background: linear-gradient(135deg, #1b2438 0%, #0d1322 100%);
-      padding: 10px 14px 8px;
+      padding: 9px 12px 7px;
       border-bottom: 1px solid var(--card-border);
       display: flex;
       justify-content: space-between;
@@ -222,7 +234,7 @@ def build_mobile_split_screen_html():
       z-index: 100;
     }}
     .m-title-box h1 {{
-      font-size: 15px;
+      font-size: 14.5px;
       font-weight: 700;
       color: #fff;
       display: flex;
@@ -230,7 +242,7 @@ def build_mobile_split_screen_html():
       gap: 4px;
     }}
     .m-title-box p {{
-      font-size: 10.5px;
+      font-size: 10px;
       color: #cbd5e1;
     }}
     .m-header-badges {{
@@ -247,19 +259,12 @@ def build_mobile_split_screen_html():
     }}
 
     /* ========================================================
-       TAB 1: TIMELINE (行程主页)
+       TOP PINNED MAP ZONE (全局自适应小地图)
        ======================================================== */
-    .m-timeline-container {{
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      overflow: hidden;
-    }}
-
     .m-map-pinned-zone {{
-      flex: 0 0 35vh;
-      min-height: 180px;
-      max-height: 48vh;
+      flex: 0 0 34vh;
+      min-height: 175px;
+      max-height: 46vh;
       width: 100%;
       background: #0f172a;
       position: relative;
@@ -269,8 +274,11 @@ def build_mobile_split_screen_html():
       transition: flex-basis 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }}
     .m-map-pinned-zone.mode-compact {{
-      flex-basis: 20vh;
-      min-height: 130px;
+      flex-basis: 18vh;
+      min-height: 120px;
+    }}
+    .m-map-pinned-zone.mode-hidden {{
+      display: none !important;
     }}
 
     #m-map {{ width: 100%; height: 100%; }}
@@ -284,13 +292,13 @@ def build_mobile_split_screen_html():
       backdrop-filter: blur(8px);
       border: 1px solid var(--card-border);
       color: #f1f5f9;
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 600;
-      padding: 4px 9px;
-      border-radius: 16px;
+      padding: 3px 8px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       box-shadow: 0 3px 8px rgba(0,0,0,0.6);
       cursor: pointer;
     }}
@@ -300,21 +308,99 @@ def build_mobile_split_screen_html():
       top: 6px;
       left: 8px;
       z-index: 500;
-      background: rgba(13, 19, 34, 0.75);
+      background: rgba(13, 19, 34, 0.82);
       backdrop-filter: blur(6px);
-      padding: 2px 7px;
+      padding: 3px 8px;
       border-radius: 4px;
-      font-size: 10px;
-      color: #94a3b8;
+      font-size: 10.5px;
+      color: #f8fafc;
+      border-left: 2px solid #f87171;
       pointer-events: none;
+      max-width: 80%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }}
 
-    .m-scroll-body {{
+    /* Custom Map Markers */
+    .custom-m-marker {{
+      background: #96382d;
+      color: #fff;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 10.5px;
+      border: 1.5px solid #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }}
+    .custom-dine-pin {{
+      background: #1e293b;
+      border: 1.5px solid #f59e0b;
+      border-radius: 12px;
+      padding: 2px 6px;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.6);
+    }}
+    .custom-dine-pin.active {{
+      background: #96382d;
+      border-color: #f87171;
+    }}
+    .custom-bird-pin {{
+      background: #064e3b;
+      border: 1.5px solid #34d399;
+      border-radius: 12px;
+      padding: 2px 7px;
+      color: #fff;
+      font-size: 10.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.6);
+    }}
+    .custom-herit-pin {{
+      background: #581c87;
+      border: 1.5px solid #c084fc;
+      border-radius: 12px;
+      padding: 2px 7px;
+      color: #fff;
+      font-size: 10.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.6);
+    }}
+    .custom-herit-leg-badge {{
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid #c084fc;
+      border-radius: 10px;
+      padding: 2px 6px;
+      color: #fde68a;
+      font-size: 9.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    }}
+
+    /* ========================================================
+       CONTENT VIEWS (可滚动主体)
+       ======================================================== */
+    .m-content-container {{
       flex: 1 1 auto;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      padding: 10px 12px calc(65px + env(safe-area-inset-bottom));
       position: relative;
+    }}
+
+    .m-scroll-body {{
+      padding: 10px 12px calc(65px + env(safe-area-inset-bottom));
     }}
 
     .m-metrics-strip {{
@@ -600,9 +686,6 @@ def build_mobile_split_screen_html():
     .m-dining-view {{
       display: none;
       padding: 12px 12px calc(65px + env(safe-area-inset-bottom));
-      overflow-y: auto;
-      height: calc(100% - 52px - env(safe-area-inset-bottom));
-      -webkit-overflow-scrolling: touch;
     }}
     .m-dining-intro {{
       background: linear-gradient(135deg, rgba(217, 119, 6, 0.18) 0%, rgba(150, 56, 45, 0.18) 100%);
@@ -622,6 +705,7 @@ def build_mobile_split_screen_html():
       padding: 12px;
       margin-bottom: 16px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      cursor: pointer;
     }}
     .m-dining-day-header {{
       display: flex;
@@ -632,7 +716,7 @@ def build_mobile_split_screen_html():
       border-bottom: 1px solid var(--card-border);
     }}
     .m-dine-day-badge {{ font-size: 14px; font-weight: 700; color: #fca5a5; }}
-    .m-dine-city-badge {{ font-size: 11.5px; color: #60a5fa; background: rgba(37,99,235,0.15); padding: 2px 7px; border-radius: 4px; font-weight: 600; }}
+    .m-dine-city-badge {{ font-size: 11px; color: #60a5fa; background: rgba(37,99,235,0.15); padding: 2px 7px; border-radius: 4px; font-weight: 600; }}
 
     .m-meal-section-box {{
       background: rgba(255,255,255,0.015);
@@ -702,9 +786,21 @@ def build_mobile_split_screen_html():
     .m-must-orders-box {{ font-size: 11.5px; color: #f1f5f9; margin-bottom: 5px; line-height: 1.35; }}
     .m-order-lbl {{ color: #fbbf24; font-weight: 700; }}
     .m-meal-desc-box {{ font-size: 11px; color: #94a3b8; line-height: 1.4; margin-bottom: 8px; }}
+    
+    .m-dine-locate-btn {{
+      flex: 1;
+      text-align: center;
+      background: rgba(245, 158, 11, 0.2);
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      color: #fcd34d;
+      padding: 6px 0;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }}
     .m-dine-nav-btn {{
-      display: block;
-      width: 100%;
+      flex: 1;
       text-align: center;
       background: #1e293b;
       border: 1px solid #334155;
@@ -723,9 +819,6 @@ def build_mobile_split_screen_html():
     .m-birding-view {{
       display: none;
       padding: 12px 12px calc(65px + env(safe-area-inset-bottom));
-      overflow-y: auto;
-      height: calc(100% - 52px - env(safe-area-inset-bottom));
-      -webkit-overflow-scrolling: touch;
     }}
     .m-birding-intro {{
       background: linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(59, 130, 246, 0.18) 100%);
@@ -744,6 +837,7 @@ def build_mobile_split_screen_html():
       padding: 14px;
       margin-bottom: 14px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      cursor: pointer;
     }}
     .m-bird-card-top {{
       display: flex;
@@ -833,9 +927,6 @@ def build_mobile_split_screen_html():
     .m-culture-view {{
       display: none;
       padding: 12px 12px calc(65px + env(safe-area-inset-bottom));
-      overflow-y: auto;
-      height: calc(100% - 52px - env(safe-area-inset-bottom));
-      -webkit-overflow-scrolling: touch;
     }}
     .m-culture-intro {{
       background: linear-gradient(135deg, rgba(147, 51, 234, 0.18) 0%, rgba(217, 119, 6, 0.18) 100%);
@@ -854,6 +945,7 @@ def build_mobile_split_screen_html():
       padding: 14px;
       margin-bottom: 16px;
       box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+      cursor: pointer;
     }}
     .m-herit-top {{
       display: flex;
@@ -974,9 +1066,6 @@ def build_mobile_split_screen_html():
     .m-tips-view {{
       display: none;
       padding: 12px 12px calc(65px + env(safe-area-inset-bottom));
-      overflow-y: auto;
-      height: calc(100% - 52px - env(safe-area-inset-bottom));
-      -webkit-overflow-scrolling: touch;
     }}
 
     .m-sub-card {{
@@ -1037,17 +1126,20 @@ def build_mobile_split_screen_html():
       </div>
     </div>
 
-    <!-- ==================== 1. 行程页（分屏常驻地图 + 滚动卡片） ==================== -->
-    <div class="m-timeline-container" id="m-view-timeline">
-      <div class="m-map-pinned-zone" id="m-map-zone">
-        <div id="m-map"></div>
-        <div class="m-map-hint">🗺️ 行程分屏·点卡片即聚焦</div>
-        <button class="m-map-pill" onclick="cycleTimelineMapHeight()">
-          <span id="pill-icon">↕️</span> <span id="pill-text">高度 35%</span>
-        </button>
-      </div>
+    <!-- 顶部自适应联动常驻小地图 (行程/餐饮/观鸟/国保通用) -->
+    <div class="m-map-pinned-zone" id="m-map-zone">
+      <div id="m-map"></div>
+      <div class="m-map-hint" id="m-top-map-hint">🗺️ 行程路线 · 点下方卡片联动</div>
+      <button class="m-map-pill" onclick="cycleTimelineMapHeight()">
+        <span id="pill-icon">↕️</span> <span id="pill-text">高度 34%</span>
+      </button>
+    </div>
 
-      <div class="m-scroll-body" id="m-scroll-container">
+    <!-- 可滚动主体内容区域 -->
+    <div class="m-content-container" id="m-content-container">
+
+      <!-- ==================== 1. 行程页 ==================== -->
+      <div class="m-scroll-body" id="m-view-timeline">
         <div class="m-metrics-strip">
           <div class="m-m-box"><div class="m-lbl">总里程</div><div class="m-val">{TRIP_DATA['summary']['total_distance_km']} <small style="font-size:9px;">km</small></div></div>
           <div class="m-m-box"><div class="m-lbl">总耗时</div><div class="m-val">{TRIP_DATA['summary']['total_driving_hours']} <small style="font-size:9px;">h</small></div></div>
@@ -1063,6 +1155,67 @@ def build_mobile_split_screen_html():
 
         {all_days}
       </div>
+
+      <!-- ==================== 3. 餐饮页 (每餐5选1) ==================== -->
+      <div class="m-dining-view" id="m-view-dining">
+        <div class="m-dining-intro">
+          🏆 <b>210家多年老店 ✕ 本地人扎堆老号地图：</b><br>
+          已在上方地图实时标记出当前日的备选餐馆位置与店名！点击餐馆或切换餐别，地图将精准聚焦！
+        </div>
+        {dining_html}
+      </div>
+
+      <!-- ==================== 4. 观鸟与野生动物页 ==================== -->
+      <div class="m-birding-view" id="m-view-birding">
+        <div class="m-birding-intro">
+          🦉 <b>小红书 ✕ 中国观鸟记录中心实战纪录：</b><br>
+          上方地图已实时标出当天最佳观鸟点与目标鸟种！点击任一天即可在地图上查看生境与导航位置。
+        </div>
+        {birding_html}
+      </div>
+
+      <!-- ==================== 5. 国保超深度研学专区 (斯飞坐标/华夏古迹图) ==================== -->
+      <div class="m-culture-view" id="m-view-culture">
+        <div class="m-culture-intro">
+          🏛️ <b>全国重点文物保护单位 ✕ 斯飞坐标与华夏古迹图：</b><br>
+          上方地图已标出当天国保点名称，并绘制<b>时间顺序行进路线、前进方向箭头与点对点距离/耗时标牌</b>！
+        </div>
+        {heritage_html}
+      </div>
+
+      <!-- ==================== 6. 提醒页 (海拔剖面 + 极寒装备 + 安全整合) ==================== -->
+      <div class="m-tips-view" id="m-view-tips">
+        <!-- 海拔变化曲线 -->
+        <div class="m-sub-card">
+          <h3>🏔️ 14天自驾落脚点海拔变化曲线 (米)</h3>
+          <p style="font-size:11px; color:var(--text-muted); margin-bottom:10px;">乌鲁木齐 (918m) ➔ 喀纳斯湖 (1374m) ➔ 吐鲁番盆地 (30m)</p>
+          <div style="height: 240px;">
+            <canvas id="mChart"></canvas>
+          </div>
+        </div>
+
+        <!-- 极寒冰雪装备 -->
+        <div class="m-sub-card">
+          <h3>❄️ 高尔夫极寒冰雪行车自检清单</h3>
+          <div style="font-size:11.5px; color:#cbd5e1; line-height:1.6;">
+            • <b>雪地胎：</b>驱动轮在布尔津必须换装深度花纹雪地胎。<br>
+            • <b>防滑链：</b>后备箱常备匹配高尔夫尺寸的金属防滑链（提前试装）。<br>
+            • <b>应急物资：</b>折叠雪铲、搭电宝、拖车绳、-35#极寒防冻玻璃水。<br>
+            • <b>极寒防寒：</b>禾木清晨（-15°C~-18°C）穿长款厚羽绒服 + 防滑雪地靴。
+          </div>
+        </div>
+
+        <!-- 安全规则机制 -->
+        <div class="m-sub-card">
+          <h3>🛡️ 新疆自驾核心安全与避坑守则</h3>
+          <div style="font-size:11.5px; color:#fde68a; line-height:1.6;">
+            • <b>防暗冰：</b>喀纳斯/禾木盘山公路背阴弯道易结暗冰，使用低速挡平稳减速，严禁猛打方向。<br>
+            • <b>闭馆时间：</b>可可托海 08:30 启程避开极寒；北庭故城 14:30 抵达避开冬季提前闭馆。<br>
+            • <b>达坂城横风缓冲：</b>返程预留百里风区车速控制与安检时间。
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ==================== 2. 独立全屏大地图探索台 ==================== -->
@@ -1107,66 +1260,6 @@ def build_mobile_split_screen_html():
       </div>
     </div>
 
-    <!-- ==================== 3. 餐饮页 (每餐5选1) ==================== -->
-    <div class="m-dining-view" id="m-view-dining">
-      <div class="m-dining-intro">
-        🏆 <b>210家多年老店 ✕ 本地人扎堆老号深度美食指南：</b><br>
-        全程 14 天每日早、中、晚三餐均配备 <b>5 家地道口碑老号</b>。点击横向选项卡胶囊即可自由切换各家菜单、老店资历与高德一键导航！
-      </div>
-      {dining_html}
-    </div>
-
-    <!-- ==================== 4. 观鸟与野生动物页 ==================== -->
-    <div class="m-birding-view" id="m-view-birding">
-      <div class="m-birding-intro">
-        🦉 <b>小红书 ✕ 中国观鸟记录中心实战纪录：</b><br>
-        涵盖乌伦古湖大天鹅群、阿尔泰山黑琴鸡与星鸦、鸭泽湖河乌潜水、神仙湾白尾海雕巡猎、额河大峡谷高山兀鹫与金雕、卡拉麦里<b>普氏野马与蒙古野驴</b>奔腾、吐峪沟石鸡、交河古城纵纹腹小鸮与艾丁湖反嘴鹬。
-      </div>
-      {birding_html}
-    </div>
-
-    <!-- ==================== 5. 国保超深度研学专区 (斯飞坐标/华夏古迹图) ==================== -->
-    <div class="m-culture-view" id="m-view-culture">
-      <div class="m-culture-intro">
-        🏛️ <b>全国重点文物保护单位 ✕ 斯飞坐标与华夏古迹图深度研学：</b><br>
-        严格梳理沿途<b>10大核心国保与世界文化遗产</b>。详细标注每日计划到达时间、推荐游览时长、接待开放时间、门票预约、建筑营造法式力学解构与最佳摄影光线！
-      </div>
-      {heritage_html}
-    </div>
-
-    <!-- ==================== 6. 提醒页 (海拔剖面 + 极寒装备 + 安全整合) ==================== -->
-    <div class="m-tips-view" id="m-view-tips">
-      <!-- 海拔变化曲线 -->
-      <div class="m-sub-card">
-        <h3>🏔️ 14天自驾落脚点海拔变化曲线 (米)</h3>
-        <p style="font-size:11px; color:var(--text-muted); margin-bottom:10px;">乌鲁木齐 (918m) ➔ 喀纳斯湖 (1374m) ➔ 吐鲁番盆地 (30m)</p>
-        <div style="height: 240px;">
-          <canvas id="mChart"></canvas>
-        </div>
-      </div>
-
-      <!-- 极寒冰雪装备 -->
-      <div class="m-sub-card">
-        <h3>❄️ 高尔夫极寒冰雪行车自检清单</h3>
-        <div style="font-size:11.5px; color:#cbd5e1; line-height:1.6;">
-          • <b>雪地胎：</b>驱动轮在布尔津必须换装深度花纹雪地胎。<br>
-          • <b>防滑链：</b>后备箱常备匹配高尔夫尺寸的金属防滑链（提前试装）。<br>
-          • <b>应急物资：</b>折叠雪铲、搭电宝、拖车绳、-35#极寒防冻玻璃水。<br>
-          • <b>极寒防寒：</b>禾木清晨（-15°C~-18°C）穿长款厚羽绒服 + 防滑雪地靴。
-        </div>
-      </div>
-
-      <!-- 安全规则机制 -->
-      <div class="m-sub-card">
-        <h3>🛡️ 新疆自驾核心安全与避坑守则</h3>
-        <div style="font-size:11.5px; color:#fde68a; line-height:1.6;">
-          • <b>防暗冰：</b>喀纳斯/禾木盘山公路背阴弯道易结暗冰，使用低速挡平稳减速，严禁猛打方向。<br>
-          • <b>闭馆时间：</b>可可托海 08:30 启程避开极寒；北庭故城 14:30 抵达避开冬季提前闭馆。<br>
-          • <b>达坂城横风缓冲：</b>返程预留百里风区车速控制与安检时间。
-        </div>
-      </div>
-    </div>
-
     <!-- 底部 6 位 Dock 导航栏 -->
     <div class="m-bottom-dock">
       <div class="m-dock-item active" onclick="mSwitch('timeline', this)">
@@ -1201,7 +1294,7 @@ def build_mobile_split_screen_html():
     const mTripData = {json_dump};
 
     // ==========================================
-    // 1. 初始化行程页分屏小地图
+    // 1. 初始化顶部全局自适应小地图
     // ==========================================
     const mMap = L.map('m-map', {{
       zoomControl: false,
@@ -1214,6 +1307,9 @@ def build_mobile_split_screen_html():
       maxZoom: 18
     }}).addTo(mMap);
 
+    // 动态图层容器
+    const dynamicLayers = L.layerGroup().addTo(mMap);
+
     const mMarkers = [];
     const mLatLngs = [];
 
@@ -1222,10 +1318,10 @@ def build_mobile_split_screen_html():
       const lng = d.to.lng;
       mLatLngs.push([lat, lng]);
 
-      const iconHtml = `<div style="background:#96382d; color:#fff; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:10.5px; border:1.5px solid #fff; box-shadow:0 2px 5px rgba(0,0,0,0.5);">${{d.day}}</div>`;
-      const cIcon = L.divIcon({{ className: 'custom-m-marker', html: iconHtml, iconSize: [20, 20], iconAnchor: [10, 10] }});
+      const iconHtml = `<div class="custom-m-marker">${{d.day}}</div>`;
+      const cIcon = L.divIcon({{ className: 'm-div-icon', html: iconHtml, iconSize: [20, 20], iconAnchor: [10, 10] }});
 
-      const mk = L.marker([lat, lng], {{ icon: cIcon }}).addTo(mMap);
+      const mk = L.marker([lat, lng], {{ icon: cIcon }});
       mk.bindPopup(`
         <div style="font-size:12px; color:#0f172a; line-height:1.4;">
           <b style="color:#96382d;">Day ${{d.day}}: ${{d.title}}</b><br/>
@@ -1237,12 +1333,48 @@ def build_mobile_split_screen_html():
       mMarkers.push({{ day: d.day, mk, lat, lng }});
     }});
 
+    // 基础路线虚线
     const mPolyline = L.polyline(mLatLngs, {{
       color: '#f87171',
       weight: 2.5,
       opacity: 0.85,
-      dashArray: '4, 4'
-    }}).addTo(mMap);
+      dashArray: '5, 5'
+    }});
+
+    // 添加路线前进方向箭头指示
+    let mDecorator = null;
+    function setupRouteWithArrows() {{
+      dynamicLayers.clearLayers();
+      mPolyline.addTo(dynamicLayers);
+      mMarkers.forEach(m => m.mk.addTo(dynamicLayers));
+
+      if (window.L && L.polylineDecorator) {{
+        try {{
+          mDecorator = L.polylineDecorator(mPolyline, {{
+            patterns: [
+              {{
+                offset: 20,
+                repeat: 55,
+                symbol: L.Symbol.arrowHead({{
+                  pixelSize: 8,
+                  polygon: false,
+                  pathOptions: {{
+                    stroke: true,
+                    color: '#fca5a5',
+                    weight: 2.5,
+                    opacity: 0.95
+                  }}
+                }})
+              }}
+            ]
+          }}).addTo(dynamicLayers);
+        }} catch(e) {{
+          console.warn("Decorator error", e);
+        }}
+      }}
+    }}
+
+    setupRouteWithArrows();
 
     if (mLatLngs.length > 0) {{
       mMap.fitBounds(mPolyline.getBounds(), {{ padding: [15, 15] }});
@@ -1276,16 +1408,199 @@ def build_mobile_split_screen_html():
       timelineMapMode = (timelineMapMode + 1) % 2;
       if (timelineMapMode === 0) {{
         zone.classList.remove('mode-compact');
-        text.innerText = "高度 35%";
+        text.innerText = "高度 34%";
       }} else {{
         zone.classList.add('mode-compact');
-        text.innerText = "小窗 20%";
+        text.innerText = "小窗 18%";
       }}
       setTimeout(() => {{ mMap.invalidateSize(); }}, 250);
     }}
 
     // ==========================================
-    // 2. 初始化独立全屏大地图探索台
+    // 2. 餐饮专区 (地图标记5家备选餐馆与名称)
+    // ==========================================
+    let currentDineMarkers = [];
+    function showDiningDayOnMap(dayNum, targetMealKey = 'lunch', activeIdx = 0) {{
+      const dayData = mTripData.dining_guide.find(d => d.day === dayNum);
+      if (!dayData) return;
+
+      dynamicLayers.clearLayers();
+      currentDineMarkers = [];
+      const pts = [];
+
+      const hint = document.getElementById('m-top-map-hint');
+      hint.innerText = `🍽️ Day ${{dayNum}} · ${{dayData.city}} 候选餐馆分布`;
+
+      const meals = dayData.meals;
+      const mealList = [
+        {{ key: 'breakfast', label: '早', items: meals.breakfast }},
+        {{ key: 'lunch', label: '午', items: meals.lunch }},
+        {{ key: 'dinner', label: '晚', items: meals.dinner }}
+      ];
+
+      // 只绘制指定餐别的 5 家餐馆，避免混淆，突出各选项相对位置
+      const curMealObj = mealList.find(m => m.key === targetMealKey) || mealList[1];
+
+      curMealObj.items.forEach((opt, idx) => {{
+        const lat = opt.lat;
+        const lng = opt.lng;
+        pts.push([lat, lng]);
+
+        const isAct = (idx === activeIdx);
+        const actCls = isAct ? 'active' : '';
+        const shortName = opt.restaurant.split('(')[0].trim();
+
+        const html = `<div class="custom-dine-pin ${{actCls}}"><span>${{idx+1}}</span> <b>${{shortName}}</b></div>`;
+        const icon = L.divIcon({{ className: 'dine-div-icon', html: html, iconSize: null, iconAnchor: [15, 12] }});
+
+        const mk = L.marker([lat, lng], {{ icon: icon }}).addTo(dynamicLayers);
+        mk.bindPopup(`
+          <div style="font-size:12px; line-height:1.4; color:#0f172a;">
+            <b style="color:#96382d;">${{opt.restaurant}}</b> (${{opt.heritage_years}})<br/>
+            💰 人均: ${{opt.price_per_person}} ｜ ${{opt.source}}<br/>
+            🍲 必点: ${{opt.must_orders.slice(0,3).join('、')}}<br/>
+            <a href="https://uri.amap.com/navigation?to=${{lng}},${{lat}}&mode=car" target="_blank" style="display:inline-block; margin-top:4px; color:#2563eb; font-weight:700;">🚗 高德一键导航</a>
+          </div>
+        `);
+        currentDineMarkers.push({{ idx, mk, lat, lng }});
+      }});
+
+      if (pts.length > 0) {{
+        const bounds = L.latLngBounds(pts);
+        mMap.fitBounds(bounds, {{ padding: [35, 35], maxZoom: 14, duration: 0.5 }});
+      }}
+    }}
+
+    function focusDineMapMarker(dayNum, mealKey, idx) {{
+      showDiningDayOnMap(dayNum, mealKey, idx);
+      const target = currentDineMarkers.find(m => m.idx === idx);
+      if (target) {{
+        mMap.flyTo([target.lat, target.lng], 15, {{ duration: 0.5 }});
+        target.mk.openPopup();
+      }}
+    }}
+
+    // ==========================================
+    // 3. 观鸟专区 (地图标记最佳观鸟点与物种)
+    // ==========================================
+    function showBirdingDayOnMap(dayNum) {{
+      const b = mTripData.birding_guide.find(item => item.day === dayNum);
+      if (!b) return;
+
+      dynamicLayers.clearLayers();
+
+      const hint = document.getElementById('m-top-map-hint');
+      hint.innerText = `🦉 Day ${{dayNum}} · ${{b.city}} 观鸟点: ${{b.location}}`;
+
+      const html = `<div class="custom-bird-pin">🦉 <b>${{b.location}}</b></div>`;
+      const icon = L.divIcon({{ className: 'bird-div-icon', html: html, iconSize: null, iconAnchor: [20, 12] }});
+
+      const mk = L.marker([b.lat, b.lng], {{ icon: icon }}).addTo(dynamicLayers);
+      
+      // 绘制生境缓冲区圆圈
+      L.circle([b.lat, b.lng], {{
+        radius: 1200,
+        color: '#10b981',
+        fillColor: '#10b981',
+        fillOpacity: 0.15,
+        weight: 1.5,
+        dashArray: '3, 3'
+      }}).addTo(dynamicLayers);
+
+      mk.bindPopup(`
+        <div style="font-size:12px; line-height:1.45; color:#0f172a;">
+          <b style="color:#059669;">🦉 ${{b.location}}</b><br/>
+          ⏰ 最佳时间: ${{b.best_time}}<br/>
+          🎯 核心目标: ${{b.species.slice(0,4).join('、')}}<br/>
+          <a href="https://uri.amap.com/navigation?to=${{b.lng}},${{b.lat}}&mode=car" target="_blank" style="display:inline-block; margin-top:4px; color:#059669; font-weight:700;">🚗 高德一键导航</a>
+        </div>
+      `).openPopup();
+
+      mMap.flyTo([b.lat, b.lng], 13, {{ duration: 0.6 }});
+    }}
+
+    // ==========================================
+    // 4. 国保专区 (地图标记点、路线、方向箭头、点对点距离与耗时)
+    // ==========================================
+    function showHeritageDayOnMap(dayNum) {{
+      const routeInfo = mTripData.heritage_routes[dayNum];
+      if (!routeInfo) return;
+
+      dynamicLayers.clearLayers();
+      const hint = document.getElementById('m-top-map-hint');
+      hint.innerText = `🏛️ Day ${{dayNum}} · 国保研学行进路线 (${{routeInfo.stops.length}}处国保)`;
+
+      const pts = [];
+
+      // 1. 标记各站点
+      routeInfo.stops.forEach((s, idx) => {{
+        pts.push([s.lat, s.lng]);
+        const html = `<div class="custom-herit-pin"><span>${{s.order}}</span> <b>${{s.name}}</b> <small style="color:#fde68a;">(${{s.time}})</small></div>`;
+        const icon = L.divIcon({{ className: 'herit-div-icon', html: html, iconSize: null, iconAnchor: [15, 12] }});
+
+        const mk = L.marker([s.lat, s.lng], {{ icon: icon }}).addTo(dynamicLayers);
+        mk.bindPopup(`
+          <div style="font-size:12px; line-height:1.45; color:#0f172a;">
+            <b style="color:#7e22ce;">第${{s.order}}站：${{s.name}}</b><br/>
+            ⏰ 计划到达: ${{s.time}}<br/>
+            <a href="https://uri.amap.com/navigation?to=${{s.lng}},${{s.lat}}&mode=car" target="_blank" style="display:inline-block; margin-top:4px; color:#7e22ce; font-weight:700;">🚗 高德一键导航</a>
+          </div>
+        `);
+      }});
+
+      // 2. 若有多个点，绘制行进路线、方向箭头与中间里程耗时标牌
+      if (pts.length > 1) {{
+        const heritPolyline = L.polyline(pts, {{
+          color: '#c084fc',
+          weight: 3.5,
+          opacity: 0.9,
+          dashArray: '6, 6'
+        }}).addTo(dynamicLayers);
+
+        if (window.L && L.polylineDecorator) {{
+          try {{
+            L.polylineDecorator(heritPolyline, {{
+              patterns: [
+                {{
+                  offset: '25%',
+                  repeat: '50%',
+                  symbol: L.Symbol.arrowHead({{
+                    pixelSize: 10,
+                    polygon: false,
+                    pathOptions: {{ stroke: true, color: '#fde68a', weight: 3, opacity: 1 }}
+                  }})
+                }}
+              ]
+            }}).addTo(dynamicLayers);
+          }} catch(e) {{
+            console.warn("Decorator error", e);
+          }}
+        }}
+
+        // 在各段中点插入距离与耗时气泡
+        if (routeInfo.legs && routeInfo.legs.length > 0) {{
+          routeInfo.legs.forEach((leg, i) => {{
+            const p1 = pts[i];
+            const p2 = pts[i+1];
+            if (p1 && p2) {{
+              const midLat = (p1[0] + p2[0]) / 2;
+              const midLng = (p1[1] + p2[1]) / 2;
+
+              const badgeHtml = `<div class="custom-herit-leg-badge">🚗 ${{leg.distance_km}}km · ${{leg.duration_min}}分</div>`;
+              const badgeIcon = L.divIcon({{ className: 'leg-badge-icon', html: badgeHtml, iconSize: null, iconAnchor: [35, 10] }});
+              L.marker([midLat, midLng], {{ icon: badgeIcon }}).addTo(dynamicLayers);
+            }}
+          }});
+        }}
+
+        mMap.fitBounds(heritPolyline.getBounds(), {{ padding: [35, 35], duration: 0.6 }});
+      }} else if (pts.length === 1) {{
+        mMap.flyTo(pts[0], 13, {{ duration: 0.6 }});
+      }}
+    }}
+
+    // ==========================================
+    // 5. 初始化独立全屏大地图探索台
     // ==========================================
     let dedicatedMap = null;
     let transitLayer = null;
@@ -1334,6 +1649,26 @@ def build_mobile_split_screen_html():
         opacity: 0.9,
         dashArray: '5, 5'
       }}).addTo(dedicatedMap);
+
+      if (window.L && L.polylineDecorator) {{
+        try {{
+          L.polylineDecorator(dedicatedPolyline, {{
+            patterns: [
+              {{
+                offset: 25,
+                repeat: 60,
+                symbol: L.Symbol.arrowHead({{
+                  pixelSize: 10,
+                  polygon: false,
+                  pathOptions: {{ stroke: true, color: '#fca5a5', weight: 3, opacity: 0.95 }}
+                }})
+              }}
+            ]
+          }}).addTo(dedicatedMap);
+        }} catch(e) {{
+          console.warn("Decorator error", e);
+        }}
+      }}
 
       if (mLatLngs.length > 0) {{
         dedicatedMap.fitBounds(dedicatedPolyline.getBounds(), {{ padding: [30, 30] }});
@@ -1395,7 +1730,7 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
-    // 3. 通用 Tab 切换
+    // 6. 通用 Tab 切换引擎
     // ==========================================
     function mSwitch(viewId, el) {{
       if (el) {{
@@ -1403,21 +1738,47 @@ def build_mobile_split_screen_html():
         el.classList.add('active');
       }}
 
-      document.getElementById('m-view-timeline').style.display = (viewId === 'timeline') ? 'flex' : 'none';
-      document.getElementById('m-view-map').style.display = (viewId === 'map') ? 'block' : 'none';
+      const mapZone = document.getElementById('m-map-zone');
+      const contentContainer = document.getElementById('m-content-container');
+      const dedicatedMapView = document.getElementById('m-view-map');
+
+      if (viewId === 'map') {{
+        mapZone.classList.add('mode-hidden');
+        contentContainer.style.display = 'none';
+        dedicatedMapView.style.display = 'block';
+        initDedicatedMap();
+        setTimeout(() => {{ dedicatedMap.invalidateSize(); }}, 200);
+        return;
+      }} else {{
+        dedicatedMapView.style.display = 'none';
+        contentContainer.style.display = 'block';
+      }}
+
+      if (viewId === 'tips') {{
+        mapZone.classList.add('mode-hidden');
+      }} else {{
+        mapZone.classList.remove('mode-hidden');
+      }}
+
+      document.getElementById('m-view-timeline').style.display = (viewId === 'timeline') ? 'block' : 'none';
       document.getElementById('m-view-dining').style.display = (viewId === 'dining') ? 'block' : 'none';
       document.getElementById('m-view-birding').style.display = (viewId === 'birding') ? 'block' : 'none';
       document.getElementById('m-view-culture').style.display = (viewId === 'culture') ? 'block' : 'none';
       document.getElementById('m-view-tips').style.display = (viewId === 'tips') ? 'block' : 'none';
 
+      setTimeout(() => {{ mMap.invalidateSize(); }}, 200);
+
       if (viewId === 'timeline') {{
-        setTimeout(() => {{ mMap.invalidateSize(); }}, 200);
-      }}
-      if (viewId === 'map') {{
-        initDedicatedMap();
-        setTimeout(() => {{ dedicatedMap.invalidateSize(); }}, 200);
-      }}
-      if (viewId === 'tips') {{
+        document.getElementById('m-top-map-hint').innerText = "🗺️ 行程路线 · 点下方卡片联动";
+        setupRouteWithArrows();
+        mMap.fitBounds(mPolyline.getBounds(), {{ padding: [15, 15] }});
+      }} else if (viewId === 'dining') {{
+        showDiningDayOnMap(1, 'lunch', 0);
+      }} else if (viewId === 'birding') {{
+        showBirdingDayOnMap(1);
+      }} else if (viewId === 'culture') {{
+        showHeritageDayOnMap(1);
+      }} else if (viewId === 'tips') {{
         renderMChart();
       }}
     }}
@@ -1435,11 +1796,15 @@ def build_mobile_split_screen_html():
         if (idx === optIdx) detail.style.display = 'block';
         else detail.style.display = 'none';
       }});
+
+      // 联动顶部地图
+      showDiningDayOnMap(dayNum, mealKey, optIdx);
     }}
 
     function jumpToDining(dayNum) {{
       const diningDock = document.querySelectorAll('.m-dock-item')[2];
       mSwitch('dining', diningDock);
+      showDiningDayOnMap(dayNum, 'lunch', 0);
       setTimeout(() => {{
         const targetDine = document.getElementById('dine-day-' + dayNum);
         if (targetDine) targetDine.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
@@ -1449,6 +1814,7 @@ def build_mobile_split_screen_html():
     function jumpToBirding(dayNum) {{
       const birdingDock = document.querySelectorAll('.m-dock-item')[3];
       mSwitch('birding', birdingDock);
+      showBirdingDayOnMap(dayNum);
       setTimeout(() => {{
         const targetBird = document.getElementById('bird-day-' + dayNum);
         if (targetBird) targetBird.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
@@ -1458,11 +1824,29 @@ def build_mobile_split_screen_html():
     function jumpToHeritage(dayNum) {{
       const cultureDock = document.querySelectorAll('.m-dock-item')[4];
       mSwitch('culture', cultureDock);
+      showHeritageDayOnMap(dayNum);
       setTimeout(() => {{
-        const targetHerit = document.getElementById('herit-day-' + dayNum);
+        const targetHerit = document.getElementById('herit-day-' + dayNum + '-1') || document.querySelector('[id^="herit-day-' + dayNum + '"]');
         if (targetHerit) targetHerit.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
       }}, 100);
     }}
+
+    // 为观鸟卡片与国保卡片绑定点击地图联动
+    document.addEventListener('DOMContentLoaded', () => {{
+      mTripData.birding_guide.forEach(b => {{
+        const card = document.getElementById('bird-day-' + b.day);
+        if (card) {{
+          card.addEventListener('click', () => {{ showBirdingDayOnMap(b.day); }});
+        }}
+      }});
+
+      mTripData.heritage_guide.forEach(h => {{
+        const card = document.getElementById('herit-day-' + h.day + '-' + (h.order_in_day || 1));
+        if (card) {{
+          card.addEventListener('click', () => {{ showHeritageDayOnMap(h.day); }});
+        }}
+      }});
+    }});
 
     let mChartInstance = null;
     function renderMChart() {{
@@ -1519,7 +1903,7 @@ def main():
     content = build_mobile_split_screen_html()
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(content)
-    print(f"🎉 包含斯飞级国保超深度研学指南的手机版路书已生成: {out_path}")
+    print(f"🎉 包含方向箭头与餐饮/观鸟/国保全地图联动的手机版路书已生成: {out_path}")
 
 
 if __name__ == "__main__":

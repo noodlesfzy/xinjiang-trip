@@ -8,7 +8,9 @@ import os
 import json
 from generate_mobile_trip_html import TRIP_DATA, render_dining_html_5_options
 from birding_data_14d import render_birding_html
-from heritage_data_14d import HERITAGE_14D_DATA, render_heritage_html
+from heritage_data_14d import HERITAGE_14D_DATA, HERITAGE_DAY_ROUTES, render_heritage_html
+
+TRIP_DATA["heritage_routes"] = HERITAGE_DAY_ROUTES
 
 
 def render_day_card(d):
@@ -93,6 +95,8 @@ def build_full_html():
   <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <!-- Leaflet PolylineDecorator for Directional Arrows -->
+  <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.min.js"></script>
   <!-- Chart.js for Elevation Profile -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -400,6 +404,70 @@ def build_full_html():
       margin-bottom: 20px;
     }}
 
+    /* Custom markers */
+    .custom-day-marker {{
+      background: #96382d;
+      color: #fff;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 12px;
+      border: 2px solid #fff;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.6);
+      cursor: pointer;
+    }}
+    .custom-dine-pin {{
+      background: #1e293b;
+      border: 1.5px solid #f59e0b;
+      border-radius: 12px;
+      padding: 3px 8px;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+    }}
+    .custom-bird-pin {{
+      background: #064e3b;
+      border: 1.5px solid #34d399;
+      border-radius: 12px;
+      padding: 3px 8px;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+    }}
+    .custom-herit-pin {{
+      background: #581c87;
+      border: 1.5px solid #c084fc;
+      border-radius: 12px;
+      padding: 3px 8px;
+      color: #fff;
+      font-size: 11.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+    }}
+    .custom-herit-leg-badge {{
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid #c084fc;
+      border-radius: 10px;
+      padding: 2px 7px;
+      color: #fde68a;
+      font-size: 10px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    }}
+
     /* Dining 5-options interactive styles in Desktop */
     .m-dining-day-group {{ background: #151d30; border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }}
     .m-dining-day-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--card-border); }}
@@ -549,7 +617,7 @@ def build_full_html():
     <div class="map-wrapper">
       <div id="map"></div>
       <div class="map-footer">
-        <span>🗺️ 底图：高德地图 AutoNavi (GCJ-02) · 国内秒级直连</span>
+        <span>🗺️ 底图：高德地图 (带前进方向指示箭头)</span>
         <span>点击右侧任一卡片可平滑定位路线</span>
       </div>
     </div>
@@ -660,8 +728,8 @@ def build_full_html():
       const lng = d.to.lng;
       latlngs.push([lat, lng]);
 
-      const iconHtml = `<div style="background:#96382d; color:#fff; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; border:2px solid #fff; box-shadow:0 3px 8px rgba(0,0,0,0.6); cursor:pointer;">${{d.day}}</div>`;
-      const customIcon = L.divIcon({{ className: 'custom-day-marker', html: iconHtml, iconSize: [26, 26], iconAnchor: [13, 13] }});
+      const iconHtml = `<div class="custom-day-marker">${{d.day}}</div>`;
+      const customIcon = L.divIcon({{ className: 'custom-day-div', html: iconHtml, iconSize: [26, 26], iconAnchor: [13, 13] }});
 
       const marker = L.marker([lat, lng], {{ icon: customIcon }}).addTo(map);
       marker.bindPopup(`
@@ -686,6 +754,26 @@ def build_full_html():
       dashArray: '6, 6'
     }}).addTo(map);
 
+    if (window.L && L.polylineDecorator) {{
+      try {{
+        L.polylineDecorator(polyline, {{
+          patterns: [
+            {{
+              offset: 25,
+              repeat: 60,
+              symbol: L.Symbol.arrowHead({{
+                pixelSize: 10,
+                polygon: false,
+                pathOptions: {{ stroke: true, color: '#fca5a5', weight: 3, opacity: 0.95 }}
+              }})
+            }}
+          ]
+        }}).addTo(map);
+      }} catch(e) {{
+        console.warn("Decorator error", e);
+      }}
+    }}
+
     if (latlngs.length > 0) {{
       map.fitBounds(polyline.getBounds(), {{ padding: [40, 40] }});
     }}
@@ -697,7 +785,7 @@ def build_full_html():
 
       const target = markers.find(m => m.day === dayNumber);
       if (target) {{
-        map.flyTo([target.lat, target.lng], 9, {{ duration: 1.2 }});
+        map.flyTo([target.lat, target.lng], 9, {{ duration: 1.0 }});
         target.marker.openPopup();
       }}
     }}
@@ -751,7 +839,7 @@ def build_full_html():
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       setTimeout(() => {{
-        const el = document.getElementById('herit-day-' + dayNum);
+        const el = document.getElementById('herit-day-' + dayNum + '-1') || document.querySelector('[id^="herit-day-' + dayNum + '"]');
         if (el) el.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
       }}, 100);
     }}
@@ -833,7 +921,7 @@ def main():
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(html_content)
 
-    print(f"🎉 包含斯飞级国保超深度研学指南的通用版路书已重新编译: {out_path}")
+    print(f"🎉 包含方向箭头与国保/观鸟/餐饮的通用版路书已重新编译: {out_path}")
 
 
 if __name__ == "__main__":
