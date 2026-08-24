@@ -2,16 +2,18 @@
 # -*- coding: utf-8 -*-
 """
 generate_mobile_trip_html.py — 专为手机端打造的自驾全景路书 (trip_mobile.html)
-核心升级：
-1. 【全局左侧常驻快捷导航条】：始终显示的 D1 到 D14 竖向快捷按钮列，点击秒级联动对应卡片与地图，免去页面繁琐滑动。
-2. 【全卡片对比反差色变色高亮】：
-   - 📅 行程：深绯红渐变反差高亮卡片背景
-   - 🍽️ 餐饮：暖金琥珀渐变反差高亮卡片背景
-   - 🦉 观鸟：翡翠森林绿渐变反差高亮卡片背景
-   - 🏛️ 国保：帝王紫罗兰渐变反差高亮卡片背景
-3. 【100% 真实国保实景照片】：16:9 黄金宽屏无畸变展示
-4. 【餐饮 210 家老店街道坐标联动与高亮聚焦】
-5. 【观鸟精简地标】
+核心特性：
+1. 【大地图独立全屏视图】：保持纯净的大地图全屏探索，不受左侧快捷栏干扰。
+2. 【左侧动态快捷导航条】：
+   - 行程/餐饮：显示 D1 ~ D14
+   - 观鸟/国保：仅动态显示有实际内容的 Day 按钮（如国保仅显示 D1, D8, D9, D10, D11, D12, D13，自动隐藏无内容天数）
+3. 【全卡片对比反差色变色高亮】：
+   - 📅 行程：深绯红渐变反差高亮 (#3d1414)
+   - 🍽️ 餐饮：暖金琥珀渐变反差高亮 (#3b2003)
+   - 🦉 观鸟：翡翠森林绿渐变反差高亮 (#052e1f)
+   - 🏛️ 国保：帝王紫罗兰渐变反差高亮 (#340c4e)
+4. 【100% 真实国保古建筑实景照片】：16:9 黄金宽屏无畸变展示
+5. 【210家多年口碑老店街道坐标联动与高亮聚焦】
 """
 
 import os
@@ -183,7 +185,7 @@ def build_mobile_split_screen_html():
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>新疆14天自驾路书 (快捷导航 + 全卡片反差色联动)</title>
+  <title>新疆14天自驾路书 (动态快捷导航 + 反差色联动)</title>
   <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -441,7 +443,7 @@ def build_mobile_split_screen_html():
     }}
 
     /* ========================================================
-       GLOBAL LEFT FLOATING QUICK-NAV RAIL (D1 ~ D14)
+       GLOBAL LEFT FLOATING QUICK-NAV RAIL
        ======================================================== */
     .m-main-content-layout {{
       flex: 1 1 auto;
@@ -576,7 +578,7 @@ def build_mobile_split_screen_html():
     }}
     .m-card:active {{ transform: scale(0.99); }}
     
-    /* 核心升级：整张卡片整体反差深红变色高亮 */
+    /* 整张卡片整体反差深红变色高亮 */
     .m-card.active {{
       background: linear-gradient(145deg, #3d1414 0%, #1f0b0b 100%) !important;
       border: 1.5px solid #f87171 !important;
@@ -860,7 +862,7 @@ def build_mobile_split_screen_html():
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }}
-    /* 核心升级：整张餐饮卡片对比反差暖金高亮 */
+    /* 整张餐饮卡片对比反差暖金高亮 */
     .m-dining-day-group.active {{
       background: linear-gradient(145deg, #3b2003 0%, #1c0e00 100%) !important;
       border: 1.5px solid #f59e0b !important;
@@ -1012,7 +1014,7 @@ def build_mobile_split_screen_html():
       cursor: pointer;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }}
-    /* 核心升级：整张观鸟卡片对比反差翡翠绿高亮 */
+    /* 整张观鸟卡片对比反差翡翠绿高亮 */
     .m-birding-card.active {{
       background: linear-gradient(145deg, #052e1f 0%, #021a11 100%) !important;
       border: 1.5px solid #10b981 !important;
@@ -1135,7 +1137,7 @@ def build_mobile_split_screen_html():
       overflow: hidden;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }}
-    /* 核心升级：整张国保卡片对比反差紫罗兰高亮 */
+    /* 整张国保卡片对比反差紫罗兰高亮 */
     .m-herit-card.active {{
       background: linear-gradient(145deg, #340c4e 0%, #1b042b 100%) !important;
       border: 1.5px solid #c084fc !important;
@@ -1389,26 +1391,11 @@ def build_mobile_split_screen_html():
       </button>
     </div>
 
-    <!-- 主体布局区域（含左侧全局常驻快捷按钮列） -->
+    <!-- 主体布局区域（含左侧动态快捷按钮列） -->
     <div class="m-main-content-layout">
 
-      <!-- 全局左侧常驻快捷导航条 D1 ~ D14 -->
-      <div class="m-quick-nav-rail" id="m-quick-nav-rail">
-        <div class="m-rail-pill active" onclick="quickJumpDay(1, this)">D1</div>
-        <div class="m-rail-pill" onclick="quickJumpDay(2, this)">D2</div>
-        <div class="m-rail-pill" onclick="quickJumpDay(3, this)">D3</div>
-        <div class="m-rail-pill" onclick="quickJumpDay(4, this)">D4</div>
-        <div class="m-rail-pill" onclick="quickJumpDay(5, this)">D5</div>
-        <div class="m-rail-pill" onclick="quickJumpDay(6, this)">D6</div>
-        <div class="m-rail-pill" onclick="quickJumpDay(7, this)">D7</div>
-        <div class="m-rail-pill" onclick="quickJumpDay(8, this)">D8</div>
-        <div class="m-rail-pill" onclick="quickJumpDay(9, this)">D9</div>
-        <div class="m-rail-pill" onclick="quickJumpDay(10, this)">D10</div>
-        <div class="m-rail-pill" onclick="quickJumpDay(11, this)">D11</div>
-        <div class="m-rail-pill" onclick="quickJumpDay(12, this)">D12</div>
-        <div class="m-rail-pill" onclick="quickJumpDay(13, this)">D13</div>
-        <div class="m-rail-pill" onclick="quickJumpDay(14, this)">D14</div>
-      </div>
+      <!-- 左侧动态快捷导航条 (按当前页面内容动态填充仅有内容的天数) -->
+      <div class="m-quick-nav-rail" id="m-quick-nav-rail"></div>
 
       <!-- 可滚动主体内容容器 -->
       <div class="m-content-container" id="m-content-container">
@@ -1495,7 +1482,7 @@ def build_mobile_split_screen_html():
 
     </div>
 
-    <!-- ==================== 2. 独立全屏大地图探索台 ==================== -->
+    <!-- ==================== 2. 独立全屏大地图探索台 (纯净全屏视图) ==================== -->
     <div class="m-dedicated-map-view" id="m-view-map">
       <div id="m-dedicated-map"></div>
 
@@ -1650,14 +1637,48 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
-    // 全局左侧快捷导航条同步机制
+    // 全局左侧快捷导航条动态渲染与同步
     // ==========================================
+    function updateQuickNavRail(viewId, activeDay = 1) {{
+      const rail = document.getElementById('m-quick-nav-rail');
+      if (!rail) return;
+
+      if (viewId === 'map' || viewId === 'tips') {{
+        rail.style.display = 'none';
+        return;
+      }}
+      rail.style.display = 'flex';
+
+      let availableDays = [];
+      if (viewId === 'timeline') {{
+        availableDays = mTripData.days.map(d => d.day);
+      }} else if (viewId === 'dining') {{
+        availableDays = mTripData.dining_guide.map(d => d.day);
+      }} else if (viewId === 'birding') {{
+        availableDays = mTripData.birding_guide.map(b => b.day);
+      }} else if (viewId === 'culture') {{
+        // 仅获取有实际国保内容的 Day 列表，排除无内容天数
+        availableDays = Array.from(new Set(mTripData.heritage_guide.map(h => h.day))).sort((a, b) => a - b);
+      }}
+
+      // 动态生成有内容的天数按钮
+      rail.innerHTML = availableDays.map(d => `
+        <div class="m-rail-pill ${{d === activeDay ? 'active' : ''}}" id="rail-pill-${{d}}" onclick="quickJumpDay(${{d}}, this)">D${{d}}</div>
+      `).join('');
+
+      // 若当前 activeDay 不在 availableDays 中，则默认选中第一个
+      if (!availableDays.includes(activeDay)) {{
+        activeDay = availableDays[0] || 1;
+      }}
+      syncRailActive(activeDay);
+    }}
+
     function syncRailActive(dayNum) {{
-      const pills = document.querySelectorAll('.m-rail-pill');
-      pills.forEach((p, idx) => {{
-        if (idx === (dayNum - 1)) p.classList.add('active');
-        else p.classList.remove('active');
-      }});
+      document.querySelectorAll('.m-rail-pill').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById('rail-pill-' + dayNum);
+      if (target) {{
+        target.classList.add('active');
+      }}
     }}
 
     function quickJumpDay(dayNum, btn) {{
@@ -1671,8 +1692,6 @@ def build_mobile_split_screen_html():
         mFocusBirdDay(dayNum);
       }} else if (currentViewTab === 'culture') {{
         mFocusHeritDay(dayNum);
-      }} else if (currentViewTab === 'map') {{
-        focusDedicatedDay(dayNum);
       }}
     }}
 
@@ -1964,12 +1983,13 @@ def build_mobile_split_screen_html():
           targetCard.classList.add('active');
           targetCard.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
           showHeritageDayOnMap(closest);
+          syncRailActive(closest);
         }}
       }}
     }}
 
     // ==========================================
-    // 5. 初始化独立全屏大地图探索台
+    // 5. 初始化独立全屏大地图探索台 (纯净大地图)
     // ==========================================
     let dedicatedMap = null;
     let transitLayer = null;
@@ -2060,7 +2080,6 @@ def build_mobile_split_screen_html():
     }}
 
     function focusDedicatedDay(dayNum, btn) {{
-      syncRailActive(dayNum || 1);
       document.querySelectorAll('.m-map-day-pill').forEach(p => p.classList.remove('active'));
       if (btn) btn.classList.add('active');
 
@@ -2116,6 +2135,7 @@ def build_mobile_split_screen_html():
       const dedicatedMapView = document.getElementById('m-view-map');
       const rail = document.getElementById('m-quick-nav-rail');
 
+      // 大地图纯净全屏展示，彻底隐藏左侧快捷栏与顶部小地图
       if (viewId === 'map') {{
         mapZone.classList.add('mode-hidden');
         if (rail) rail.style.display = 'none';
@@ -2127,11 +2147,11 @@ def build_mobile_split_screen_html():
       }} else {{
         dedicatedMapView.style.display = 'none';
         contentContainer.style.display = 'block';
-        if (rail) rail.style.display = (viewId === 'tips') ? 'none' : 'flex';
       }}
 
       if (viewId === 'tips') {{
         mapZone.classList.add('mode-hidden');
+        if (rail) rail.style.display = 'none';
       }} else {{
         mapZone.classList.remove('mode-hidden');
       }}
@@ -2141,6 +2161,9 @@ def build_mobile_split_screen_html():
       document.getElementById('m-view-birding').style.display = (viewId === 'birding') ? 'block' : 'none';
       document.getElementById('m-view-culture').style.display = (viewId === 'culture') ? 'block' : 'none';
       document.getElementById('m-view-tips').style.display = (viewId === 'tips') ? 'block' : 'none';
+
+      // 动态刷新左侧快捷栏（仅生成当前视图包含的天数）
+      updateQuickNavRail(viewId, 1);
 
       setTimeout(() => {{ mMap.invalidateSize(); }}, 200);
 
@@ -2193,7 +2216,8 @@ def build_mobile_split_screen_html():
         }}
       }});
 
-      // 默认激活 Day 1
+      // 初始化并激活 Day 1
+      updateQuickNavRail('timeline', 1);
       mFocusDay(1);
     }});
 
@@ -2252,7 +2276,7 @@ def main():
     content = build_mobile_split_screen_html()
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(content)
-    print(f"🎉 包含左侧快捷导航条与全卡片对比反差色变色的手机版路书已生成: {out_path}")
+    print(f"🎉 包含左侧动态快捷导航条与大地图纯净全屏的手机版路书已生成: {out_path}")
 
 
 if __name__ == "__main__":
