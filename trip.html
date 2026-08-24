@@ -206,8 +206,21 @@
       box-shadow: 0 6px 18px rgba(0,0,0,0.4);
     }
     .day-card.active {
-      border-color: #f87171;
-      box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.35);
+      background: linear-gradient(145deg, #3d1414 0%, #1f0b0b 100%) !important;
+      border: 1.5px solid #f87171 !important;
+      box-shadow: 0 8px 24px rgba(248, 113, 113, 0.35) !important;
+      transform: translateY(-2px);
+    }
+    .day-card.active .card-top {
+      background: rgba(248, 113, 113, 0.18) !important;
+      border-bottom-color: rgba(248, 113, 113, 0.4) !important;
+    }
+    .day-card.active .card-title {
+      color: #fff !important;
+    }
+    .day-card.active .card-footer {
+      background: rgba(0,0,0,0.4) !important;
+      border-top-color: rgba(248, 113, 113, 0.3) !important;
     }
 
     .card-top {
@@ -451,7 +464,12 @@
     .m-bird-nav-btn { display: inline-block; background: #059669; color: #fff; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-size: 11.5px; font-weight: 600; }
 
     /* Heritage Styles in Desktop */
-    .m-herit-card { background: #181d33; border: 1px solid var(--card-border); border-radius: 14px; margin-bottom: 20px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+    .m-herit-card { background: #181d33; border: 1px solid var(--card-border); border-radius: 14px; margin-bottom: 20px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.4); transition: all 0.25s ease; }
+    .m-herit-card.active { background: linear-gradient(145deg, #340c4e 0%, #1b042b 100%) !important; border: 1.5px solid #c084fc !important; box-shadow: 0 8px 24px rgba(192, 132, 252, 0.4) !important; transform: translateY(-2px); }
+    .m-dining-day-group { background: #181d33; border: 1px solid var(--card-border); border-radius: 14px; padding: 14px; margin-bottom: 20px; transition: all 0.25s ease; }
+    .m-dining-day-group.active { background: linear-gradient(145deg, #3b2003 0%, #1c0e00 100%) !important; border: 1.5px solid #f59e0b !important; box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35) !important; transform: translateY(-2px); }
+    .m-birding-card { background: #181d33; border: 1px solid var(--card-border); border-radius: 14px; padding: 16px; margin-bottom: 18px; transition: all 0.25s ease; }
+    .m-birding-card.active { background: linear-gradient(145deg, #052e1f 0%, #021a11 100%) !important; border: 1.5px solid #10b981 !important; box-shadow: 0 8px 24px rgba(16, 185, 129, 0.35) !important; transform: translateY(-2px); }
     .m-herit-photo-wrapper { width: 100%; aspect-ratio: 16 / 9; position: relative; background: #0b101c; overflow: hidden; }
     .m-herit-photo-img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
     .m-herit-photo-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(9, 13, 22, 0.95) 0%, rgba(9, 13, 22, 0.2) 50%, rgba(0, 0, 0, 0.4) 100%); display: flex; flex-direction: column; justify-content: space-between; padding: 12px 16px; pointer-events: none; }
@@ -1235,8 +1253,8 @@
       </p>
       <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap:16px;">
         
-        <div class="m-dining-day-group" id="dine-day-1">
-          <div class="m-dining-day-header" onclick="showDiningDayOnMap(1, 'lunch', 0)">
+        <div class="m-dining-day-group" id="dine-day-1" onclick="mFocusDineDay(1)">
+          <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 1 · 10/25</span>
             <span class="m-dine-city-badge">📍 乌鲁木齐 (市区/文庙/提车) (点我看地图)</span>
           </div>
@@ -1679,8 +1697,8 @@
         </div>
         
 
-        <div class="m-dining-day-group" id="dine-day-2">
-          <div class="m-dining-day-header" onclick="showDiningDayOnMap(2, 'lunch', 0)">
+        <div class="m-dining-day-group" id="dine-day-2" onclick="mFocusDineDay(2)">
+          <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 2 · 10/26</span>
             <span class="m-dine-city-badge">📍 S21沙漠公路 ➔ 福海县 (乌伦古湖冷水鱼) (点我看地图)</span>
           </div>
@@ -2123,8 +2141,8 @@
         </div>
         
 
-        <div class="m-dining-day-group" id="dine-day-3">
-          <div class="m-dining-day-header" onclick="showDiningDayOnMap(3, 'lunch', 0)">
+        <div class="m-dining-day-group" id="dine-day-3" onclick="mFocusDineDay(3)">
+          <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 3 · 10/27</span>
             <span class="m-dine-city-badge">📍 福海 ➔ 科克苏 ➔ 布尔津县城 (额河烤鱼夜市) (点我看地图)</span>
           </div>
@@ -2567,8 +2585,8 @@
         </div>
         
 
-        <div class="m-dining-day-group" id="dine-day-4">
-          <div class="m-dining-day-header" onclick="showDiningDayOnMap(4, 'lunch', 0)">
+        <div class="m-dining-day-group" id="dine-day-4" onclick="mFocusDineDay(4)">
+          <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 4 · 10/28</span>
             <span class="m-dine-city-badge">📍 布尔津 ➔ 冲乎尔 ➔ 禾木村 (图瓦木屋土火锅) (点我看地图)</span>
           </div>
@@ -3011,8 +3029,8 @@
         </div>
         
 
-        <div class="m-dining-day-group" id="dine-day-5">
-          <div class="m-dining-day-header" onclick="showDiningDayOnMap(5, 'lunch', 0)">
+        <div class="m-dining-day-group" id="dine-day-5" onclick="mFocusDineDay(5)">
+          <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 5 · 10/29</span>
             <span class="m-dine-city-badge">📍 Day 5 · 禾木村核心区 (点我看地图)</span>
           </div>
@@ -3455,8 +3473,8 @@
         </div>
         
 
-        <div class="m-dining-day-group" id="dine-day-6">
-          <div class="m-dining-day-header" onclick="showDiningDayOnMap(6, 'lunch', 0)">
+        <div class="m-dining-day-group" id="dine-day-6" onclick="mFocusDineDay(6)">
+          <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 6 · 10/30</span>
             <span class="m-dine-city-badge">📍 Day 6 · 喀纳斯老村 (点我看地图)</span>
           </div>
@@ -3899,8 +3917,8 @@
         </div>
         
 
-        <div class="m-dining-day-group" id="dine-day-7">
-          <div class="m-dining-day-header" onclick="showDiningDayOnMap(7, 'lunch', 0)">
+        <div class="m-dining-day-group" id="dine-day-7" onclick="mFocusDineDay(7)">
+          <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 7 · 10/31</span>
             <span class="m-dine-city-badge">📍 Day 7 · 布尔津县城 (点我看地图)</span>
           </div>
@@ -4343,8 +4361,8 @@
         </div>
         
 
-        <div class="m-dining-day-group" id="dine-day-8">
-          <div class="m-dining-day-header" onclick="showDiningDayOnMap(8, 'lunch', 0)">
+        <div class="m-dining-day-group" id="dine-day-8" onclick="mFocusDineDay(8)">
+          <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 8 · 11/01</span>
             <span class="m-dine-city-badge">📍 Day 8 · 富蕴县城商业街 (点我看地图)</span>
           </div>
@@ -4787,8 +4805,8 @@
         </div>
         
 
-        <div class="m-dining-day-group" id="dine-day-9">
-          <div class="m-dining-day-header" onclick="showDiningDayOnMap(9, 'lunch', 0)">
+        <div class="m-dining-day-group" id="dine-day-9" onclick="mFocusDineDay(9)">
+          <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 9 · 11/02</span>
             <span class="m-dine-city-badge">📍 Day 9 · 奇台县城老街 (点我看地图)</span>
           </div>
@@ -5231,8 +5249,8 @@
         </div>
         
 
-        <div class="m-dining-day-group" id="dine-day-10">
-          <div class="m-dining-day-header" onclick="showDiningDayOnMap(10, 'lunch', 0)">
+        <div class="m-dining-day-group" id="dine-day-10" onclick="mFocusDineDay(10)">
+          <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 10 · 11/03</span>
             <span class="m-dine-city-badge">📍 Day 10 · 吐鲁番高昌区老城 (点我看地图)</span>
           </div>
@@ -5675,8 +5693,8 @@
         </div>
         
 
-        <div class="m-dining-day-group" id="dine-day-11">
-          <div class="m-dining-day-header" onclick="showDiningDayOnMap(11, 'lunch', 0)">
+        <div class="m-dining-day-group" id="dine-day-11" onclick="mFocusDineDay(11)">
+          <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 11 · 11/04</span>
             <span class="m-dine-city-badge">📍 Day 11 · 吐峪沟/鄯善 (点我看地图)</span>
           </div>
@@ -6119,8 +6137,8 @@
         </div>
         
 
-        <div class="m-dining-day-group" id="dine-day-12">
-          <div class="m-dining-day-header" onclick="showDiningDayOnMap(12, 'lunch', 0)">
+        <div class="m-dining-day-group" id="dine-day-12" onclick="mFocusDineDay(12)">
+          <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 12 · 11/05</span>
             <span class="m-dine-city-badge">📍 Day 12 · 吐鲁番高昌区 (点我看地图)</span>
           </div>
@@ -6563,8 +6581,8 @@
         </div>
         
 
-        <div class="m-dining-day-group" id="dine-day-13">
-          <div class="m-dining-day-header" onclick="showDiningDayOnMap(13, 'lunch', 0)">
+        <div class="m-dining-day-group" id="dine-day-13" onclick="mFocusDineDay(13)">
+          <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 13 · 11/06</span>
             <span class="m-dine-city-badge">📍 Day 13 · 吐鲁番老城区 (点我看地图)</span>
           </div>
@@ -7007,8 +7025,8 @@
         </div>
         
 
-        <div class="m-dining-day-group" id="dine-day-14">
-          <div class="m-dining-day-header" onclick="showDiningDayOnMap(14, 'lunch', 0)">
+        <div class="m-dining-day-group" id="dine-day-14" onclick="mFocusDineDay(14)">
+          <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 14 · 11/07</span>
             <span class="m-dine-city-badge">📍 Day 14 · 柴窝堡/地窝堡 (点我看地图)</span>
           </div>

@@ -2,12 +2,16 @@
 # -*- coding: utf-8 -*-
 """
 generate_mobile_trip_html.py — 专为手机端打造的自驾全景路书 (trip_mobile.html)
-集成：
-1. 100% 真实国保古建筑与遗址实景照片（16:9 黄金宽屏无畸变比例展示）
-2. 地图点位带真实实景微缩图标牌与 16:9 弹出大图卡
-3. 210家多年口碑老店真实街道坐标与实时聚焦
-4. 观鸟精简地标
-5. 大地图全屏探索防遮挡
+核心升级：
+1. 【全局左侧常驻快捷导航条】：始终显示的 D1 到 D14 竖向快捷按钮列，点击秒级联动对应卡片与地图，免去页面繁琐滑动。
+2. 【全卡片对比反差色变色高亮】：
+   - 📅 行程：深绯红渐变反差高亮卡片背景
+   - 🍽️ 餐饮：暖金琥珀渐变反差高亮卡片背景
+   - 🦉 观鸟：翡翠森林绿渐变反差高亮卡片背景
+   - 🏛️ 国保：帝王紫罗兰渐变反差高亮卡片背景
+3. 【100% 真实国保实景照片】：16:9 黄金宽屏无畸变展示
+4. 【餐饮 210 家老店街道坐标联动与高亮聚焦】
+5. 【观鸟精简地标】
 """
 
 import os
@@ -100,8 +104,8 @@ def render_dining_html_5_options():
             meals_html_blocks.append(meal_section)
 
         day_group = f"""
-        <div class="m-dining-day-group" id="dine-day-{day_num}">
-          <div class="m-dining-day-header" onclick="showDiningDayOnMap({day_num}, 'lunch', 0)">
+        <div class="m-dining-day-group" id="dine-day-{day_num}" onclick="mFocusDineDay({day_num})">
+          <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day {day_num} · {date_str}</span>
             <span class="m-dine-city-badge">📍 {city_str} (点我看地图)</span>
           </div>
@@ -179,7 +183,7 @@ def build_mobile_split_screen_html():
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>新疆14天自驾路书 (真实国保照片预览 + 观鸟 + 美食地图)</title>
+  <title>新疆14天自驾路书 (快捷导航 + 全卡片反差色联动)</title>
   <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -368,7 +372,7 @@ def build_mobile_split_screen_html():
       box-shadow: 0 3px 8px rgba(0,0,0,0.6);
     }}
 
-    /* 国保带真实照片微缩图的地标样式 */
+    /* 国保带照片微缩图的地标样式 */
     .custom-herit-photo-marker {{
       display: flex;
       align-items: center;
@@ -437,17 +441,94 @@ def build_mobile_split_screen_html():
     }}
 
     /* ========================================================
-       CONTENT VIEWS
+       GLOBAL LEFT FLOATING QUICK-NAV RAIL (D1 ~ D14)
+       ======================================================== */
+    .m-main-content-layout {{
+      flex: 1 1 auto;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }}
+
+    .m-quick-nav-rail {{
+      position: absolute;
+      left: 5px;
+      top: 8px;
+      bottom: calc(56px + env(safe-area-inset-bottom));
+      width: 32px;
+      z-index: 700;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 4px 2px;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+      overflow-y: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }}
+    .m-quick-nav-rail::-webkit-scrollbar {{ display: none; }}
+
+    .m-rail-pill {{
+      flex: 0 0 20px;
+      height: 20px;
+      width: 26px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #94a3b8;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }}
+    .m-rail-pill:active {{ transform: scale(0.92); }}
+
+    /* 不同模式下的快捷按钮高亮主题 */
+    .m-rail-pill.active {{
+      background: #96382d;
+      color: #fff;
+      box-shadow: 0 0 0 1.5px rgba(248, 113, 113, 0.6);
+      transform: scale(1.08);
+    }}
+    body[data-tab="dining"] .m-rail-pill.active {{
+      background: #d97706;
+      box-shadow: 0 0 0 1.5px rgba(245, 158, 11, 0.6);
+    }}
+    body[data-tab="birding"] .m-rail-pill.active {{
+      background: #059669;
+      box-shadow: 0 0 0 1.5px rgba(16, 185, 129, 0.6);
+    }}
+    body[data-tab="culture"] .m-rail-pill.active {{
+      background: #7e22ce;
+      box-shadow: 0 0 0 1.5px rgba(192, 132, 252, 0.6);
+    }}
+
+    /* ========================================================
+       CONTENT VIEWS (右移留出左侧导航条安全宽度)
        ======================================================== */
     .m-content-container {{
       flex: 1 1 auto;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       position: relative;
+      width: 100%;
+      height: 100%;
     }}
 
-    .m-scroll-body {{
-      padding: 10px 12px calc(65px + env(safe-area-inset-bottom));
+    .m-scroll-body,
+    .m-dining-view,
+    .m-birding-view,
+    .m-culture-view,
+    .m-tips-view {{
+      padding: 10px 10px calc(65px + env(safe-area-inset-bottom)) 42px;
     }}
 
     .m-metrics-strip {{
@@ -463,12 +544,12 @@ def build_mobile_split_screen_html():
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 8px;
-      padding: 6px 10px;
+      padding: 6px 8px;
       text-align: center;
-      min-width: 75px;
+      min-width: 68px;
     }}
-    .m-m-box .m-lbl {{ font-size: 9.5px; color: var(--text-muted); }}
-    .m-m-box .m-val {{ font-size: 13.5px; font-weight: 700; color: #60a5fa; }}
+    .m-m-box .m-lbl {{ font-size: 9px; color: var(--text-muted); }}
+    .m-m-box .m-val {{ font-size: 12.5px; font-weight: 700; color: #60a5fa; }}
 
     .m-rules-banner {{
       background: rgba(150, 56, 45, 0.15);
@@ -481,7 +562,9 @@ def build_mobile_split_screen_html():
     .m-rules-banner h4 {{ color: #fca5a5; font-size: 12px; margin-bottom: 4px; }}
     .m-rules-banner ul {{ list-style: none; display: flex; flex-direction: column; gap: 4px; color: #e2e8f0; }}
 
-    /* Timeline Day Card */
+    /* ========================================================
+       1. 行程卡片 (全卡片对比反差色变色高亮)
+       ======================================================== */
     .m-card {{
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -489,13 +572,37 @@ def build_mobile_split_screen_html():
       margin-bottom: 12px;
       overflow: hidden;
       box-shadow: 0 3px 10px rgba(0,0,0,0.35);
-      transition: border-color 0.2s, transform 0.15s;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }}
     .m-card:active {{ transform: scale(0.99); }}
+    
+    /* 核心升级：整张卡片整体反差深红变色高亮 */
     .m-card.active {{
-      border-color: #f87171;
-      box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.45);
+      background: linear-gradient(145deg, #3d1414 0%, #1f0b0b 100%) !important;
+      border: 1.5px solid #f87171 !important;
+      box-shadow: 0 8px 24px rgba(248, 113, 113, 0.35) !important;
+      transform: translateY(-2px);
     }}
+    .m-card.active .m-card-header {{
+      background: rgba(248, 113, 113, 0.18) !important;
+      border-bottom-color: rgba(248, 113, 113, 0.4) !important;
+    }}
+    .m-card.active .m-card-title {{
+      color: #fff !important;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    }}
+    .m-card.active .m-stats-grid {{
+      background: rgba(0,0,0,0.4) !important;
+      border-top-color: rgba(248, 113, 113, 0.3) !important;
+    }}
+    .m-card.active .m-card-body {{
+      border-top-color: rgba(248, 113, 113, 0.3) !important;
+    }}
+    .m-card.active .m-card-footer {{
+      background: rgba(0,0,0,0.4) !important;
+      border-top-color: rgba(248, 113, 113, 0.3) !important;
+    }}
+
     .m-card-header {{
       padding: 9px 12px;
       background: rgba(255,255,255,0.02);
@@ -728,11 +835,10 @@ def build_mobile_split_screen_html():
     .m-map-info-btn.dine {{ background: rgba(245,158,11,0.25); border: 1px solid rgba(245,158,11,0.5); color: #fcd34d; }}
 
     /* ========================================================
-       TAB 3: DINING 5-OPTIONS
+       2. 餐饮专区 (全卡片对比反差暖金变色高亮)
        ======================================================== */
     .m-dining-view {{
       display: none;
-      padding: 12px 12px calc(65px + env(safe-area-inset-bottom));
     }}
     .m-dining-intro {{
       background: linear-gradient(135deg, rgba(217, 119, 6, 0.18) 0%, rgba(150, 56, 45, 0.18) 100%);
@@ -752,7 +858,26 @@ def build_mobile_split_screen_html():
       padding: 12px;
       margin-bottom: 16px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }}
+    /* 核心升级：整张餐饮卡片对比反差暖金高亮 */
+    .m-dining-day-group.active {{
+      background: linear-gradient(145deg, #3b2003 0%, #1c0e00 100%) !important;
+      border: 1.5px solid #f59e0b !important;
+      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35) !important;
+      transform: translateY(-2px);
+    }}
+    .m-dining-day-group.active .m-dining-day-header {{
+      border-bottom-color: rgba(245, 158, 11, 0.4) !important;
+    }}
+    .m-dining-day-group.active .m-dine-day-badge {{
+      color: #fde68a !important;
+    }}
+    .m-dining-day-group.active .m-dine-city-badge {{
+      background: rgba(245, 158, 11, 0.25) !important;
+      color: #fef08a !important;
+    }}
+
     .m-dining-day-header {{
       display: flex;
       justify-content: space-between;
@@ -766,8 +891,8 @@ def build_mobile_split_screen_html():
     .m-dine-city-badge {{ font-size: 11px; color: #60a5fa; background: rgba(37,99,235,0.15); padding: 2px 7px; border-radius: 4px; font-weight: 600; }}
 
     .m-meal-section-box {{
-      background: rgba(255,255,255,0.015);
-      border: 1px solid rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
       border-radius: 10px;
       padding: 10px 10px 12px;
       margin-bottom: 12px;
@@ -817,7 +942,7 @@ def build_mobile_split_screen_html():
     .m-dine-pill.active .pill-num {{ background: #fff; color: #96382d; }}
 
     .m-meal-option-detail {{
-      background: rgba(0,0,0,0.25);
+      background: rgba(0,0,0,0.3);
       border: 1px solid var(--card-border);
       border-radius: 8px;
       padding: 10px 12px;
@@ -832,7 +957,7 @@ def build_mobile_split_screen_html():
 
     .m-must-orders-box {{ font-size: 11.5px; color: #f1f5f9; margin-bottom: 5px; line-height: 1.35; }}
     .m-order-lbl {{ color: #fbbf24; font-weight: 700; }}
-    .m-meal-desc-box {{ font-size: 11px; color: #94a3b8; line-height: 1.4; margin-bottom: 8px; }}
+    .m-meal-desc-box {{ font-size: 11px; color: #cbd5e1; line-height: 1.4; margin-bottom: 8px; }}
     
     .m-dine-locate-btn {{
       flex: 1;
@@ -862,11 +987,10 @@ def build_mobile_split_screen_html():
     .m-dine-nav-btn:active {{ background: #2563eb; color: #fff; }}
 
     /* ========================================================
-       TAB 4: BIRDING & WILDLIFE
+       3. 观鸟专区 (全卡片对比反差翡翠绿变色高亮)
        ======================================================== */
     .m-birding-view {{
       display: none;
-      padding: 12px 12px calc(65px + env(safe-area-inset-bottom));
     }}
     .m-birding-intro {{
       background: linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(59, 130, 246, 0.18) 100%);
@@ -886,7 +1010,23 @@ def build_mobile_split_screen_html():
       margin-bottom: 14px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }}
+    /* 核心升级：整张观鸟卡片对比反差翡翠绿高亮 */
+    .m-birding-card.active {{
+      background: linear-gradient(145deg, #052e1f 0%, #021a11 100%) !important;
+      border: 1.5px solid #10b981 !important;
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.35) !important;
+      transform: translateY(-2px);
+    }}
+    .m-birding-card.active .m-bird-day-tag {{
+      background: rgba(16, 185, 129, 0.35) !important;
+      color: #a7f3d0 !important;
+    }}
+    .m-birding-card.active .m-bird-loc-name {{
+      color: #fff !important;
+    }}
+
     .m-bird-card-top {{
       display: flex;
       justify-content: space-between;
@@ -970,11 +1110,10 @@ def build_mobile_split_screen_html():
     }}
 
     /* ========================================================
-       TAB 5: CULTURE (国保超深度研学 + 16:9 真实高清大图卡片)
+       4. 国保专区 (全卡片对比反差紫罗兰变色高亮 + 16:9 大图卡)
        ======================================================== */
     .m-culture-view {{
       display: none;
-      padding: 12px 12px calc(65px + env(safe-area-inset-bottom));
     }}
     .m-culture-intro {{
       background: linear-gradient(135deg, rgba(147, 51, 234, 0.18) 0%, rgba(217, 119, 6, 0.18) 100%);
@@ -994,6 +1133,21 @@ def build_mobile_split_screen_html():
       box-shadow: 0 4px 14px rgba(0,0,0,0.4);
       cursor: pointer;
       overflow: hidden;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }}
+    /* 核心升级：整张国保卡片对比反差紫罗兰高亮 */
+    .m-herit-card.active {{
+      background: linear-gradient(145deg, #340c4e 0%, #1b042b 100%) !important;
+      border: 1.5px solid #c084fc !important;
+      box-shadow: 0 8px 24px rgba(192, 132, 252, 0.4) !important;
+      transform: translateY(-2px);
+    }}
+    .m-herit-card.active .m-herit-day-tag {{
+      background: rgba(147, 51, 234, 0.4) !important;
+      color: #f3e8ff !important;
+    }}
+    .m-herit-card.active .m-herit-title {{
+      color: #fff !important;
     }}
 
     /* 16:9 比例实景照片卡容器 */
@@ -1166,7 +1320,6 @@ def build_mobile_split_screen_html():
        ======================================================== */
     .m-tips-view {{
       display: none;
-      padding: 12px 12px calc(65px + env(safe-area-inset-bottom));
     }}
 
     .m-sub-card {{
@@ -1212,7 +1365,7 @@ def build_mobile_split_screen_html():
     }}
   </style>
 </head>
-<body>
+<body data-tab="timeline">
 
   <div class="m-app-shell">
 
@@ -1236,85 +1389,108 @@ def build_mobile_split_screen_html():
       </button>
     </div>
 
-    <!-- 可滚动主体内容区域 -->
-    <div class="m-content-container" id="m-content-container">
+    <!-- 主体布局区域（含左侧全局常驻快捷按钮列） -->
+    <div class="m-main-content-layout">
 
-      <!-- ==================== 1. 行程页 ==================== -->
-      <div class="m-scroll-body" id="m-view-timeline">
-        <div class="m-metrics-strip">
-          <div class="m-m-box"><div class="m-lbl">总里程</div><div class="m-val">{TRIP_DATA['summary']['total_distance_km']} <small style="font-size:9px;">km</small></div></div>
-          <div class="m-m-box"><div class="m-lbl">总耗时</div><div class="m-val">{TRIP_DATA['summary']['total_driving_hours']} <small style="font-size:9px;">h</small></div></div>
-          <div class="m-m-box"><div class="m-lbl">高速费</div><div class="m-val">¥{TRIP_DATA['summary']['total_tolls_rmb']}</div></div>
-          <div class="m-m-box"><div class="m-lbl">燃油费</div><div class="m-val">¥{TRIP_DATA['summary']['total_fuel_cost_rmb']}</div></div>
-          <div class="m-m-box"><div class="m-lbl">总预算</div><div class="m-val">¥{TRIP_DATA['summary']['total_budget_rmb']}</div></div>
-        </div>
-
-        <div class="m-rules-banner">
-          <h4>🛡️ 核心安全与关键规则</h4>
-          <ul>{rules_html}</ul>
-        </div>
-
-        {all_days}
+      <!-- 全局左侧常驻快捷导航条 D1 ~ D14 -->
+      <div class="m-quick-nav-rail" id="m-quick-nav-rail">
+        <div class="m-rail-pill active" onclick="quickJumpDay(1, this)">D1</div>
+        <div class="m-rail-pill" onclick="quickJumpDay(2, this)">D2</div>
+        <div class="m-rail-pill" onclick="quickJumpDay(3, this)">D3</div>
+        <div class="m-rail-pill" onclick="quickJumpDay(4, this)">D4</div>
+        <div class="m-rail-pill" onclick="quickJumpDay(5, this)">D5</div>
+        <div class="m-rail-pill" onclick="quickJumpDay(6, this)">D6</div>
+        <div class="m-rail-pill" onclick="quickJumpDay(7, this)">D7</div>
+        <div class="m-rail-pill" onclick="quickJumpDay(8, this)">D8</div>
+        <div class="m-rail-pill" onclick="quickJumpDay(9, this)">D9</div>
+        <div class="m-rail-pill" onclick="quickJumpDay(10, this)">D10</div>
+        <div class="m-rail-pill" onclick="quickJumpDay(11, this)">D11</div>
+        <div class="m-rail-pill" onclick="quickJumpDay(12, this)">D12</div>
+        <div class="m-rail-pill" onclick="quickJumpDay(13, this)">D13</div>
+        <div class="m-rail-pill" onclick="quickJumpDay(14, this)">D14</div>
       </div>
 
-      <!-- ==================== 3. 餐饮页 (每餐5选1) ==================== -->
-      <div class="m-dining-view" id="m-view-dining">
-        <div class="m-dining-intro">
-          🏆 <b>210家多年老店 ✕ 本地人扎堆老号地图：</b><br>
-          已在上方地图实时标记出当前日的备选餐馆位置与店名！点击餐馆或切换餐别，地图将精准聚焦！
-        </div>
-        {dining_html}
-      </div>
+      <!-- 可滚动主体内容容器 -->
+      <div class="m-content-container" id="m-content-container">
 
-      <!-- ==================== 4. 观鸟与野生动物页 ==================== -->
-      <div class="m-birding-view" id="m-view-birding">
-        <div class="m-birding-intro">
-          🦉 <b>小红书 ✕ 中国观鸟记录中心实战纪录：</b><br>
-          上方地图已实时标出当天最佳观鸟点！点击任一天即可在地图上查看位置与一键导航。
-        </div>
-        {birding_html}
-      </div>
+        <!-- ==================== 1. 行程页 ==================== -->
+        <div class="m-scroll-body" id="m-view-timeline">
+          <div class="m-metrics-strip">
+            <div class="m-m-box"><div class="m-lbl">总里程</div><div class="m-val">{TRIP_DATA['summary']['total_distance_km']} <small style="font-size:8px;">km</small></div></div>
+            <div class="m-m-box"><div class="m-lbl">总耗时</div><div class="m-val">{TRIP_DATA['summary']['total_driving_hours']} <small style="font-size:8px;">h</small></div></div>
+            <div class="m-m-box"><div class="m-lbl">高速费</div><div class="m-val">¥{TRIP_DATA['summary']['total_tolls_rmb']}</div></div>
+            <div class="m-m-box"><div class="m-lbl">燃油费</div><div class="m-val">¥{TRIP_DATA['summary']['total_fuel_cost_rmb']}</div></div>
+            <div class="m-m-box"><div class="m-lbl">总预算</div><div class="m-val">¥{TRIP_DATA['summary']['total_budget_rmb']}</div></div>
+          </div>
 
-      <!-- ==================== 5. 国保超深度研学专区 (真实实景大图卡片) ==================== -->
-      <div class="m-culture-view" id="m-view-culture">
-        <div class="m-culture-intro">
-          🏛️ <b>全国重点文物保护单位 ✕ 维基百科/国家文物局收录实景：</b><br>
-          上方地图已标出各处国保的<b>真实实景微缩照片、行进路线、前进方向箭头与点对点距离/耗时标牌</b>！
-        </div>
-        {heritage_html}
-      </div>
+          <div class="m-rules-banner">
+            <h4>🛡️ 核心安全与关键规则</h4>
+            <ul>{rules_html}</ul>
+          </div>
 
-      <!-- ==================== 6. 提醒页 (海拔剖面 + 极寒装备 + 安全整合) ==================== -->
-      <div class="m-tips-view" id="m-view-tips">
-        <!-- 海拔变化曲线 -->
-        <div class="m-sub-card">
-          <h3>🏔️ 14天自驾落脚点海拔变化曲线 (米)</h3>
-          <p style="font-size:11px; color:var(--text-muted); margin-bottom:10px;">乌鲁木齐 (918m) ➔ 喀纳斯湖 (1374m) ➔ 吐鲁番盆地 (30m)</p>
-          <div style="height: 240px;">
-            <canvas id="mChart"></canvas>
+          {all_days}
+        </div>
+
+        <!-- ==================== 3. 餐饮页 (每餐5选1) ==================== -->
+        <div class="m-dining-view" id="m-view-dining">
+          <div class="m-dining-intro">
+            🏆 <b>210家多年老店 ✕ 本地人扎堆老号地图：</b><br>
+            已在上方地图实时标记出当前日的备选餐馆位置与店名！点击餐馆或切换餐别，地图将精准聚焦！
+          </div>
+          {dining_html}
+        </div>
+
+        <!-- ==================== 4. 观鸟与野生动物页 ==================== -->
+        <div class="m-birding-view" id="m-view-birding">
+          <div class="m-birding-intro">
+            🦉 <b>小红书 ✕ 中国观鸟记录中心实战纪录：</b><br>
+            上方地图已实时标出当天最佳观鸟点！点击任一天即可在地图上查看位置与一键导航。
+          </div>
+          {birding_html}
+        </div>
+
+        <!-- ==================== 5. 国保超深度研学专区 (真实实景大图卡片) ==================== -->
+        <div class="m-culture-view" id="m-view-culture">
+          <div class="m-culture-intro">
+            🏛️ <b>全国重点文物保护单位 ✕ 维基百科/国家文物局收录实景：</b><br>
+            上方地图已标出各处国保的<b>真实实景微缩照片、行进路线、前进方向箭头与点对点距离/耗时标牌</b>！
+          </div>
+          {heritage_html}
+        </div>
+
+        <!-- ==================== 6. 提醒页 (海拔剖面 + 极寒装备 + 安全整合) ==================== -->
+        <div class="m-tips-view" id="m-view-tips">
+          <!-- 海拔变化曲线 -->
+          <div class="m-sub-card">
+            <h3>🏔️ 14天自驾落脚点海拔变化曲线 (米)</h3>
+            <p style="font-size:11px; color:var(--text-muted); margin-bottom:10px;">乌鲁木齐 (918m) ➔ 喀纳斯湖 (1374m) ➔ 吐鲁番盆地 (30m)</p>
+            <div style="height: 240px;">
+              <canvas id="mChart"></canvas>
+            </div>
+          </div>
+
+          <!-- 极寒冰雪装备 -->
+          <div class="m-sub-card">
+            <h3>❄️ 高尔夫极寒冰雪行车自检清单</h3>
+            <div style="font-size:11.5px; color:#cbd5e1; line-height:1.6;">
+              • <b>雪地胎：</b>驱动轮在布尔津必须换装深度花纹雪地胎。<br>
+              • <b>防滑链：</b>后备箱常备匹配高尔夫尺寸的金属防滑链（提前试装）。<br>
+              • <b>应急物资：</b>折叠雪铲、搭电宝、拖车绳、-35#极寒防冻玻璃水。<br>
+              • <b>极寒防寒：</b>禾木清晨（-15°C~-18°C）穿长款厚羽绒服 + 防滑雪地靴。
+            </div>
+          </div>
+
+          <!-- 安全规则机制 -->
+          <div class="m-sub-card">
+            <h3>🛡️ 新疆自驾核心安全与避坑守则</h3>
+            <div style="font-size:11.5px; color:#fde68a; line-height:1.6;">
+              • <b>防暗冰：</b>喀纳斯/禾木盘山公路背阴弯道易结暗冰，使用低速挡平稳减速，严禁猛打方向。<br>
+              • <b>闭馆时间：</b>可可托海 08:30 启程避开极寒；北庭故城 14:30 抵达避开冬季提前闭馆。<br>
+              • <b>达坂城横风缓冲：</b>返程预留百里风区车速控制与安检时间。
+            </div>
           </div>
         </div>
 
-        <!-- 极寒冰雪装备 -->
-        <div class="m-sub-card">
-          <h3>❄️ 高尔夫极寒冰雪行车自检清单</h3>
-          <div style="font-size:11.5px; color:#cbd5e1; line-height:1.6;">
-            • <b>雪地胎：</b>驱动轮在布尔津必须换装深度花纹雪地胎。<br>
-            • <b>防滑链：</b>后备箱常备匹配高尔夫尺寸的金属防滑链（提前试装）。<br>
-            • <b>应急物资：</b>折叠雪铲、搭电宝、拖车绳、-35#极寒防冻玻璃水。<br>
-            • <b>极寒防寒：</b>禾木清晨（-15°C~-18°C）穿长款厚羽绒服 + 防滑雪地靴。
-          </div>
-        </div>
-
-        <!-- 安全规则机制 -->
-        <div class="m-sub-card">
-          <h3>🛡️ 新疆自驾核心安全与避坑守则</h3>
-          <div style="font-size:11.5px; color:#fde68a; line-height:1.6;">
-            • <b>防暗冰：</b>喀纳斯/禾木盘山公路背阴弯道易结暗冰，使用低速挡平稳减速，严禁猛打方向。<br>
-            • <b>闭馆时间：</b>可可托海 08:30 启程避开极寒；北庭故城 14:30 抵达避开冬季提前闭馆。<br>
-            • <b>达坂城横风缓冲：</b>返程预留百里风区车速控制与安检时间。
-          </div>
-        </div>
       </div>
 
     </div>
@@ -1393,6 +1569,7 @@ def build_mobile_split_screen_html():
 
   <script>
     const mTripData = {json_dump};
+    let currentViewTab = 'timeline';
 
     // ==========================================
     // 1. 初始化顶部全局自适应小地图
@@ -1429,7 +1606,7 @@ def build_mobile_split_screen_html():
           🏨 ${{d.stay}}
         </div>
       `);
-      mk.on('click', () => {{ mHighlightAndScrollCard(d.day); }});
+      mk.on('click', () => {{ mFocusDay(d.day); }});
       mMarkers.push({{ day: d.day, mk, lat, lng }});
     }});
 
@@ -1472,24 +1649,47 @@ def build_mobile_split_screen_html():
       mMap.fitBounds(mPolyline.getBounds(), {{ padding: [15, 15] }});
     }}
 
+    // ==========================================
+    // 全局左侧快捷导航条同步机制
+    // ==========================================
+    function syncRailActive(dayNum) {{
+      const pills = document.querySelectorAll('.m-rail-pill');
+      pills.forEach((p, idx) => {{
+        if (idx === (dayNum - 1)) p.classList.add('active');
+        else p.classList.remove('active');
+      }});
+    }}
+
+    function quickJumpDay(dayNum, btn) {{
+      syncRailActive(dayNum);
+
+      if (currentViewTab === 'timeline') {{
+        mFocusDay(dayNum);
+      }} else if (currentViewTab === 'dining') {{
+        mFocusDineDay(dayNum);
+      }} else if (currentViewTab === 'birding') {{
+        mFocusBirdDay(dayNum);
+      }} else if (currentViewTab === 'culture') {{
+        mFocusHeritDay(dayNum);
+      }} else if (currentViewTab === 'map') {{
+        focusDedicatedDay(dayNum);
+      }}
+    }}
+
+    // 行程卡片全反差色高亮与聚焦
     function mFocusDay(dayNum) {{
+      syncRailActive(dayNum);
       document.querySelectorAll('.m-card').forEach(c => c.classList.remove('active'));
       const activeCard = document.getElementById('m-day-' + dayNum);
-      if (activeCard) activeCard.classList.add('active');
+      if (activeCard) {{
+        activeCard.classList.add('active');
+        activeCard.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+      }}
 
       const target = mMarkers.find(m => m.day === dayNum);
       if (target) {{
         mMap.flyTo([target.lat, target.lng], 8, {{ duration: 0.6 }});
         target.mk.openPopup();
-      }}
-    }}
-
-    function mHighlightAndScrollCard(dayNum) {{
-      document.querySelectorAll('.m-card').forEach(c => c.classList.remove('active'));
-      const activeCard = document.getElementById('m-day-' + dayNum);
-      if (activeCard) {{
-        activeCard.classList.add('active');
-        activeCard.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
       }}
     }}
 
@@ -1509,7 +1709,7 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
-    // 2. 餐饮专区 (地图精准标记餐馆街道坐标与高亮)
+    // 2. 餐饮专区 (全卡片对比反差暖金变色高亮)
     // ==========================================
     let currentDineMarkers = [];
     function showDiningDayOnMap(dayNum, targetMealKey = 'lunch', activeIdx = 0) {{
@@ -1569,6 +1769,17 @@ def build_mobile_split_screen_html():
       }}
     }}
 
+    function mFocusDineDay(dayNum) {{
+      syncRailActive(dayNum);
+      document.querySelectorAll('.m-dining-day-group').forEach(g => g.classList.remove('active'));
+      const activeGroup = document.getElementById('dine-day-' + dayNum);
+      if (activeGroup) {{
+        activeGroup.classList.add('active');
+        activeGroup.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+      }}
+      showDiningDayOnMap(dayNum, 'lunch', 0);
+    }}
+
     function switchMealOption(dayNum, mealKey, optIdx, btnEl) {{
       const section = btnEl ? btnEl.closest('.m-meal-section-box') : document.getElementById(`meal-sec-${{dayNum}}-${{mealKey}}`);
       if (section) {{
@@ -1587,6 +1798,7 @@ def build_mobile_split_screen_html():
     }}
 
     function focusDineMapMarker(dayNum, mealKey, idx) {{
+      mFocusDineDay(dayNum);
       showDiningDayOnMap(dayNum, mealKey, idx);
       const target = currentDineMarkers.find(m => m.idx === idx);
       if (target) {{
@@ -1596,7 +1808,7 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
-    // 3. 观鸟专区 (地图精简仅显示名称)
+    // 3. 观鸟专区 (全卡片对比反差翡翠绿变色高亮)
     // ==========================================
     function showBirdingDayOnMap(dayNum) {{
       const b = mTripData.birding_guide.find(item => item.day === dayNum);
@@ -1630,8 +1842,19 @@ def build_mobile_split_screen_html():
       mMap.flyTo([b.lat, b.lng], 13, {{ duration: 0.6 }});
     }}
 
+    function mFocusBirdDay(dayNum) {{
+      syncRailActive(dayNum);
+      document.querySelectorAll('.m-birding-card').forEach(c => c.classList.remove('active'));
+      const activeCard = document.getElementById('bird-day-' + dayNum);
+      if (activeCard) {{
+        activeCard.classList.add('active');
+        activeCard.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+      }}
+      showBirdingDayOnMap(dayNum);
+    }}
+
     // ==========================================
-    // 4. 国保专区 (带真实照片微缩图标牌与 16:9 弹出大图)
+    // 4. 国保专区 (全卡片对比反差紫罗兰变色高亮 + 真实照片标牌)
     // ==========================================
     function showHeritageDayOnMap(dayNum) {{
       const routeInfo = mTripData.heritage_routes[dayNum];
@@ -1646,7 +1869,6 @@ def build_mobile_split_screen_html():
       routeInfo.stops.forEach((s, idx) => {{
         pts.push([s.lat, s.lng]);
         
-        // 真实照片圆形微缩预览标牌
         const html = `
           <div class="custom-herit-photo-marker">
             <div class="herit-marker-thumb" style="background-image: url('${{s.img}}');">
@@ -1662,7 +1884,6 @@ def build_mobile_split_screen_html():
 
         const mk = L.marker([s.lat, s.lng], {{ icon: icon }}).addTo(dynamicLayers);
         
-        // 16:9 比例大图弹出窗口
         mk.bindPopup(`
           <div style="font-size:12px; line-height:1.45; color:#0f172a; width:220px;">
             <div style="width:100%; aspect-ratio:16/9; overflow:hidden; border-radius:6px; margin-bottom:6px; background:#000;">
@@ -1722,6 +1943,28 @@ def build_mobile_split_screen_html():
         mMap.fitBounds(heritPolyline.getBounds(), {{ padding: [35, 35], duration: 0.6 }});
       }} else if (pts.length === 1) {{
         mMap.flyTo(pts[0], 13, {{ duration: 0.6 }});
+      }}
+    }}
+
+    function mFocusHeritDay(dayNum) {{
+      syncRailActive(dayNum);
+      document.querySelectorAll('.m-herit-card').forEach(c => c.classList.remove('active'));
+      
+      let targetCard = document.getElementById('herit-day-' + dayNum + '-1') || document.querySelector('[id^="herit-day-' + dayNum + '"]');
+      if (targetCard) {{
+        targetCard.classList.add('active');
+        targetCard.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+        showHeritageDayOnMap(dayNum);
+      }} else {{
+        // 若当日无重点国保，则平滑滚向最近的国保日
+        const heritDays = [1, 8, 9, 10, 11, 12, 13];
+        const closest = heritDays.reduce((prev, curr) => Math.abs(curr - dayNum) < Math.abs(prev - dayNum) ? curr : prev);
+        targetCard = document.getElementById('herit-day-' + closest + '-1') || document.querySelector('[id^="herit-day-' + closest + '"]');
+        if (targetCard) {{
+          targetCard.classList.add('active');
+          targetCard.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
+          showHeritageDayOnMap(closest);
+        }}
       }}
     }}
 
@@ -1817,6 +2060,7 @@ def build_mobile_split_screen_html():
     }}
 
     function focusDedicatedDay(dayNum, btn) {{
+      syncRailActive(dayNum || 1);
       document.querySelectorAll('.m-map-day-pill').forEach(p => p.classList.remove('active'));
       if (btn) btn.classList.add('active');
 
@@ -1859,6 +2103,9 @@ def build_mobile_split_screen_html():
     // 6. 通用 Tab 切换引擎
     // ==========================================
     function mSwitch(viewId, el) {{
+      currentViewTab = viewId;
+      document.body.setAttribute('data-tab', viewId);
+
       if (el) {{
         document.querySelectorAll('.m-dock-item').forEach(i => i.classList.remove('active'));
         el.classList.add('active');
@@ -1867,9 +2114,11 @@ def build_mobile_split_screen_html():
       const mapZone = document.getElementById('m-map-zone');
       const contentContainer = document.getElementById('m-content-container');
       const dedicatedMapView = document.getElementById('m-view-map');
+      const rail = document.getElementById('m-quick-nav-rail');
 
       if (viewId === 'map') {{
         mapZone.classList.add('mode-hidden');
+        if (rail) rail.style.display = 'none';
         contentContainer.style.display = 'none';
         dedicatedMapView.style.display = 'block';
         initDedicatedMap();
@@ -1878,6 +2127,7 @@ def build_mobile_split_screen_html():
       }} else {{
         dedicatedMapView.style.display = 'none';
         contentContainer.style.display = 'block';
+        if (rail) rail.style.display = (viewId === 'tips') ? 'none' : 'flex';
       }}
 
       if (viewId === 'tips') {{
@@ -1898,12 +2148,13 @@ def build_mobile_split_screen_html():
         document.getElementById('m-top-map-hint').innerText = "🗺️ 行程路线 · 点下方卡片联动";
         setupRouteWithArrows();
         mMap.fitBounds(mPolyline.getBounds(), {{ padding: [15, 15] }});
+        mFocusDay(1);
       }} else if (viewId === 'dining') {{
-        showDiningDayOnMap(1, 'lunch', 0);
+        mFocusDineDay(1);
       }} else if (viewId === 'birding') {{
-        showBirdingDayOnMap(1);
+        mFocusBirdDay(1);
       }} else if (viewId === 'culture') {{
-        showHeritageDayOnMap(1);
+        mFocusHeritDay(1);
       }} else if (viewId === 'tips') {{
         renderMChart();
       }}
@@ -1912,47 +2163,38 @@ def build_mobile_split_screen_html():
     function jumpToDining(dayNum) {{
       const diningDock = document.querySelectorAll('.m-dock-item')[2];
       mSwitch('dining', diningDock);
-      showDiningDayOnMap(dayNum, 'lunch', 0);
-      setTimeout(() => {{
-        const targetDine = document.getElementById('dine-day-' + dayNum);
-        if (targetDine) targetDine.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
-      }}, 100);
+      mFocusDineDay(dayNum);
     }}
 
     function jumpToBirding(dayNum) {{
       const birdingDock = document.querySelectorAll('.m-dock-item')[3];
       mSwitch('birding', birdingDock);
-      showBirdingDayOnMap(dayNum);
-      setTimeout(() => {{
-        const targetBird = document.getElementById('bird-day-' + dayNum);
-        if (targetBird) targetBird.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
-      }}, 100);
+      mFocusBirdDay(dayNum);
     }}
 
     function jumpToHeritage(dayNum) {{
       const cultureDock = document.querySelectorAll('.m-dock-item')[4];
       mSwitch('culture', cultureDock);
-      showHeritageDayOnMap(dayNum);
-      setTimeout(() => {{
-        const targetHerit = document.getElementById('herit-day-' + dayNum + '-1') || document.querySelector('[id^="herit-day-' + dayNum + '"]');
-        if (targetHerit) targetHerit.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
-      }}, 100);
+      mFocusHeritDay(dayNum);
     }}
 
     document.addEventListener('DOMContentLoaded', () => {{
       mTripData.birding_guide.forEach(b => {{
         const card = document.getElementById('bird-day-' + b.day);
         if (card) {{
-          card.addEventListener('click', () => {{ showBirdingDayOnMap(b.day); }});
+          card.addEventListener('click', () => {{ mFocusBirdDay(b.day); }});
         }}
       }});
 
       mTripData.heritage_guide.forEach(h => {{
         const card = document.getElementById('herit-day-' + h.day + '-' + (h.order_in_day || 1));
         if (card) {{
-          card.addEventListener('click', () => {{ showHeritageDayOnMap(h.day); }});
+          card.addEventListener('click', () => {{ mFocusHeritDay(h.day); }});
         }}
       }});
+
+      // 默认激活 Day 1
+      mFocusDay(1);
     }});
 
     let mChartInstance = null;
@@ -2010,7 +2252,7 @@ def main():
     content = build_mobile_split_screen_html()
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(content)
-    print(f"🎉 包含真实国保实景照片与16:9比例大图卡的手机版路书已生成: {out_path}")
+    print(f"🎉 包含左侧快捷导航条与全卡片对比反差色变色的手机版路书已生成: {out_path}")
 
 
 if __name__ == "__main__":

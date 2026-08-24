@@ -294,8 +294,21 @@ def build_full_html():
       box-shadow: 0 6px 18px rgba(0,0,0,0.4);
     }}
     .day-card.active {{
-      border-color: #f87171;
-      box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.35);
+      background: linear-gradient(145deg, #3d1414 0%, #1f0b0b 100%) !important;
+      border: 1.5px solid #f87171 !important;
+      box-shadow: 0 8px 24px rgba(248, 113, 113, 0.35) !important;
+      transform: translateY(-2px);
+    }}
+    .day-card.active .card-top {{
+      background: rgba(248, 113, 113, 0.18) !important;
+      border-bottom-color: rgba(248, 113, 113, 0.4) !important;
+    }}
+    .day-card.active .card-title {{
+      color: #fff !important;
+    }}
+    .day-card.active .card-footer {{
+      background: rgba(0,0,0,0.4) !important;
+      border-top-color: rgba(248, 113, 113, 0.3) !important;
     }}
 
     .card-top {{
@@ -539,7 +552,12 @@ def build_full_html():
     .m-bird-nav-btn {{ display: inline-block; background: #059669; color: #fff; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-size: 11.5px; font-weight: 600; }}
 
     /* Heritage Styles in Desktop */
-    .m-herit-card {{ background: #181d33; border: 1px solid var(--card-border); border-radius: 14px; margin-bottom: 20px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }}
+    .m-herit-card {{ background: #181d33; border: 1px solid var(--card-border); border-radius: 14px; margin-bottom: 20px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.4); transition: all 0.25s ease; }}
+    .m-herit-card.active {{ background: linear-gradient(145deg, #340c4e 0%, #1b042b 100%) !important; border: 1.5px solid #c084fc !important; box-shadow: 0 8px 24px rgba(192, 132, 252, 0.4) !important; transform: translateY(-2px); }}
+    .m-dining-day-group {{ background: #181d33; border: 1px solid var(--card-border); border-radius: 14px; padding: 14px; margin-bottom: 20px; transition: all 0.25s ease; }}
+    .m-dining-day-group.active {{ background: linear-gradient(145deg, #3b2003 0%, #1c0e00 100%) !important; border: 1.5px solid #f59e0b !important; box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35) !important; transform: translateY(-2px); }}
+    .m-birding-card {{ background: #181d33; border: 1px solid var(--card-border); border-radius: 14px; padding: 16px; margin-bottom: 18px; transition: all 0.25s ease; }}
+    .m-birding-card.active {{ background: linear-gradient(145deg, #052e1f 0%, #021a11 100%) !important; border: 1.5px solid #10b981 !important; box-shadow: 0 8px 24px rgba(16, 185, 129, 0.35) !important; transform: translateY(-2px); }}
     .m-herit-photo-wrapper {{ width: 100%; aspect-ratio: 16 / 9; position: relative; background: #0b101c; overflow: hidden; }}
     .m-herit-photo-img {{ width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }}
     .m-herit-photo-overlay {{ position: absolute; inset: 0; background: linear-gradient(to top, rgba(9, 13, 22, 0.95) 0%, rgba(9, 13, 22, 0.2) 50%, rgba(0, 0, 0, 0.4) 100%); display: flex; flex-direction: column; justify-content: space-between; padding: 12px 16px; pointer-events: none; }}
