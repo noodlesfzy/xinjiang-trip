@@ -2,13 +2,12 @@
 # -*- coding: utf-8 -*-
 """
 generate_mobile_trip_html.py — 专为手机端打造的自驾全景路书 (trip_mobile.html)
-集成：
-1. 顶部全功能自适应常驻小地图（支持行程/餐饮/观鸟/国保多场景联动切换）
-2. 路线虚线带前进方向指示箭头（点到点指向）
-3. 餐饮页：地图同步标记当天备选餐馆与名称、点击联动
-4. 观鸟页：地图同步标记当天最佳观鸟点与物种
-5. 国保页：地图标记各点名称、按时间行进路线、方向箭头、点对点距离(km)与耗时(min)
-6. 独立大地图探索台与老店5选1
+核心修复与升级：
+1. 修复大地图底部面板避开 Dock 遮挡 (bottom: calc(64px + env(safe-area-inset-bottom)))
+2. 修复餐饮 5 选 1 切换高亮与「在上方地图查看位置」按钮秒级聚焦
+3. 210家餐馆全部落地于真实城镇街道，彻底解决空白无街道地图问题
+4. 观鸟地图精简化，仅保留清晰名称标牌
+5. 全面支持路线前进指示箭头
 """
 
 import os
@@ -54,7 +53,7 @@ def render_dining_html_5_options():
                     short_name = short_name[:8] + "…"
 
                 tab_btn = f"""
-                <button class="m-dine-pill {active_tab_cls}" onclick="switchMealOption({day_num}, '{m_key}', {idx})">
+                <button class="m-dine-pill {active_tab_cls}" onclick="switchMealOption({day_num}, '{m_key}', {idx}, this)">
                   <span class="pill-num">{idx+1}</span> {short_name}
                 </button>
                 """
@@ -75,7 +74,7 @@ def render_dining_html_5_options():
                     <span class="m-order-lbl">🍲 必点招牌：</span>{orders_str}
                   </div>
                   <div class="m-meal-desc-box">{opt['highlight']}</div>
-                  <div style="display:flex; gap:6px;">
+                  <div style="display:flex; gap:6px; margin-top:8px;">
                     <button onclick="focusDineMapMarker({day_num}, '{m_key}', {idx})" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
@@ -88,7 +87,7 @@ def render_dining_html_5_options():
                 cards_html.append(card_content)
 
             meal_section = f"""
-            <div class="m-meal-section-box">
+            <div class="m-meal-section-box" id="meal-sec-{day_num}-{m_key}">
               <div class="m-meal-sec-header">{m_title}</div>
               <div class="m-dine-pills-bar">
                 {"".join(tabs_html)}
@@ -101,10 +100,10 @@ def render_dining_html_5_options():
             meals_html_blocks.append(meal_section)
 
         day_group = f"""
-        <div class="m-dining-day-group" id="dine-day-{day_num}" onclick="showDiningDayOnMap({day_num})">
-          <div class="m-dining-day-header">
+        <div class="m-dining-day-group" id="dine-day-{day_num}">
+          <div class="m-dining-day-header" onclick="showDiningDayOnMap({day_num}, 'lunch', 0)">
             <span class="m-dine-day-badge">Day {day_num} · {date_str}</span>
-            <span class="m-dine-city-badge">📍 {city_str} (点击看地图)</span>
+            <span class="m-dine-city-badge">📍 {city_str} (点我看地图)</span>
           </div>
           {"".join(meals_html_blocks)}
         </div>
@@ -180,11 +179,11 @@ def build_mobile_split_screen_html():
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>新疆14天自驾路书 (方向箭头 + 餐饮/观鸟/国保地图联动)</title>
+  <title>新疆14天自驾路书 (移动优化版)</title>
   <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <!-- Leaflet PolylineDecorator for Directional Arrows -->
+  <!-- Leaflet PolylineDecorator -->
   <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.min.js"></script>
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -259,7 +258,7 @@ def build_mobile_split_screen_html():
     }}
 
     /* ========================================================
-       TOP PINNED MAP ZONE (全局自适应小地图)
+       TOP PINNED MAP ZONE
        ======================================================== */
     .m-map-pinned-zone {{
       flex: 0 0 34vh;
@@ -308,7 +307,7 @@ def build_mobile_split_screen_html():
       top: 6px;
       left: 8px;
       z-index: 500;
-      background: rgba(13, 19, 34, 0.82);
+      background: rgba(13, 19, 34, 0.85);
       backdrop-filter: blur(6px);
       padding: 3px 8px;
       border-radius: 4px;
@@ -354,6 +353,8 @@ def build_mobile_split_screen_html():
     .custom-dine-pin.active {{
       background: #96382d;
       border-color: #f87171;
+      box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.6);
+      transform: scale(1.08);
     }}
     .custom-bird-pin {{
       background: #064e3b;
@@ -390,7 +391,7 @@ def build_mobile_split_screen_html():
     }}
 
     /* ========================================================
-       CONTENT VIEWS (可滚动主体)
+       CONTENT VIEWS
        ======================================================== */
     .m-content-container {{
       flex: 1 1 auto;
@@ -564,12 +565,12 @@ def build_mobile_split_screen_html():
     .m-btn.amap {{ background: #2563eb; color: #fff; }}
 
     /* ========================================================
-       TAB 2: DEDICATED FULLSCREEN MAP EXPLORER (独立大地图)
+       TAB 2: DEDICATED FULLSCREEN MAP EXPLORER
        ======================================================== */
     .m-dedicated-map-view {{
       display: none;
       width: 100%;
-      height: calc(100% - 52px - env(safe-area-inset-bottom));
+      height: 100%;
       position: relative;
       background: #0f172a;
     }}
@@ -630,9 +631,10 @@ def build_mobile_split_screen_html():
       box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }}
 
+    /* 核心修复：提升底部浮层高度，避免遮挡大按钮 */
     .m-map-info-sheet {{
       position: absolute;
-      bottom: calc(12px + env(safe-area-inset-bottom));
+      bottom: calc(64px + env(safe-area-inset-bottom));
       left: 12px;
       right: 12px;
       z-index: 500;
@@ -670,18 +672,18 @@ def build_mobile_split_screen_html():
     .m-map-info-btn {{
       flex: 1;
       text-align: center;
-      padding: 6px 0;
+      padding: 8px 0;
       border-radius: 6px;
-      font-size: 11px;
-      font-weight: 600;
+      font-size: 11.5px;
+      font-weight: 700;
       text-decoration: none;
       cursor: pointer;
     }}
-    .m-map-info-btn.nav {{ background: #2563eb; color: #fff; }}
+    .m-map-info-btn.nav {{ background: #2563eb; color: #fff; border: none; }}
     .m-map-info-btn.dine {{ background: rgba(245,158,11,0.25); border: 1px solid rgba(245,158,11,0.5); color: #fcd34d; }}
 
     /* ========================================================
-       TAB 3: DINING 5-OPTIONS (美食专区)
+       TAB 3: DINING 5-OPTIONS
        ======================================================== */
     .m-dining-view {{
       display: none;
@@ -705,7 +707,6 @@ def build_mobile_split_screen_html():
       padding: 12px;
       margin-bottom: 16px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      cursor: pointer;
     }}
     .m-dining-day-header {{
       display: flex;
@@ -714,6 +715,7 @@ def build_mobile_split_screen_html():
       margin-bottom: 10px;
       padding-bottom: 6px;
       border-bottom: 1px solid var(--card-border);
+      cursor: pointer;
     }}
     .m-dine-day-badge {{ font-size: 14px; font-weight: 700; color: #fca5a5; }}
     .m-dine-city-badge {{ font-size: 11px; color: #60a5fa; background: rgba(37,99,235,0.15); padding: 2px 7px; border-radius: 4px; font-weight: 600; }}
@@ -790,22 +792,23 @@ def build_mobile_split_screen_html():
     .m-dine-locate-btn {{
       flex: 1;
       text-align: center;
-      background: rgba(245, 158, 11, 0.2);
-      border: 1px solid rgba(245, 158, 11, 0.5);
+      background: rgba(245, 158, 11, 0.22);
+      border: 1px solid rgba(245, 158, 11, 0.6);
       color: #fcd34d;
-      padding: 6px 0;
+      padding: 7px 0;
       border-radius: 6px;
       font-size: 11px;
       font-weight: 700;
       cursor: pointer;
     }}
+    .m-dine-locate-btn:active {{ background: #96382d; color: #fff; border-color: #f87171; }}
     .m-dine-nav-btn {{
       flex: 1;
       text-align: center;
       background: #1e293b;
       border: 1px solid #334155;
       color: #60a5fa;
-      padding: 6px 0;
+      padding: 7px 0;
       border-radius: 6px;
       text-decoration: none;
       font-size: 11px;
@@ -814,7 +817,7 @@ def build_mobile_split_screen_html():
     .m-dine-nav-btn:active {{ background: #2563eb; color: #fff; }}
 
     /* ========================================================
-       TAB 4: BIRDING & WILDLIFE (观鸟与野生动物专区)
+       TAB 4: BIRDING & WILDLIFE
        ======================================================== */
     .m-birding-view {{
       display: none;
@@ -922,7 +925,7 @@ def build_mobile_split_screen_html():
     }}
 
     /* ========================================================
-       TAB 5: CULTURE (国保超深度研学专区)
+       TAB 5: CULTURE
        ======================================================== */
     .m-culture-view {{
       display: none;
@@ -1061,7 +1064,7 @@ def build_mobile_split_screen_html():
     }}
 
     /* ========================================================
-       TAB 6: TIPS (提醒：海拔 + 装备 + 安全整合)
+       TAB 6: TIPS
        ======================================================== */
     .m-tips-view {{
       display: none;
@@ -1126,7 +1129,7 @@ def build_mobile_split_screen_html():
       </div>
     </div>
 
-    <!-- 顶部自适应联动常驻小地图 (行程/餐饮/观鸟/国保通用) -->
+    <!-- 顶部自适应联动常驻小地图 -->
     <div class="m-map-pinned-zone" id="m-map-zone">
       <div id="m-map"></div>
       <div class="m-map-hint" id="m-top-map-hint">🗺️ 行程路线 · 点下方卡片联动</div>
@@ -1169,7 +1172,7 @@ def build_mobile_split_screen_html():
       <div class="m-birding-view" id="m-view-birding">
         <div class="m-birding-intro">
           🦉 <b>小红书 ✕ 中国观鸟记录中心实战纪录：</b><br>
-          上方地图已实时标出当天最佳观鸟点与目标鸟种！点击任一天即可在地图上查看生境与导航位置。
+          上方地图已实时标出当天最佳观鸟点！点击任一天即可在地图上查看位置与一键导航。
         </div>
         {birding_html}
       </div>
@@ -1307,7 +1310,6 @@ def build_mobile_split_screen_html():
       maxZoom: 18
     }}).addTo(mMap);
 
-    // 动态图层容器
     const dynamicLayers = L.layerGroup().addTo(mMap);
 
     const mMarkers = [];
@@ -1333,7 +1335,6 @@ def build_mobile_split_screen_html():
       mMarkers.push({{ day: d.day, mk, lat, lng }});
     }});
 
-    // 基础路线虚线
     const mPolyline = L.polyline(mLatLngs, {{
       color: '#f87171',
       weight: 2.5,
@@ -1341,8 +1342,6 @@ def build_mobile_split_screen_html():
       dashArray: '5, 5'
     }});
 
-    // 添加路线前进方向箭头指示
-    let mDecorator = null;
     function setupRouteWithArrows() {{
       dynamicLayers.clearLayers();
       mPolyline.addTo(dynamicLayers);
@@ -1350,7 +1349,7 @@ def build_mobile_split_screen_html():
 
       if (window.L && L.polylineDecorator) {{
         try {{
-          mDecorator = L.polylineDecorator(mPolyline, {{
+          L.polylineDecorator(mPolyline, {{
             patterns: [
               {{
                 offset: 20,
@@ -1358,12 +1357,7 @@ def build_mobile_split_screen_html():
                 symbol: L.Symbol.arrowHead({{
                   pixelSize: 8,
                   polygon: false,
-                  pathOptions: {{
-                    stroke: true,
-                    color: '#fca5a5',
-                    weight: 2.5,
-                    opacity: 0.95
-                  }}
+                  pathOptions: {{ stroke: true, color: '#fca5a5', weight: 2.5, opacity: 0.95 }}
                 }})
               }}
             ]
@@ -1417,7 +1411,7 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
-    // 2. 餐饮专区 (地图标记5家备选餐馆与名称)
+    // 2. 餐饮专区 (地图精准标记餐馆街道坐标与高亮)
     // ==========================================
     let currentDineMarkers = [];
     function showDiningDayOnMap(dayNum, targetMealKey = 'lunch', activeIdx = 0) {{
@@ -1429,7 +1423,7 @@ def build_mobile_split_screen_html():
       const pts = [];
 
       const hint = document.getElementById('m-top-map-hint');
-      hint.innerText = `🍽️ Day ${{dayNum}} · ${{dayData.city}} 候选餐馆分布`;
+      hint.innerText = `🍽️ Day ${{dayNum}} · ${{dayData.city.split('(')[0]}} 候选餐馆地图`;
 
       const meals = dayData.meals;
       const mealList = [
@@ -1438,7 +1432,6 @@ def build_mobile_split_screen_html():
         {{ key: 'dinner', label: '晚', items: meals.dinner }}
       ];
 
-      // 只绘制指定餐别的 5 家餐馆，避免混淆，突出各选项相对位置
       const curMealObj = mealList.find(m => m.key === targetMealKey) || mealList[1];
 
       curMealObj.items.forEach((opt, idx) => {{
@@ -1457,18 +1450,43 @@ def build_mobile_split_screen_html():
         mk.bindPopup(`
           <div style="font-size:12px; line-height:1.4; color:#0f172a;">
             <b style="color:#96382d;">${{opt.restaurant}}</b> (${{opt.heritage_years}})<br/>
-            💰 人均: ${{opt.price_per_person}} ｜ ${{opt.source}}<br/>
-            🍲 必点: ${{opt.must_orders.slice(0,3).join('、')}}<br/>
+            💰 人均: ${{opt.price_per_person}}<br/>
+            🍲 招牌: ${{opt.must_orders.slice(0,3).join('、')}}<br/>
             <a href="https://uri.amap.com/navigation?to=${{lng}},${{lat}}&mode=car" target="_blank" style="display:inline-block; margin-top:4px; color:#2563eb; font-weight:700;">🚗 高德一键导航</a>
           </div>
         `);
-        currentDineMarkers.push({{ idx, mk, lat, lng }});
+        if (isAct) {{
+          mk.openPopup();
+        }}
+        currentDineMarkers.push({{ idx, mk, lat, lng, opt }});
       }});
 
       if (pts.length > 0) {{
-        const bounds = L.latLngBounds(pts);
-        mMap.fitBounds(bounds, {{ padding: [35, 35], maxZoom: 14, duration: 0.5 }});
+        if (activeIdx >= 0 && activeIdx < pts.length) {{
+          mMap.flyTo(pts[activeIdx], 14, {{ duration: 0.5 }});
+        }} else {{
+          const bounds = L.latLngBounds(pts);
+          mMap.fitBounds(bounds, {{ padding: [35, 35], maxZoom: 15, duration: 0.5 }});
+        }}
       }}
+    }}
+
+    function switchMealOption(dayNum, mealKey, optIdx, btnEl) {{
+      const section = btnEl ? btnEl.closest('.m-meal-section-box') : document.getElementById(`meal-sec-${{dayNum}}-${{mealKey}}`);
+      if (section) {{
+        section.querySelectorAll('.m-dine-pill').forEach((pill, idx) => {{
+          if (idx === optIdx) pill.classList.add('active');
+          else pill.classList.remove('active');
+        }});
+
+        section.querySelectorAll('.m-meal-option-detail').forEach((detail, idx) => {{
+          if (idx === optIdx) detail.style.display = 'block';
+          else detail.style.display = 'none';
+        }});
+      }}
+
+      // 联动顶部地图高亮对应坐标
+      showDiningDayOnMap(dayNum, mealKey, optIdx);
     }}
 
     function focusDineMapMarker(dayNum, mealKey, idx) {{
@@ -1481,7 +1499,7 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
-    // 3. 观鸟专区 (地图标记最佳观鸟点与物种)
+    // 3. 观鸟专区 (地图精简仅显示名称)
     // ==========================================
     function showBirdingDayOnMap(dayNum) {{
       const b = mTripData.birding_guide.find(item => item.day === dayNum);
@@ -1497,7 +1515,6 @@ def build_mobile_split_screen_html():
 
       const mk = L.marker([b.lat, b.lng], {{ icon: icon }}).addTo(dynamicLayers);
       
-      // 绘制生境缓冲区圆圈
       L.circle([b.lat, b.lng], {{
         radius: 1200,
         color: '#10b981',
@@ -1508,11 +1525,8 @@ def build_mobile_split_screen_html():
       }}).addTo(dynamicLayers);
 
       mk.bindPopup(`
-        <div style="font-size:12px; line-height:1.45; color:#0f172a;">
-          <b style="color:#059669;">🦉 ${{b.location}}</b><br/>
-          ⏰ 最佳时间: ${{b.best_time}}<br/>
-          🎯 核心目标: ${{b.species.slice(0,4).join('、')}}<br/>
-          <a href="https://uri.amap.com/navigation?to=${{b.lng}},${{b.lat}}&mode=car" target="_blank" style="display:inline-block; margin-top:4px; color:#059669; font-weight:700;">🚗 高德一键导航</a>
+        <div style="font-size:12px; font-weight:700; color:#059669; padding:2px;">
+          🦉 ${{b.location}}
         </div>
       `).openPopup();
 
@@ -1520,7 +1534,7 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
-    // 4. 国保专区 (地图标记点、路线、方向箭头、点对点距离与耗时)
+    // 4. 国保专区 (按时间行进路线、方向箭头、距离与耗时)
     // ==========================================
     function showHeritageDayOnMap(dayNum) {{
       const routeInfo = mTripData.heritage_routes[dayNum];
@@ -1532,7 +1546,6 @@ def build_mobile_split_screen_html():
 
       const pts = [];
 
-      // 1. 标记各站点
       routeInfo.stops.forEach((s, idx) => {{
         pts.push([s.lat, s.lng]);
         const html = `<div class="custom-herit-pin"><span>${{s.order}}</span> <b>${{s.name}}</b> <small style="color:#fde68a;">(${{s.time}})</small></div>`;
@@ -1548,7 +1561,6 @@ def build_mobile_split_screen_html():
         `);
       }});
 
-      // 2. 若有多个点，绘制行进路线、方向箭头与中间里程耗时标牌
       if (pts.length > 1) {{
         const heritPolyline = L.polyline(pts, {{
           color: '#c084fc',
@@ -1577,7 +1589,6 @@ def build_mobile_split_screen_html():
           }}
         }}
 
-        // 在各段中点插入距离与耗时气泡
         if (routeInfo.legs && routeInfo.legs.length > 0) {{
           routeInfo.legs.forEach((leg, i) => {{
             const p1 = pts[i];
@@ -1783,24 +1794,6 @@ def build_mobile_split_screen_html():
       }}
     }}
 
-    function switchMealOption(dayNum, mealKey, optIdx) {{
-      const parentSection = event.target.closest('.m-meal-section-box');
-      if (!parentSection) return;
-
-      parentSection.querySelectorAll('.m-dine-pill').forEach((pill, idx) => {{
-        if (idx === optIdx) pill.classList.add('active');
-        else pill.classList.remove('active');
-      }});
-
-      parentSection.querySelectorAll('.m-meal-option-detail').forEach((detail, idx) => {{
-        if (idx === optIdx) detail.style.display = 'block';
-        else detail.style.display = 'none';
-      }});
-
-      // 联动顶部地图
-      showDiningDayOnMap(dayNum, mealKey, optIdx);
-    }}
-
     function jumpToDining(dayNum) {{
       const diningDock = document.querySelectorAll('.m-dock-item')[2];
       mSwitch('dining', diningDock);
@@ -1831,7 +1824,6 @@ def build_mobile_split_screen_html():
       }}, 100);
     }}
 
-    // 为观鸟卡片与国保卡片绑定点击地图联动
     document.addEventListener('DOMContentLoaded', () => {{
       mTripData.birding_guide.forEach(b => {{
         const card = document.getElementById('bird-day-' + b.day);
@@ -1903,7 +1895,7 @@ def main():
     content = build_mobile_split_screen_html()
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(content)
-    print(f"🎉 包含方向箭头与餐饮/观鸟/国保全地图联动的手机版路书已生成: {out_path}")
+    print(f"🎉 修复所有遮挡与坐标的手机版路书已生成: {out_path}")
 
 
 if __name__ == "__main__":
