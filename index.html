@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>新疆14天自驾路书</title>
+  <script>
+    // 智能识别设备：移动端优先进入 trip_mobile.html，桌面端进入 trip.html
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
+    if (isMobile) {
+      window.location.replace("trip_mobile.html");
+    } else {
+      window.location.replace("trip.html");
+    }
+  </script>
+  <style>
+    body {
+      background-color: #090d16;
+      color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+    .box {
+      background: #131b2e;
+      border: 1px solid #232f48;
+      padding: 30px;
+      border-radius: 16px;
+      max-width: 360px;
+    }
+    h2 { font-size: 18px; margin-bottom: 12px; color: #f87171; }
+    p { font-size: 13px; color: #94a3b8; margin-bottom: 20px; }
+    .btn {
+      display: block;
+      margin: 10px 0;
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .btn-mobile { background: #96382d; color: #fff; }
+    .btn-desktop { background: #1e293b; color: #93c5fd; border: 1px solid #334155; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>🧭 新疆14天自驾路书</h2>
+    <p>正在自动跳转中... 若未跳转请手动选择：</p>
+    <a href="trip_mobile.html" class="btn btn-mobile">📱 手机版路书 (推荐)</a>
+    <a href="trip.html" class="btn btn-desktop">💻 电脑桌面双栏版</a>
+  </div>
+</body>
+</html>
