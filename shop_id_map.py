@@ -6,6 +6,8 @@ shop_id_map.py — 大众点评官方真实 ShopID 映射库
 
 VERIFIED_EXACT_SHOP_IDS = {
     # 乌鲁木齐市区
+    "喀什一把抓": "H7ZVX3Sh3UurCu3o",
+    "喀什一把抓(和田二街店)": "H7ZVX3Sh3UurCu3o",
     "余苏甫大眼睛烤肉店": "G6beOnwI0zgcEKzi",
     "阿布拉的馕": "2183563",
     "阿布拉的馕(西北路总店)": "2183563",
