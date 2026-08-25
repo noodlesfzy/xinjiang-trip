@@ -3,8 +3,11 @@
 """
 generate_mobile_trip_html.py — 专为手机端打造的自驾全景路书 (trip_mobile.html)
 核心特性：
-1. 【餐饮选项切换地图精准高亮聚焦】：
-   - 点击早/午/晚任意餐馆选项（或“在上方地图查看位置”），地图自动高亮该餐馆 Pin、平滑飞至坐标并打开详情弹窗。
+1. 【餐饮选项切换地图精准平滑飞至与高亮聚焦】：
+   - 点击早/午/晚任意餐馆 1~5 选项药丸（或点击“📍 在上方地图查看位置” / 点击地图上的餐馆 Pin）：
+     * 地图立即以 15 级街区比例平滑飞至该餐馆真实街道坐标 (mMap.flyTo)
+     * 该餐馆 Pin 脉冲高亮置顶 (Z-Index 9999) 并弹出详实美食卡
+     * 顶部浮动提示条同步显示餐馆名称与人均
 2. 【智能系统时间与行程日期/早中晚三餐同步联动】：
    - 若系统当前时间处于行程计划区间内（2026-10-25 ~ 2026-11-07），各页面默认定位至当天。
    - 餐饮页面按照时间规则：
@@ -396,11 +399,11 @@ def build_mobile_split_screen_html():
 
     /* 选中餐馆的强烈高反差与发光效果 */
     .custom-dine-pin.active {{
-      background: #b91c1c !important;
-      color: #fff !important;
+      background: #dc2626 !important;
+      color: #ffffff !important;
       border: 2px solid #fef08a !important;
-      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.7), 0 8px 20px rgba(0,0,0,0.9) !important;
-      transform: scale(1.22) translateY(-2px);
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.8), 0 8px 22px rgba(0,0,0,0.95) !important;
+      transform: scale(1.25) translateY(-3px);
       z-index: 9999 !important;
     }}
 
@@ -947,8 +950,8 @@ def build_mobile_split_screen_html():
       transition: all 0.2s;
     }}
     .m-meal-section-box.active-meal {{
-      border-color: rgba(245, 158, 11, 0.5);
-      background: rgba(245, 158, 11, 0.05);
+      border-color: rgba(245, 158, 11, 0.6);
+      background: rgba(245, 158, 11, 0.06);
     }}
     .m-meal-sec-header {{ font-size: 12.5px; font-weight: 700; color: #f87171; margin-bottom: 8px; }}
 
@@ -1473,7 +1476,7 @@ def build_mobile_split_screen_html():
         <div class="m-dining-view" id="m-view-dining">
           <div class="m-dining-intro">
             🏆 <b>210家多年老店 ✕ 本地人扎堆老号地图：</b><br>
-            系统已按当前时间自动推荐对应餐别！点击任意餐馆选项，上方地图将立即飞至该店精准街道坐标并高亮弹窗！
+            系统已按当前时间自动推荐对应餐别！点击任意餐馆 1~5 选项，上方地图将立即平滑飞至该店精准街道坐标并高亮弹窗！
           </div>
           {dining_html}
         </div>
@@ -1711,7 +1714,7 @@ def build_mobile_split_screen_html():
           🌡️ 气温: ${{d.weather || ''}}<br/>
           🏨 ${{d.stay}}
         </div>
-      `);
+      `, {{ autoPan: false, offset: [0, -10] }});
       mk.on('click', () => {{ mFocusDay(d.day, true); }});
       mMarkers.push({{ day: d.day, mk, lat, lng }});
     }});
@@ -1966,89 +1969,110 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
-    // 2. 餐饮专区 (选项切换精准高亮定位 + 全景展示)
+    // 2. 餐饮专区 (选项切换精准高亮定位 + 平滑飞至)
     // ==========================================
-    let currentDineMarkers = [];
+    let currentDineDay = null;
+    let currentDineMarkers = []; // {{ dayNum, mealKey, idx, mk, lat, lng, opt }}
+
     function showDiningDayOnMap(dayNum, targetMealKey = null, activeIdx = -1, flyToActive = false) {{
       const dayData = mTripData.dining_guide.find(d => d.day === dayNum);
       if (!dayData) return;
 
-      dynamicLayers.clearLayers();
-      currentDineMarkers = [];
-      const pts = [];
-
       const hint = document.getElementById('m-top-map-hint');
-      hint.innerText = `🍽️ Day ${{dayNum}} · ${{dayData.city.split('(')[0]}} 当天全部精选餐馆 (共15家)`;
 
-      const meals = dayData.meals;
-      const mealConfigs = [
-        {{ key: 'breakfast', label: '早', color: '#f59e0b' }},
-        {{ key: 'lunch', label: '午', color: '#ef4444' }},
-        {{ key: 'dinner', label: '晚', color: '#a855f7' }}
-      ];
+      // 仅在日期变更或 Marker 集合为空时重新绘制
+      if (currentDineDay !== dayNum || currentDineMarkers.length === 0) {{
+        dynamicLayers.clearLayers();
+        currentDineMarkers = [];
+        currentDineDay = dayNum;
 
-      mealConfigs.forEach(mCfg => {{
-        const list = meals[mCfg.key] || [];
-        list.forEach((opt, idx) => {{
-          const lat = opt.lat;
-          const lng = opt.lng;
-          pts.push([lat, lng]);
+        const meals = dayData.meals;
+        const mealConfigs = [
+          {{ key: 'breakfast', label: '早', color: '#f59e0b' }},
+          {{ key: 'lunch', label: '午', color: '#ef4444' }},
+          {{ key: 'dinner', label: '晚', color: '#a855f7' }}
+        ];
 
-          const isSelected = (targetMealKey === mCfg.key && idx === activeIdx);
-          const actCls = isSelected ? 'active' : '';
-          const shortName = opt.restaurant.split('(')[0].trim();
-          const displayShort = shortName.length > 7 ? shortName.slice(0, 7) + '…' : shortName;
+        mealConfigs.forEach(mCfg => {{
+          const list = meals[mCfg.key] || [];
+          list.forEach((opt, idx) => {{
+            const lat = opt.lat;
+            const lng = opt.lng;
 
-          const html = `<div class="custom-dine-pin ${{actCls}} meal-${{mCfg.key}}" id="dine-pin-${{dayNum}}-${{mCfg.key}}-${{idx}}">
-            <span class="dine-meal-tag" style="background:${{mCfg.color}}; color:#fff; font-size:8.5px; padding:1px 3px; border-radius:3px; font-weight:700;">${{mCfg.label}}${{idx+1}}</span>
-            <b>${{displayShort}}</b>
-          </div>`;
-          const icon = L.divIcon({{ className: 'dine-div-icon', html: html, iconSize: null, iconAnchor: [20, 12] }});
+            const shortName = opt.restaurant.split('(')[0].trim();
+            const displayShort = shortName.length > 7 ? shortName.slice(0, 7) + '…' : shortName;
 
-          const mk = L.marker([lat, lng], {{ icon: icon, zIndexOffset: isSelected ? 1000 : 0 }}).addTo(dynamicLayers);
-          
-          mk.bindPopup(`
-            <div style="font-size:12px; line-height:1.45; color:#0f172a; min-width:190px;">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                <span style="background:${{mCfg.color}}; color:#fff; font-size:10px; padding:1px 5px; border-radius:3px; font-weight:700;">${{mCfg.label}}餐 · 选项${{idx+1}}</span>
-                <span style="font-size:10px; color:#96382d; font-weight:700;">🏆 ${{opt.heritage_years}}</span>
+            const html = `<div class="custom-dine-pin meal-${{mCfg.key}}" id="dine-pin-${{dayNum}}-${{mCfg.key}}-${{idx}}">
+              <span class="dine-meal-tag" style="background:${{mCfg.color}}; color:#fff; font-size:8.5px; padding:1px 3px; border-radius:3px; font-weight:700;">${{mCfg.label}}${{idx+1}}</span>
+              <b>${{displayShort}}</b>
+            </div>`;
+            const icon = L.divIcon({{ className: 'dine-div-icon', html: html, iconSize: null, iconAnchor: [20, 12] }});
+
+            const mk = L.marker([lat, lng], {{ icon: icon, zIndexOffset: 10 }}).addTo(dynamicLayers);
+            
+            mk.bindPopup(`
+              <div style="font-size:12px; line-height:1.45; color:#0f172a; min-width:190px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                  <span style="background:${{mCfg.color}}; color:#fff; font-size:10px; padding:1px 5px; border-radius:3px; font-weight:700;">${{mCfg.label}}餐 · 选项${{idx+1}}</span>
+                  <span style="font-size:10px; color:#96382d; font-weight:700;">🏆 ${{opt.heritage_years}}</span>
+                </div>
+                <b style="color:#0f172a; font-size:13px;">${{opt.restaurant}}</b><br/>
+                💰 人均: <b>${{opt.price_per_person}}</b> ｜ 来源: ${{opt.source}}<br/>
+                🍲 <b>必点：</b>${{opt.must_orders.slice(0,3).join(' · ')}}<br/>
+                <div style="font-size:11px; color:#475569; margin:4px 0;">${{opt.highlight}}</div>
+                <a href="https://uri.amap.com/navigation?to=${{lng}},${{lat}}&mode=car" target="_blank" style="display:block; text-align:center; background:#2563eb; color:#fff; padding:5px 0; border-radius:4px; text-decoration:none; font-weight:700; font-size:11px; margin-top:4px;">🚗 高德一键导航</a>
               </div>
-              <b style="color:#0f172a; font-size:13px;">${{opt.restaurant}}</b><br/>
-              💰 人均: <b>${{opt.price_per_person}}</b> ｜ 来源: ${{opt.source}}<br/>
-              🍲 <b>必点：</b>${{opt.must_orders.slice(0,3).join(' · ')}}<br/>
-              <div style="font-size:11px; color:#475569; margin:4px 0;">${{opt.highlight}}</div>
-              <a href="https://uri.amap.com/navigation?to=${{lng}},${{lat}}&mode=car" target="_blank" style="display:block; text-align:center; background:#2563eb; color:#fff; padding:5px 0; border-radius:4px; text-decoration:none; font-weight:700; font-size:11px; margin-top:4px;">🚗 高德一键导航</a>
-            </div>
-          `);
+            `, {{ autoPan: false, offset: [0, -10] }});
 
-          mk.on('click', () => {{
-            switchMealOption(dayNum, mCfg.key, idx, null, true);
-            const optCard = document.getElementById(`opt-${{dayNum}}-${{mCfg.key}}-${{idx}}`);
-            if (optCard) {{
-              optCard.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
-            }}
+            mk.on('click', () => {{
+              switchMealOption(dayNum, mCfg.key, idx, null, true);
+              const optCard = document.getElementById(`opt-${{dayNum}}-${{mCfg.key}}-${{idx}}`);
+              if (optCard) {{
+                optCard.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+              }}
+            }});
+
+            currentDineMarkers.push({{ dayNum, mealKey: mCfg.key, idx, mk, lat, lng, opt }});
           }});
-
-          if (isSelected) {{
-            mk.openPopup();
-          }}
-
-          currentDineMarkers.push({{ dayNum, mealKey: mCfg.key, idx, mk, lat, lng, opt }});
         }});
-      }});
+      }}
 
-      if (pts.length > 0) {{
-        if (flyToActive && targetMealKey && activeIdx >= 0) {{
-          const activeObj = currentDineMarkers.find(m => m.mealKey === targetMealKey && m.idx === activeIdx);
-          if (activeObj) {{
-            mMap.flyTo([activeObj.lat, activeObj.lng], 15, {{ duration: 0.5 }});
-            activeObj.mk.openPopup();
+      // 重置所有 Marker 激活状态与 Z-index
+      document.querySelectorAll('.custom-dine-pin').forEach(p => p.classList.remove('active'));
+      currentDineMarkers.forEach(m => m.mk.setZIndexOffset(10));
+
+      // 若指定了具体餐馆，执行高亮与飞至定位
+      if (targetMealKey && activeIdx >= 0) {{
+        const activeObj = currentDineMarkers.find(m => m.mealKey === targetMealKey && m.idx === activeIdx);
+        if (activeObj) {{
+          activeObj.mk.setZIndexOffset(9999);
+          const pinEl = document.getElementById(`dine-pin-${{dayNum}}-${{targetMealKey}}-${{activeIdx}}`);
+          if (pinEl) pinEl.classList.add('active');
+
+          if (hint) {{
             hint.innerText = `🍽️ Day ${{dayNum}} · 正在查看：${{activeObj.opt.restaurant}}`;
-            return;
           }}
+
+          if (flyToActive) {{
+            mMap.flyTo([activeObj.lat, activeObj.lng], 15, {{ animate: true, duration: 0.6 }});
+            setTimeout(() => {{
+              activeObj.mk.openPopup();
+            }}, 350);
+          }} else {{
+            activeObj.mk.openPopup();
+          }}
+          return;
         }}
+      }}
+
+      // 默认全景显示
+      if (currentDineMarkers.length > 0) {{
+        const pts = currentDineMarkers.map(m => [m.lat, m.lng]);
         const bounds = L.latLngBounds(pts);
         mMap.fitBounds(bounds, {{ padding: [35, 35], maxZoom: 15, duration: 0.5 }});
+        if (hint) {{
+          hint.innerText = `🍽️ Day ${{dayNum}} · ${{dayData.city.split('(')[0]}} 当天全部精选餐馆 (共15家)`;
+        }}
       }}
     }}
 
@@ -2072,11 +2096,13 @@ def build_mobile_split_screen_html():
       }}
     }}
 
-    // 满足需求1：在卡片中选择不同餐馆时，切换地图定位高亮显示并打开详情
+    // 在卡片中选择不同餐馆选项，在地图上平滑飞至并高亮打开 popup
     function switchMealOption(dayNum, mealKey, optIdx, btnEl, shouldFly = true) {{
+      isManualScrolling = true;
+      currentActiveDay = dayNum;
+
       const dayGroup = document.getElementById(`dine-day-${{dayNum}}`);
       if (dayGroup) {{
-        // 高亮对应餐别 section
         dayGroup.querySelectorAll('.m-meal-section-box').forEach(sec => {{
           sec.classList.remove('active-meal');
         }});
@@ -2097,11 +2123,30 @@ def build_mobile_split_screen_html():
       }}
 
       showDiningDayOnMap(dayNum, mealKey, optIdx, shouldFly);
+
+      clearTimeout(manualScrollTimer);
+      manualScrollTimer = setTimeout(() => {{
+        isManualScrolling = false;
+      }}, 800);
     }}
 
     function focusDineMapMarker(dayNum, mealKey, idx) {{
-      mFocusDineDay(dayNum, false);
+      isManualScrolling = true;
+      syncRailActive(dayNum);
+      currentActiveDay = dayNum;
+      
+      document.querySelectorAll('.m-dining-day-group').forEach(g => g.classList.remove('active'));
+      const activeGroup = document.getElementById('dine-day-' + dayNum);
+      if (activeGroup) {{
+        activeGroup.classList.add('active');
+      }}
+
       switchMealOption(dayNum, mealKey, idx, null, true);
+
+      clearTimeout(manualScrollTimer);
+      manualScrollTimer = setTimeout(() => {{
+        isManualScrolling = false;
+      }}, 800);
     }}
 
     // ==========================================
@@ -2112,6 +2157,7 @@ def build_mobile_split_screen_html():
       if (!b) return;
 
       dynamicLayers.clearLayers();
+      currentDineDay = null;
 
       const hint = document.getElementById('m-top-map-hint');
       hint.innerText = `🦉 Day ${{dayNum}} · ${{b.city}} 观鸟点: ${{b.location}}`;
@@ -2134,7 +2180,7 @@ def build_mobile_split_screen_html():
         <div style="font-size:12px; font-weight:700; color:#059669; padding:2px;">
           🦉 ${{b.location}}
         </div>
-      `).openPopup();
+      `, {{ autoPan: false, offset: [0, -10] }}).openPopup();
 
       mMap.flyTo([b.lat, b.lng], 13, {{ duration: 0.6 }});
     }}
@@ -2161,6 +2207,8 @@ def build_mobile_split_screen_html():
       if (!routeInfo) return;
 
       dynamicLayers.clearLayers();
+      currentDineDay = null;
+
       const hint = document.getElementById('m-top-map-hint');
       hint.innerText = `🏛️ Day ${{dayNum}} · 国保实景照片与行进路线`;
 
@@ -2194,7 +2242,7 @@ def build_mobile_split_screen_html():
             ⏰ 计划到达: <b>${{s.time}}</b><br/>
             <a href="https://uri.amap.com/navigation?to=${{s.lng}},${{s.lat}}&mode=car" target="_blank" style="display:inline-block; margin-top:6px; color:#7e22ce; font-weight:700;">🚗 高德一键导航</a>
           </div>
-        `);
+        `, {{ autoPan: false, offset: [0, -10] }});
       }});
 
       if (pts.length > 1) {{
@@ -2456,15 +2504,19 @@ def build_mobile_split_screen_html():
       setTimeout(() => {{ mMap.invalidateSize(); }}, 200);
 
       if (viewId === 'timeline') {{
+        currentDineDay = null;
         document.getElementById('m-top-map-hint').innerText = "🗺️ 行程路线 · 滚动卡片实时联动";
         setupRouteWithArrows();
         mMap.fitBounds(mPolyline.getBounds(), {{ padding: [15, 15] }});
         mFocusDay(targetDay, false);
       }} else if (viewId === 'dining') {{
+        currentDineDay = null;
         mFocusDineDay(targetDay, false, tripCtx.mealKey, 0);
       }} else if (viewId === 'birding') {{
+        currentDineDay = null;
         mFocusBirdDay(targetDay, false);
       }} else if (viewId === 'culture') {{
+        currentDineDay = null;
         mFocusHeritDay(targetDay, false);
       }} else if (viewId === 'tips') {{
         renderMChart();
