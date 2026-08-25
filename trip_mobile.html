@@ -175,15 +175,40 @@
     }
 
     /* 餐饮地图 Pin 脉冲扩散发光动画 */
-    @keyframes pulse-dine-glow {
+    /* 餐饮地图 Pin 脉冲扩散发光动画 (按三餐自身颜色专属脉冲) */
+    @keyframes pulse-breakfast-glow {
       0% {
-        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.95), 0 0 0 0 rgba(254, 240, 138, 0.85);
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.95), 0 0 12px rgba(245, 158, 11, 0.8);
       }
       70% {
-        box-shadow: 0 0 0 9px rgba(239, 68, 68, 0), 0 0 0 13px rgba(254, 240, 138, 0);
+        box-shadow: 0 0 0 10px rgba(245, 158, 11, 0), 0 0 16px rgba(245, 158, 11, 0);
       }
       100% {
-        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0), 0 0 0 0 rgba(254, 240, 138, 0);
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0), 0 0 0 0 rgba(245, 158, 11, 0);
+      }
+    }
+
+    @keyframes pulse-lunch-glow {
+      0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.95), 0 0 12px rgba(239, 68, 68, 0.8);
+      }
+      70% {
+        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0), 0 0 16px rgba(239, 68, 68, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0), 0 0 0 0 rgba(239, 68, 68, 0);
+      }
+    }
+
+    @keyframes pulse-dinner-glow {
+      0% {
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.95), 0 0 12px rgba(0, 0, 0, 0.8);
+      }
+      70% {
+        box-shadow: 0 0 0 10px rgba(0, 0, 0, 0), 0 0 16px rgba(0, 0, 0, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0), 0 0 0 0 rgba(0, 0, 0, 0);
       }
     }
 
@@ -223,12 +248,35 @@
     .custom-dine-dot.active {
       width: 18px !important;
       height: 18px !important;
-      background: rgba(255, 36, 66, 0.35) !important;
-      border: 2.5px solid #ff2442 !important;
-      box-shadow: 0 0 0 4px rgba(255, 36, 66, 0.25), 0 0 16px rgba(255, 36, 66, 0.95) !important;
-      animation: pulse-dine-glow 1.5s infinite !important;
       transform: scale(1.22);
       z-index: 9999 !important;
+    }
+    .custom-dine-dot.meal-breakfast.active {
+      background: rgba(245, 158, 11, 0.35) !important;
+      border: 2.5px solid #f59e0b !important;
+      animation: pulse-breakfast-glow 1.5s infinite !important;
+    }
+    .custom-dine-dot.meal-breakfast.active .dine-dot-inner {
+      background: #ffffff;
+      box-shadow: 0 0 3px rgba(245, 158, 11, 0.9);
+    }
+    .custom-dine-dot.meal-lunch.active {
+      background: rgba(239, 68, 68, 0.35) !important;
+      border: 2.5px solid #ef4444 !important;
+      animation: pulse-lunch-glow 1.5s infinite !important;
+    }
+    .custom-dine-dot.meal-lunch.active .dine-dot-inner {
+      background: #ffffff;
+      box-shadow: 0 0 3px rgba(239, 68, 68, 0.9);
+    }
+    .custom-dine-dot.meal-dinner.active {
+      background: rgba(0, 0, 0, 0.5) !important;
+      border: 2.5px solid #000000 !important;
+      animation: pulse-dinner-glow 1.5s infinite !important;
+    }
+    .custom-dine-dot.meal-dinner.active .dine-dot-inner {
+      background: #000000;
+      box-shadow: 0 0 3px rgba(255, 255, 255, 0.9);
     }
     .dine-dot-inner {
       width: 5px;
