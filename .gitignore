@@ -3,3 +3,12 @@ __pycache__/
 *.pyc
 .system_generated/
 *.log
+
+# 隐私与认证凭据防护
+*cookie*
+*.token
+*.env
+*.tmp
+.cn-scraper*
+.cn_scraper*
+
