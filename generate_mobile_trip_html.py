@@ -2206,6 +2206,7 @@ def build_mobile_split_screen_html():
           const shopId = opt.shop_id || '';
           const cleanName = fullName;
           const fullSearch = `${{cleanCity}} ${{cleanName}}`;
+          const encodedSearch = encodeURIComponent(fullSearch);
           const cityMap = {{
             '乌鲁木齐': 325, '福海': 2278, '布尔津': 2276, '禾木': 338, '喀纳斯': 338,
             '富蕴': 2277, '奇台': 2248, '吉木萨尔': 2249, '吐鲁番': 327, '鄯善': 2231, '柴窝堡': 325
