@@ -79,9 +79,11 @@ def render_dining_html_5_options():
                 active_card_cls = "style='display:block;'" if idx == 0 else "style='display:none;'"
 
                 full_name = opt["restaurant"]
+                shop_id = opt.get("shop_id", "")
                 clean_name = full_name
                 full_search = f"{clean_city} {clean_name}"
                 encoded_search = urllib.parse.quote(full_search)
+                dp_href = f"dianping://shopinfo?id={shop_id}" if shop_id else f"dianping://searchshoplist?keyword={encoded_search}"
 
                 # 药丸竖向列表排列
                 tab_btn = f"""
@@ -111,8 +113,8 @@ def render_dining_html_5_options():
                     <button onclick="event.stopPropagation(); focusDineMapMarker({day_num}, '{m_key}', {idx})" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="dianping://searchshoplist?keyword={encoded_search}" onclick="openDianpingDirect(event, '{clean_name}', '{clean_city}')" class="m-dine-dp-btn">
-                      🧡 大众点评直达
+                    <a href="{dp_href}" onclick="openDianpingDirect(event, '{shop_id}', '{clean_name}', '{clean_city}')" class="m-dine-dp-btn">
+                      🧡 大众点评详情直达
                     </a>
                   </div>
                 </div>
@@ -1702,10 +1704,28 @@ def build_mobile_split_screen_html():
     // ==========================================
     // 0.1 大众点评 App 100% 真实商户直达引擎
     // ==========================================
-    function openDianpingDirect(event, shopName, cityName) {{
+    function openDianpingDirect(event, shopId, shopName, cityName) {{
       if (event) {{
         event.stopPropagation();
       }}
+      
+      // 1. 若具备精准 shop_id，100% 唤起大众点评 App 直达商户详情页（图2），彻底跳过搜索列表！
+      if (shopId && shopId.length >= 6) {{
+        const appScheme = `dianping://shopinfo?id=${{shopId}}`;
+        const webUrl = `https://m.dianping.com/shop/${{shopId}}`;
+        
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (isMobile) {{
+          window.location.href = appScheme;
+          setTimeout(() => {{
+            window.open(webUrl, '_blank');
+          }}, 600);
+        }} else {{
+          window.open(webUrl, '_blank');
+        }}
+        return;
+      }}
+      
       const cleanName = (shopName || '').replace(/\\([^)]*\\)/g, '').trim();
       const cleanCity = (cityName || '').split('(')[0].split('/')[0].trim();
       
@@ -1728,10 +1748,9 @@ def build_mobile_split_screen_html():
       }};
       const cityId = cityMap[cleanCity] || 325;
       
-      // 1. 大众点评 App 深度直达协议
+      // 2. 兜底方案
       const appScheme = `dianping://searchshoplist?keyword=${{encoded}}&cityid=${{cityId}}`;
-      // 2. 网页端大众点评有效直达链接
-      const webUrl = `https://www.dianping.com/search/keyword/${{cityId}}/0_${{encoded}}`;
+      const webUrl = `https://m.dianping.com/search/keyword/${{cityId}}/0_${{encoded}}`;
       
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       if (isMobile) {{
@@ -2082,9 +2101,11 @@ def build_mobile_split_screen_html():
           pts.push([lat, lng]);
 
           const fullName = opt.restaurant;
+          const shopId = opt.shop_id || '';
           const cleanName = fullName;
           const fullSearch = `${{cleanCity}} ${{cleanName}}`;
           const encodedSearch = encodeURIComponent(fullSearch);
+          const dpHref = shopId ? `dianping://shopinfo?id=${{shopId}}` : `dianping://searchshoplist?keyword=${{encodedSearch}}`;
           const isSelected = (idx === activeIdx);
           const actCls = isSelected ? 'active' : '';
 
@@ -2108,7 +2129,7 @@ def build_mobile_split_screen_html():
                 🍲 <b>招牌：</b>${{mustTwo}}
               </div>
               <div style="display:flex; gap:5px; margin-top:4px;">
-                <a href="dianping://searchshoplist?keyword=${{encodedSearch}}" onclick="openDianpingDirect(event, '${{cleanName}}', '${{cleanCity}}')" style="flex:1; text-align:center; background:#ff6600; color:#fff; padding:5px 0; border-radius:5px; text-decoration:none; font-weight:700; font-size:10.5px; box-shadow:0 2px 6px rgba(255,102,0,0.35); cursor:pointer;">🧡 大众点评直达</a>
+                <a href="${{dpHref}}" onclick="openDianpingDirect(event, '${{shopId}}', '${{cleanName}}', '${{cleanCity}}')" style="flex:1; text-align:center; background:#ff6600; color:#fff; padding:5px 0; border-radius:5px; text-decoration:none; font-weight:700; font-size:10.5px; box-shadow:0 2px 6px rgba(255,102,0,0.35); cursor:pointer;">🧡 大众点评详情直达</a>
                 <a href="https://uri.amap.com/marker?position=${{lng}},${{lat}}&name=${{encodeURIComponent(fullName)}}&coordinate=gaode&callnative=1" target="_blank" style="flex:1; text-align:center; background:#2563eb; color:#fff; padding:5px 0; border-radius:5px; text-decoration:none; font-weight:700; font-size:10.5px; cursor:pointer;">🚗 高德商户详情</a>
               </div>
             </div>

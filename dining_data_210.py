@@ -597,6 +597,8 @@ OFFSETS = [
     (-0.0045, -0.0038)
 ]
 
+from shop_id_map import get_shop_id
+
 for d_num in range(1, 15):
     c_info = AUTHENTIC_DINING_14D[d_num]
     center = CITY_CENTERS[d_num]
@@ -607,6 +609,7 @@ for d_num in range(1, 15):
         off = OFFSETS[idx]
         b_list.append({
             "restaurant": item[0],
+            "shop_id": get_shop_id(item[0]),
             "heritage_years": item[1],
             "source": "大众点评 · 真实收录早点",
             "price_per_person": item[2],
@@ -621,6 +624,7 @@ for d_num in range(1, 15):
         off = OFFSETS[idx]
         l_list.append({
             "restaurant": item[0],
+            "shop_id": get_shop_id(item[0]),
             "heritage_years": item[1],
             "source": "大众点评 · 真实收录正餐",
             "price_per_person": item[2],
@@ -635,6 +639,7 @@ for d_num in range(1, 15):
         off = OFFSETS[idx]
         d_list.append({
             "restaurant": item[0],
+            "shop_id": get_shop_id(item[0]),
             "heritage_years": item[1],
             "source": "大众点评必吃榜/老字号 · 真实收录",
             "price_per_person": item[2],
