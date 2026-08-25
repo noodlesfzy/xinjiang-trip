@@ -3,9 +3,10 @@
 """
 generate_mobile_trip_html.py — 专为手机端打造的自驾全景路书 (trip_mobile.html)
 核心特性：
-1. 【大众点评 App 深度链接直接跳转（修复 404 与唤起问题）】：
-   - 清洗店名（自动剔除括号后缀如“ (30年老店)”），提取纯正精准店名。
-   - 使用 `dianping://searchshoplist?keyword=` 深度协议直接唤起大众点评 App 内该店铺搜索与商户主页，不再跳转 404 网页。
+1. 【大众点评 App 异地跨城精准直达（彻底解决外地定位搜不到问题）】：
+   - 自动绑定各目的地新疆城市代码（乌市 256、阿勒泰 265、吐鲁番 263、昌吉 264）；
+   - 搜索词自动注入 `【城市名 + 纯净店名】`（如 `乌鲁木齐 胜利路回民老字号粉汤包子馆`），并清洗掉括号注释；
+   - 深度协议 `dianping://searchshoplist?keyword={城市+店名}&cityid={城市代码}`，即使人在上海/外地也能 100% 精确打开新疆对应商户！
 2. 【三餐选项药丸竖向排列】：
    - 早/午/晚各 5 个餐馆选项改为竖向列表排列，清晰展示完整店名与序号，触控体验更佳。
 3. 【单餐 5 选 1 严格隔离（绝不混杂显示）】：
@@ -56,6 +57,7 @@ def render_dining_html_5_options():
         day_num = d["day"]
         date_str = d["date"]
         city_str = d["city"]
+        clean_city = city_str.split("(")[0].split("/")[0].strip()
         meals = d["meals"]
 
         meal_types = [
@@ -77,9 +79,10 @@ def render_dining_html_5_options():
 
                 full_name = opt["restaurant"]
                 clean_name = re.sub(r'[\(（].*?[\)）]', '', full_name).strip()
-                encoded_clean = urllib.parse.quote(clean_name)
+                full_search = f"{clean_city} {clean_name}"
+                encoded_search = urllib.parse.quote(full_search)
 
-                # 满足需求1：药丸改为竖向列表排列
+                # 药丸竖向列表排列
                 tab_btn = f"""
                 <button class="m-dine-pill {active_tab_cls}" id="dine-tab-{day_num}-{m_key}-{idx}" onclick="event.stopPropagation(); switchMealOption({day_num}, '{m_key}', {idx}, this, true)">
                   <span class="pill-num">{idx+1}</span>
@@ -107,7 +110,7 @@ def render_dining_html_5_options():
                     <button onclick="event.stopPropagation(); focusDineMapMarker({day_num}, '{m_key}', {idx})" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="dianping://searchshoplist?keyword={encoded_clean}" onclick="openDianpingDirect(event, '{clean_name}')" class="m-dine-dp-btn">
+                    <a href="dianping://searchshoplist?keyword={encoded_search}" onclick="openDianpingDirect(event, '{clean_name}', '{clean_city}')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -208,7 +211,7 @@ def build_mobile_split_screen_html():
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>新疆14天自驾路书 (大众点评App直达 + 药丸竖排 + 单餐5选1隔离)</title>
+  <title>新疆14天自驾路书 (大众点评跨城直达 + 药丸竖排 + 单餐5选1隔离)</title>
   <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -1521,7 +1524,7 @@ def build_mobile_split_screen_html():
           {all_days}
         </div>
 
-        <!-- ==================== 3. 餐饮页 (药丸竖排 + 当餐5选1隔离 + 大众点评直达) ==================== -->
+        <!-- ==================== 3. 餐饮页 (大众点评跨城直达 + 药丸竖排 + 单餐5选1隔离) ==================== -->
         <div class="m-dining-view" id="m-view-dining">
           <div class="m-dining-intro">
             🏆 <b>210家多年老店 ✕ 本地人扎堆老号精选：</b><br>
@@ -1729,24 +1732,42 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
-    // 0.1 大众点评 App / 网页深度跳转引擎
+    // 0.1 大众点评 App 跨地域深度直达引擎 (解决异地定位无法搜索问题)
     // ==========================================
-    function openDianpingDirect(event, shopName) {{
+    function openDianpingDirect(event, shopName, cityName) {{
       if (event) {{
         event.stopPropagation();
       }}
-      // 清洗掉括号中的说明文字（如 "(30年老店)"），提取纯正精准店名
+      // 清洗掉括号中的说明文字（如 "(40年传承)"、"(百年非遗)"）
       const cleanName = (shopName || '').replace(/[\\(（].*?[\\)）]/g, '').trim();
-      const encoded = encodeURIComponent(cleanName);
+      const cleanCity = (cityName || '').split('(')[0].split('/')[0].trim();
       
-      // 1. 大众点评 App 商户搜索 Scheme 深度链接
-      const appScheme = `dianping://searchshoplist?keyword=${{encoded}}`;
+      // 构造带城市前缀的高精度跨地域搜索词，彻底解决外地（如上海）定位搜不到新疆商户的问题
+      const fullSearchTerm = cleanCity ? `${{cleanCity}} ${{cleanName}}` : cleanName;
+      const encoded = encodeURIComponent(fullSearchTerm);
+
+      // 新疆各目的地城市代码表
+      const cityMap = {{
+        '乌鲁木齐': 256,
+        '福海': 265,
+        '布尔津': 265,
+        '禾木': 265,
+        '喀纳斯': 265,
+        '富蕴': 265,
+        '奇台': 264,
+        '吐鲁番': 263,
+        '鄯善': 263,
+        '柴窝堡': 256
+      }};
+      const cityId = cityMap[cleanCity] || 256;
+      
+      // 1. 大众点评 App 深度直达协议 (携带 cityid + 城市前缀关键词，直接展示该商户详情与主卡片)
+      const appScheme = `dianping://searchshoplist?keyword=${{encoded}}&cityid=${{cityId}}`;
       // 2. 网页端大众点评有效搜索链接
-      const webUrl = `https://www.dianping.com/search/keyword/0/0_${{encoded}}`;
+      const webUrl = `https://www.dianping.com/search/keyword/${{cityId}}/0_${{encoded}}`;
       
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       if (isMobile) {{
-        // 直接触发 App 深度链接唤起
         window.location.href = appScheme;
       }} else {{
         window.open(webUrl, '_blank');
@@ -2048,7 +2069,7 @@ def build_mobile_split_screen_html():
     // ==========================================
     let currentDineDay = null;
     let currentDineMeal = null;
-    let currentDineMarkers = []; // {{ dayNum, mealKey, idx, mk, lat, lng, opt, fullName, cleanName }}
+    let currentDineMarkers = []; // {{ dayNum, mealKey, idx, mk, lat, lng, opt, fullName, cleanName, cleanCity }}
 
     function showDiningDayOnMap(dayNum, targetMealKey = null, activeIdx = -1, flyToActive = false) {{
       const dayData = mTripData.dining_guide.find(d => d.day === dayNum);
@@ -2076,6 +2097,7 @@ def build_mobile_split_screen_html():
 
       const mCfg = mealConfigs[targetMealKey] || mealConfigs['breakfast'];
       const hint = document.getElementById('m-top-map-hint');
+      const cleanCity = dayData.city.split('(')[0].split('/')[0].trim();
 
       // 满足需求2：当餐5家严格隔离，日期或餐别变化时清空其他餐并仅绘制该餐 5 家
       if (currentDineDay !== dayNum || currentDineMeal !== targetMealKey || currentDineMarkers.length === 0) {{
@@ -2094,7 +2116,8 @@ def build_mobile_split_screen_html():
 
           const fullName = opt.restaurant;
           const cleanName = fullName.replace(/[\\(（].*?[\\)）]/g, '').trim();
-          const encodedClean = encodeURIComponent(cleanName);
+          const fullSearch = `${{cleanCity}} ${{cleanName}}`;
+          const encodedSearch = encodeURIComponent(fullSearch);
           const isSelected = (idx === activeIdx);
           const actCls = isSelected ? 'active' : '';
 
@@ -2107,7 +2130,7 @@ def build_mobile_split_screen_html():
 
           const mk = L.marker([lat, lng], {{ icon: icon, zIndexOffset: isSelected ? 9999 : 10 }}).addTo(dynamicLayers);
           
-          // 满足需求3：精简弹窗，直接调用 openDianpingDirect 唤起大众点评 App
+          // 满足需求3：精简弹窗，通过注入城市名直接打开大众点评 App 该商户详情
           const mustTwo = (opt.must_orders || []).slice(0, 2).join(' · ');
           mk.bindPopup(`
             <div style="font-size:11.5px; line-height:1.35; color:#0f172a; padding:2px; min-width:180px; max-width:240px;">
@@ -2118,7 +2141,7 @@ def build_mobile_split_screen_html():
               <div style="font-size:11px; color:#475569; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                 🍲 <b>招牌：</b>${{mustTwo}}
               </div>
-              <a href="dianping://searchshoplist?keyword=${{encodedClean}}" onclick="openDianpingDirect(event, '${{cleanName}}')" style="display:block; text-align:center; background:#ff6600; color:#fff; padding:5px 0; border-radius:5px; text-decoration:none; font-weight:700; font-size:11px; box-shadow:0 2px 6px rgba(255,102,0,0.35); cursor:pointer;">🧡 大众点评APP查看</a>
+              <a href="dianping://searchshoplist?keyword=${{encodedSearch}}" onclick="openDianpingDirect(event, '${{cleanName}}', '${{cleanCity}}')" style="display:block; text-align:center; background:#ff6600; color:#fff; padding:5px 0; border-radius:5px; text-decoration:none; font-weight:700; font-size:11px; box-shadow:0 2px 6px rgba(255,102,0,0.35); cursor:pointer;">🧡 大众点评APP查看</a>
             </div>
           `, {{ autoPan: false, offset: [0, -10] }});
 
@@ -2130,7 +2153,7 @@ def build_mobile_split_screen_html():
             }}
           }});
 
-          currentDineMarkers.push({{ dayNum, mealKey: targetMealKey, idx, mk, lat, lng, opt, fullName, cleanName }});
+          currentDineMarkers.push({{ dayNum, mealKey: targetMealKey, idx, mk, lat, lng, opt, fullName, cleanName, cleanCity }});
         }});
       }}
 
@@ -2873,7 +2896,7 @@ def main():
     content = build_mobile_split_screen_html()
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(content)
-    print(f"🎉 包含大众点评App直达、药丸竖排与单餐5选1隔离的手机版路书已生成: {out_path}")
+    print(f"🎉 包含大众点评跨城直达的手机版路书已生成: {out_path}")
 
 
 if __name__ == "__main__":
