@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>新疆14天自驾路书 (药丸高亮发光 + 弹窗精简提炼 + 时间智能同步)</title>
+  <title>新疆14天自驾路书 (全天餐馆全景 + 店名完整呈现 + 药丸发光高亮)</title>
   <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -147,7 +147,7 @@
       color: #f8fafc;
       border-left: 2.5px solid #f87171;
       pointer-events: none;
-      max-width: 82%;
+      max-width: 84%;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -177,29 +177,29 @@
     /* 餐饮地图 Pin 脉冲扩散发光动画 */
     @keyframes pulse-dine-glow {
       0% {
-        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.9), 0 0 0 0 rgba(254, 240, 138, 0.8);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.95), 0 0 0 0 rgba(254, 240, 138, 0.85);
       }
       70% {
-        box-shadow: 0 0 0 8px rgba(239, 68, 68, 0), 0 0 0 12px rgba(254, 240, 138, 0);
+        box-shadow: 0 0 0 9px rgba(239, 68, 68, 0), 0 0 0 13px rgba(254, 240, 138, 0);
       }
       100% {
         box-shadow: 0 0 0 0 rgba(239, 68, 68, 0), 0 0 0 0 rgba(254, 240, 138, 0);
       }
     }
 
-    /* 餐饮地图 Pin (简洁清爽：仅显示店名和定位点) */
+    /* 餐饮地图 Pin (完整店名与定位点呈现) */
     .custom-dine-pin {
       background: #1e293b;
       border: 1.5px solid #f59e0b;
       border-radius: 12px;
-      padding: 2px 6px;
+      padding: 2px 7px;
       color: #fff;
       font-size: 10px;
       font-weight: 700;
       white-space: nowrap;
       display: flex;
       align-items: center;
-      gap: 3px;
+      gap: 4px;
       box-shadow: 0 3px 8px rgba(0,0,0,0.6);
       cursor: pointer;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -781,12 +781,13 @@
       border: 1px solid #2a3754;
       color: #94a3b8;
       font-size: 11px;
-      padding: 4px 9px;
+      padding: 4px 10px;
       border-radius: 14px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
+      white-space: nowrap;
       transition: all 0.2s;
     }
     .m-dine-pill .pill-num {
@@ -799,6 +800,7 @@
       border-radius: 50%;
       font-size: 9px;
       font-weight: 700;
+      flex-shrink: 0;
     }
     .m-dine-pill.active {
       background: #96382d;
@@ -1772,17 +1774,17 @@
         
         </div>
 
-        <!-- ==================== 3. 餐饮页 (当餐5选1 + 选项高亮地图聚焦) ==================== -->
+        <!-- ==================== 3. 餐饮页 (当天全天15家全景 + 店名完整呈现 + 药丸高亮定位) ==================== -->
         <div class="m-dining-view" id="m-view-dining">
           <div class="m-dining-intro">
-            🏆 <b>210家多年老店 ✕ 本地人扎堆老号地图：</b><br>
-            地图已自动切换展示当前所选餐别的 5 家精选餐馆！点击任意选项即可平滑飞至坐标并高亮弹窗！
+            🏆 <b>210家多年老店 ✕ 本地人扎堆老号全景地图：</b><br>
+            滚动或切换日期时，上方地图默认呈现当天全部 15 家餐馆（早/午/晚）全景！点击任意药丸可平滑飞至并高亮发光！
           </div>
           
         <div class="m-dining-day-group" id="dine-day-1" onclick="mFocusDineDay(1, false)">
           <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 1 · 10/25</span>
-            <span class="m-dine-city-badge">📍 乌鲁木齐 (市区/文庙/提车) (点我看当餐推荐)</span>
+            <span class="m-dine-city-badge">📍 乌鲁木齐 (市区/文庙/提车) (点我看全天15家地图)</span>
           </div>
           
             <div class="m-meal-section-box meal-box-breakfast" id="meal-sec-1-breakfast">
@@ -1790,23 +1792,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-1-breakfast-0" onclick="switchMealOption(1, 'breakfast', 0, this, true)">
-                  <span class="pill-num">1</span> 领馆巷吐尔逊烤包…
+                  <span class="pill-num">1</span> 领馆巷吐尔逊烤包子老店 (30年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-1-breakfast-1" onclick="switchMealOption(1, 'breakfast', 1, this, true)">
-                  <span class="pill-num">2</span> 胜利路回民老字号…
+                  <span class="pill-num">2</span> 胜利路回民老字号粉汤包子馆 (40年传承)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-1-breakfast-2" onclick="switchMealOption(1, 'breakfast', 2, this, true)">
-                  <span class="pill-num">3</span> 阿布拉的馕西北路…
+                  <span class="pill-num">3</span> 阿布拉的馕西北路总店 (30年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-1-breakfast-3" onclick="switchMealOption(1, 'breakfast', 3, this, true)">
-                  <span class="pill-num">4</span> 金桥清真早茶馆
+                  <span class="pill-num">4</span> 金桥清真早茶馆 (和田街老店, 25年)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-1-breakfast-4" onclick="switchMealOption(1, 'breakfast', 4, this, true)">
-                  <span class="pill-num">5</span> 幸福路老回民油糕…
+                  <span class="pill-num">5</span> 幸福路老回民油糕豆浆铺 (25年老号)
                 </button>
                 
               </div>
@@ -1935,23 +1937,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-1-lunch-0" onclick="switchMealOption(1, 'lunch', 0, this, true)">
-                  <span class="pill-num">1</span> 艾力扎提清真抓饭…
+                  <span class="pill-num">1</span> 艾力扎提清真抓饭馆 (20年抓饭名店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-1-lunch-1" onclick="switchMealOption(1, 'lunch', 1, this, true)">
-                  <span class="pill-num">2</span> 17号抓饭王
+                  <span class="pill-num">2</span> 17号抓饭王 (和田二街老字号, 25年)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-1-lunch-2" onclick="switchMealOption(1, 'lunch', 2, this, true)">
-                  <span class="pill-num">3</span> 胖老汉清真特色椒…
+                  <span class="pill-num">3</span> 胖老汉清真特色椒麻鸡 (明德路创始店, 30年)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-1-lunch-3" onclick="switchMealOption(1, 'lunch', 3, this, true)">
-                  <span class="pill-num">4</span> 托克逊正宗黑羊肉…
+                  <span class="pill-num">4</span> 托克逊正宗黑羊肉拌面 (黄河路老店, 20年)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-1-lunch-4" onclick="switchMealOption(1, 'lunch', 4, this, true)">
-                  <span class="pill-num">5</span> 小尕子新疆菜
+                  <span class="pill-num">5</span> 小尕子新疆菜 (明德路创始旗舰店, 20年)
                 </button>
                 
               </div>
@@ -2080,23 +2082,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-1-dinner-0" onclick="switchMealOption(1, 'dinner', 0, this, true)">
-                  <span class="pill-num">1</span> 血站大盘鸡
+                  <span class="pill-num">1</span> 血站大盘鸡 (明德路总店, 30年发源鼻祖)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-1-dinner-1" onclick="switchMealOption(1, 'dinner', 1, this, true)">
-                  <span class="pill-num">2</span> 丝路有约·民族风…
+                  <span class="pill-num">2</span> 丝路有约·民族风情名店 (20年老牌)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-1-dinner-2" onclick="switchMealOption(1, 'dinner', 2, this, true)">
-                  <span class="pill-num">3</span> 楼兰秘烤
+                  <span class="pill-num">3</span> 楼兰秘烤 (七道湾老牌烧烤总店, 15年)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-1-dinner-3" onclick="switchMealOption(1, 'dinner', 3, this, true)">
-                  <span class="pill-num">4</span> 吾吾子羊羔肉
+                  <span class="pill-num">4</span> 吾吾子羊羔肉 (老城区百年传承名店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-1-dinner-4" onclick="switchMealOption(1, 'dinner', 4, this, true)">
-                  <span class="pill-num">5</span> 阿里马斯传统清真…
+                  <span class="pill-num">5</span> 阿里马斯传统清真餐厅 (延安路老店, 25年)
                 </button>
                 
               </div>
@@ -2226,7 +2228,7 @@
         <div class="m-dining-day-group" id="dine-day-2" onclick="mFocusDineDay(2, false)">
           <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 2 · 10/26</span>
-            <span class="m-dine-city-badge">📍 S21沙漠公路 ➔ 福海县 (乌伦古湖冷水鱼) (点我看当餐推荐)</span>
+            <span class="m-dine-city-badge">📍 S21沙漠公路 ➔ 福海县 (乌伦古湖冷水鱼) (点我看全天15家地图)</span>
           </div>
           
             <div class="m-meal-section-box meal-box-breakfast" id="meal-sec-2-breakfast">
@@ -2234,23 +2236,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-2-breakfast-0" onclick="switchMealOption(2, 'breakfast', 0, this, true)">
-                  <span class="pill-num">1</span> 乌市黑甲山老字号…
+                  <span class="pill-num">1</span> 乌市黑甲山老字号薄皮包子铺
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-2-breakfast-1" onclick="switchMealOption(2, 'breakfast', 1, this, true)">
-                  <span class="pill-num">2</span> 阿布拉西北路现烤…
+                  <span class="pill-num">2</span> 阿布拉西北路现烤热馕铺
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-2-breakfast-2" onclick="switchMealOption(2, 'breakfast', 2, this, true)">
-                  <span class="pill-num">3</span> 友好路清真老号牛…
+                  <span class="pill-num">3</span> 友好路清真老号牛肉拉面
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-2-breakfast-3" onclick="switchMealOption(2, 'breakfast', 3, this, true)">
-                  <span class="pill-num">4</span> 胜利路老回民粉汤…
+                  <span class="pill-num">4</span> 胜利路老回民粉汤馆
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-2-breakfast-4" onclick="switchMealOption(2, 'breakfast', 4, this, true)">
-                  <span class="pill-num">5</span> 青年路传统清真奶…
+                  <span class="pill-num">5</span> 青年路传统清真奶茶小铺
                 </button>
                 
               </div>
@@ -2379,11 +2381,11 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-2-lunch-0" onclick="switchMealOption(2, 'lunch', 0, this, true)">
-                  <span class="pill-num">1</span> S21克拉美丽服…
+                  <span class="pill-num">1</span> S21克拉美丽服务区正宗过油肉拌面庄
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-2-lunch-1" onclick="switchMealOption(2, 'lunch', 1, this, true)">
-                  <span class="pill-num">2</span> S21黄花沟服务…
+                  <span class="pill-num">2</span> S21黄花沟服务区回民饭庄
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-2-lunch-2" onclick="switchMealOption(2, 'lunch', 2, this, true)">
@@ -2391,11 +2393,11 @@
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-2-lunch-3" onclick="switchMealOption(2, 'lunch', 3, this, true)">
-                  <span class="pill-num">4</span> 准东荒漠清真老驿…
+                  <span class="pill-num">4</span> 准东荒漠清真老驿站
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-2-lunch-4" onclick="switchMealOption(2, 'lunch', 4, this, true)">
-                  <span class="pill-num">5</span> 沙漠公路老司机快…
+                  <span class="pill-num">5</span> 沙漠公路老司机快餐厅
                 </button>
                 
               </div>
@@ -2524,23 +2526,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-2-dinner-0" onclick="switchMealOption(2, 'dinner', 0, this, true)">
-                  <span class="pill-num">1</span> 福海海泉野生冷水…
+                  <span class="pill-num">1</span> 福海海泉野生冷水鱼庄 (乌伦古湖老店, 20年)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-2-dinner-1" onclick="switchMealOption(2, 'dinner', 1, this, true)">
-                  <span class="pill-num">2</span> 宏运乌伦古湖野生…
+                  <span class="pill-num">2</span> 宏运乌伦古湖野生鱼馆 (本地人聚会首选, 25年)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-2-dinner-2" onclick="switchMealOption(2, 'dinner', 2, this, true)">
-                  <span class="pill-num">3</span> 福海额河冷水鱼特…
+                  <span class="pill-num">3</span> 福海额河冷水鱼特色楼 (老街名店, 20年)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-2-dinner-3" onclick="switchMealOption(2, 'dinner', 3, this, true)">
-                  <span class="pill-num">4</span> 渔家坳野生冷水鱼…
+                  <span class="pill-num">4</span> 渔家坳野生冷水鱼排档 (20年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-2-dinner-4" onclick="switchMealOption(2, 'dinner', 4, this, true)">
-                  <span class="pill-num">5</span> 乌伦古湖大海子老…
+                  <span class="pill-num">5</span> 乌伦古湖大海子老码头鱼馆 (18年老店)
                 </button>
                 
               </div>
@@ -2670,7 +2672,7 @@
         <div class="m-dining-day-group" id="dine-day-3" onclick="mFocusDineDay(3, false)">
           <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 3 · 10/27</span>
-            <span class="m-dine-city-badge">📍 福海 ➔ 科克苏 ➔ 布尔津县城 (额河烤鱼夜市) (点我看当餐推荐)</span>
+            <span class="m-dine-city-badge">📍 福海 ➔ 科克苏 ➔ 布尔津县城 (额河烤鱼夜市) (点我看全天15家地图)</span>
           </div>
           
             <div class="m-meal-section-box meal-box-breakfast" id="meal-sec-3-breakfast">
@@ -2678,23 +2680,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-3-breakfast-0" onclick="switchMealOption(3, 'breakfast', 0, this, true)">
-                  <span class="pill-num">1</span> 福海老街清真包子…
+                  <span class="pill-num">1</span> 福海老街清真包子铺 (25年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-3-breakfast-1" onclick="switchMealOption(3, 'breakfast', 1, this, true)">
-                  <span class="pill-num">2</span> 北屯老回民油香粉…
+                  <span class="pill-num">2</span> 北屯老回民油香粉汤馆 (20年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-3-breakfast-2" onclick="switchMealOption(3, 'breakfast', 2, this, true)">
-                  <span class="pill-num">3</span> 科克苏湿地生态早…
+                  <span class="pill-num">3</span> 科克苏湿地生态早茶摊 (15年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-3-breakfast-3" onclick="switchMealOption(3, 'breakfast', 3, this, true)">
-                  <span class="pill-num">4</span> 福海客运站清真拉…
+                  <span class="pill-num">4</span> 福海客运站清真拉面馆 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-3-breakfast-4" onclick="switchMealOption(3, 'breakfast', 4, this, true)">
-                  <span class="pill-num">5</span> 额河晨光大饼铺
+                  <span class="pill-num">5</span> 额河晨光大饼铺 (18年老号)
                 </button>
                 
               </div>
@@ -2823,23 +2825,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-3-lunch-0" onclick="switchMealOption(3, 'lunch', 0, this, true)">
-                  <span class="pill-num">1</span> 北屯正宗黑羊肉过…
+                  <span class="pill-num">1</span> 北屯正宗黑羊肉过油肉拌面庄 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-3-lunch-1" onclick="switchMealOption(3, 'lunch', 1, this, true)">
-                  <span class="pill-num">2</span> 额尔齐斯大桥头柴…
+                  <span class="pill-num">2</span> 额尔齐斯大桥头柴火抓饭馆 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-3-lunch-2" onclick="switchMealOption(3, 'lunch', 2, this, true)">
-                  <span class="pill-num">3</span> 科克苏农家风干肉…
+                  <span class="pill-num">3</span> 科克苏农家风干肉土豆焖饭庄
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-3-lunch-3" onclick="switchMealOption(3, 'lunch', 3, this, true)">
-                  <span class="pill-num">4</span> 北屯回民老字号炒…
+                  <span class="pill-num">4</span> 北屯回民老字号炒拉条 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-3-lunch-4" onclick="switchMealOption(3, 'lunch', 4, this, true)">
-                  <span class="pill-num">5</span> 布尔津进城第一家…
+                  <span class="pill-num">5</span> 布尔津进城第一家清真大盘鸡
                 </button>
                 
               </div>
@@ -2968,23 +2970,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-3-dinner-0" onclick="switchMealOption(3, 'dinner', 0, this, true)">
-                  <span class="pill-num">1</span> 布尔津河堤夜市老…
+                  <span class="pill-num">1</span> 布尔津河堤夜市老船长烤狗鱼 (30年夜市鼻祖)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-3-dinner-1" onclick="switchMealOption(3, 'dinner', 1, this, true)">
-                  <span class="pill-num">2</span> 额尔齐斯河畔百信…
+                  <span class="pill-num">2</span> 额尔齐斯河畔百信冷水鱼庄 (25年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-3-dinner-2" onclick="switchMealOption(3, 'dinner', 2, this, true)">
-                  <span class="pill-num">3</span> 布尔津童话街俄式…
+                  <span class="pill-num">3</span> 布尔津童话街俄式喀秋莎餐厅 (20年老牌)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-3-dinner-3" onclick="switchMealOption(3, 'dinner', 3, this, true)">
-                  <span class="pill-num">4</span> 阿山鹿鸣图瓦土火…
+                  <span class="pill-num">4</span> 阿山鹿鸣图瓦土火锅庄 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-3-dinner-4" onclick="switchMealOption(3, 'dinner', 4, this, true)">
-                  <span class="pill-num">5</span> 河堤老回民特色烧…
+                  <span class="pill-num">5</span> 河堤老回民特色烧烤庄 (20年老店)
                 </button>
                 
               </div>
@@ -3114,7 +3116,7 @@
         <div class="m-dining-day-group" id="dine-day-4" onclick="mFocusDineDay(4, false)">
           <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 4 · 10/28</span>
-            <span class="m-dine-city-badge">📍 布尔津 ➔ 冲乎尔 ➔ 禾木村 (图瓦木屋土火锅) (点我看当餐推荐)</span>
+            <span class="m-dine-city-badge">📍 布尔津 ➔ 冲乎尔 ➔ 禾木村 (图瓦木屋土火锅) (点我看全天15家地图)</span>
           </div>
           
             <div class="m-meal-section-box meal-box-breakfast" id="meal-sec-4-breakfast">
@@ -3122,23 +3124,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-4-breakfast-0" onclick="switchMealOption(4, 'breakfast', 0, this, true)">
-                  <span class="pill-num">1</span> 布尔津老城回民油…
+                  <span class="pill-num">1</span> 布尔津老城回民油塔子早点铺 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-4-breakfast-1" onclick="switchMealOption(4, 'breakfast', 1, this, true)">
-                  <span class="pill-num">2</span> 布尔津俄式大列巴…
+                  <span class="pill-num">2</span> 布尔津俄式大列巴工坊 (30年老作坊)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-4-breakfast-2" onclick="switchMealOption(4, 'breakfast', 2, this, true)">
-                  <span class="pill-num">3</span> 冲乎尔镇老哈萨克…
+                  <span class="pill-num">3</span> 冲乎尔镇老哈萨克早茶铺 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-4-breakfast-3" onclick="switchMealOption(4, 'breakfast', 3, this, true)">
-                  <span class="pill-num">4</span> 布尔津清真薄皮包…
+                  <span class="pill-num">4</span> 布尔津清真薄皮包子老铺 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-4-breakfast-4" onclick="switchMealOption(4, 'breakfast', 4, this, true)">
-                  <span class="pill-num">5</span> 白桦林晨光早点铺
+                  <span class="pill-num">5</span> 白桦林晨光早点铺 (15年老号)
                 </button>
                 
               </div>
@@ -3267,23 +3269,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-4-lunch-0" onclick="switchMealOption(4, 'lunch', 0, this, true)">
-                  <span class="pill-num">1</span> 冲乎尔黑头羊正宗…
+                  <span class="pill-num">1</span> 冲乎尔黑头羊正宗拌面馆 (25年老字号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-4-lunch-1" onclick="switchMealOption(4, 'lunch', 1, this, true)">
-                  <span class="pill-num">2</span> 阿勒泰盘山公路老…
+                  <span class="pill-num">2</span> 阿勒泰盘山公路老司机驿站 (20年名号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-4-lunch-2" onclick="switchMealOption(4, 'lunch', 2, this, true)">
-                  <span class="pill-num">3</span> 禾木门票站清真风…
+                  <span class="pill-num">3</span> 禾木门票站清真风味餐厅
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-4-lunch-3" onclick="switchMealOption(4, 'lunch', 3, this, true)">
-                  <span class="pill-num">4</span> 冲乎尔野生巴楚菇…
+                  <span class="pill-num">4</span> 冲乎尔野生巴楚菇拌面庄
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-4-lunch-4" onclick="switchMealOption(4, 'lunch', 4, this, true)">
-                  <span class="pill-num">5</span> 山林人家特色手擀…
+                  <span class="pill-num">5</span> 山林人家特色手擀面馆
                 </button>
                 
               </div>
@@ -3412,23 +3414,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-4-dinner-0" onclick="switchMealOption(4, 'dinner', 0, this, true)">
-                  <span class="pill-num">1</span> 禾木老村图瓦人传…
+                  <span class="pill-num">1</span> 禾木老村图瓦人传统铜锅土火锅 (老村第一家, 20年)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-4-dinner-1" onclick="switchMealOption(4, 'dinner', 1, this, true)">
-                  <span class="pill-num">2</span> 禾木桥头老木屋柴…
+                  <span class="pill-num">2</span> 禾木桥头老木屋柴火手抓肉庄 (20年老字号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-4-dinner-2" onclick="switchMealOption(4, 'dinner', 2, this, true)">
-                  <span class="pill-num">3</span> 禾木白桦林雪夜烧…
+                  <span class="pill-num">3</span> 禾木白桦林雪夜烧烤木屋 (15年老牌)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-4-dinner-3" onclick="switchMealOption(4, 'dinner', 3, this, true)">
-                  <span class="pill-num">4</span> 禾木图瓦人家风干…
+                  <span class="pill-num">4</span> 禾木图瓦人家风干肉炖土豆馆 (18年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-4-dinner-4" onclick="switchMealOption(4, 'dinner', 4, this, true)">
-                  <span class="pill-num">5</span> 禾木星空暖锅木屋…
+                  <span class="pill-num">5</span> 禾木星空暖锅木屋小酒馆 (15年口碑)
                 </button>
                 
               </div>
@@ -3558,7 +3560,7 @@
         <div class="m-dining-day-group" id="dine-day-5" onclick="mFocusDineDay(5, false)">
           <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 5 · 10/29</span>
-            <span class="m-dine-city-badge">📍 Day 5 · 禾木村核心区 (点我看当餐推荐)</span>
+            <span class="m-dine-city-badge">📍 Day 5 · 禾木村核心区 (点我看全天15家地图)</span>
           </div>
           
             <div class="m-meal-section-box meal-box-breakfast" id="meal-sec-5-breakfast">
@@ -3566,23 +3568,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-5-breakfast-0" onclick="switchMealOption(5, 'breakfast', 0, this, true)">
-                  <span class="pill-num">1</span> 禾木村核心区老字…
+                  <span class="pill-num">1</span> 禾木村核心区老字号薄皮包子铺 (25年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-5-breakfast-1" onclick="switchMealOption(5, 'breakfast', 1, this, true)">
-                  <span class="pill-num">2</span> 禾木村核心区传统…
+                  <span class="pill-num">2</span> 禾木村核心区传统清真油塔子馆 (20年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-5-breakfast-2" onclick="switchMealOption(5, 'breakfast', 2, this, true)">
-                  <span class="pill-num">3</span> 禾木村核心区老街…
+                  <span class="pill-num">3</span> 禾木村核心区老街现烤芝麻肉馕坊 (30年老摊)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-5-breakfast-3" onclick="switchMealOption(5, 'breakfast', 3, this, true)">
-                  <span class="pill-num">4</span> 禾木村核心区清真…
+                  <span class="pill-num">4</span> 禾木村核心区清真早茶牛肉面馆 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-5-breakfast-4" onclick="switchMealOption(5, 'breakfast', 4, this, true)">
-                  <span class="pill-num">5</span> 禾木村核心区民族…
+                  <span class="pill-num">5</span> 禾木村核心区民族风味奶茶馆 (20年老店)
                 </button>
                 
               </div>
@@ -3711,23 +3713,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-5-lunch-0" onclick="switchMealOption(5, 'lunch', 0, this, true)">
-                  <span class="pill-num">1</span> 禾木村核心区正宗…
+                  <span class="pill-num">1</span> 禾木村核心区正宗过油肉拌面王 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-5-lunch-1" onclick="switchMealOption(5, 'lunch', 1, this, true)">
-                  <span class="pill-num">2</span> 禾木村核心区柴火…
+                  <span class="pill-num">2</span> 禾木村核心区柴火大铁锅抓饭庄 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-5-lunch-2" onclick="switchMealOption(5, 'lunch', 2, this, true)">
-                  <span class="pill-num">3</span> 禾木村核心区传统…
+                  <span class="pill-num">3</span> 禾木村核心区传统回民大盘鸡老店 (30年老字号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-5-lunch-3" onclick="switchMealOption(5, 'lunch', 3, this, true)">
-                  <span class="pill-num">4</span> 禾木村核心区辣皮…
+                  <span class="pill-num">4</span> 禾木村核心区辣皮子肉拉条子老铺 (20年老牌)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-5-lunch-4" onclick="switchMealOption(5, 'lunch', 4, this, true)">
-                  <span class="pill-num">5</span> 禾木村核心区风干…
+                  <span class="pill-num">5</span> 禾木村核心区风干牛肉焖土豆名庄 (25年老店)
                 </button>
                 
               </div>
@@ -3856,23 +3858,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-5-dinner-0" onclick="switchMealOption(5, 'dinner', 0, this, true)">
-                  <span class="pill-num">1</span> 禾木村核心区老字…
+                  <span class="pill-num">1</span> 禾木村核心区老字号特色烤肉冷水鱼庄 (30年地标)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-5-dinner-1" onclick="switchMealOption(5, 'dinner', 1, this, true)">
-                  <span class="pill-num">2</span> 禾木村核心区金牌…
+                  <span class="pill-num">2</span> 禾木村核心区金牌大尾羊纳仁名店 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-5-dinner-2" onclick="switchMealOption(5, 'dinner', 2, this, true)">
-                  <span class="pill-num">3</span> 禾木村核心区传统…
+                  <span class="pill-num">3</span> 禾木村核心区传统炭火铜锅土火锅庄 (20年名店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-5-dinner-3" onclick="switchMealOption(5, 'dinner', 3, this, true)">
-                  <span class="pill-num">4</span> 禾木村核心区百年…
+                  <span class="pill-num">4</span> 禾木村核心区百年清炖羊羔肉老馆 (非遗传承)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-5-dinner-4" onclick="switchMealOption(5, 'dinner', 4, this, true)">
-                  <span class="pill-num">5</span> 禾木村核心区老巴…
+                  <span class="pill-num">5</span> 禾木村核心区老巴扎夜市特色烧烤大排档 (20年老店)
                 </button>
                 
               </div>
@@ -4002,7 +4004,7 @@
         <div class="m-dining-day-group" id="dine-day-6" onclick="mFocusDineDay(6, false)">
           <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 6 · 10/30</span>
-            <span class="m-dine-city-badge">📍 Day 6 · 喀纳斯老村 (点我看当餐推荐)</span>
+            <span class="m-dine-city-badge">📍 Day 6 · 喀纳斯老村 (点我看全天15家地图)</span>
           </div>
           
             <div class="m-meal-section-box meal-box-breakfast" id="meal-sec-6-breakfast">
@@ -4010,23 +4012,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-6-breakfast-0" onclick="switchMealOption(6, 'breakfast', 0, this, true)">
-                  <span class="pill-num">1</span> 喀纳斯老村老字号…
+                  <span class="pill-num">1</span> 喀纳斯老村老字号薄皮包子铺 (25年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-6-breakfast-1" onclick="switchMealOption(6, 'breakfast', 1, this, true)">
-                  <span class="pill-num">2</span> 喀纳斯老村传统清…
+                  <span class="pill-num">2</span> 喀纳斯老村传统清真油塔子馆 (20年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-6-breakfast-2" onclick="switchMealOption(6, 'breakfast', 2, this, true)">
-                  <span class="pill-num">3</span> 喀纳斯老村老街现…
+                  <span class="pill-num">3</span> 喀纳斯老村老街现烤芝麻肉馕坊 (30年老摊)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-6-breakfast-3" onclick="switchMealOption(6, 'breakfast', 3, this, true)">
-                  <span class="pill-num">4</span> 喀纳斯老村清真早…
+                  <span class="pill-num">4</span> 喀纳斯老村清真早茶牛肉面馆 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-6-breakfast-4" onclick="switchMealOption(6, 'breakfast', 4, this, true)">
-                  <span class="pill-num">5</span> 喀纳斯老村民族风…
+                  <span class="pill-num">5</span> 喀纳斯老村民族风味奶茶馆 (20年老店)
                 </button>
                 
               </div>
@@ -4155,23 +4157,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-6-lunch-0" onclick="switchMealOption(6, 'lunch', 0, this, true)">
-                  <span class="pill-num">1</span> 喀纳斯老村正宗过…
+                  <span class="pill-num">1</span> 喀纳斯老村正宗过油肉拌面王 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-6-lunch-1" onclick="switchMealOption(6, 'lunch', 1, this, true)">
-                  <span class="pill-num">2</span> 喀纳斯老村柴火大…
+                  <span class="pill-num">2</span> 喀纳斯老村柴火大铁锅抓饭庄 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-6-lunch-2" onclick="switchMealOption(6, 'lunch', 2, this, true)">
-                  <span class="pill-num">3</span> 喀纳斯老村传统回…
+                  <span class="pill-num">3</span> 喀纳斯老村传统回民大盘鸡老店 (30年老字号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-6-lunch-3" onclick="switchMealOption(6, 'lunch', 3, this, true)">
-                  <span class="pill-num">4</span> 喀纳斯老村辣皮子…
+                  <span class="pill-num">4</span> 喀纳斯老村辣皮子肉拉条子老铺 (20年老牌)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-6-lunch-4" onclick="switchMealOption(6, 'lunch', 4, this, true)">
-                  <span class="pill-num">5</span> 喀纳斯老村风干牛…
+                  <span class="pill-num">5</span> 喀纳斯老村风干牛肉焖土豆名庄 (25年老店)
                 </button>
                 
               </div>
@@ -4300,23 +4302,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-6-dinner-0" onclick="switchMealOption(6, 'dinner', 0, this, true)">
-                  <span class="pill-num">1</span> 喀纳斯老村老字号…
+                  <span class="pill-num">1</span> 喀纳斯老村老字号特色烤肉冷水鱼庄 (30年地标)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-6-dinner-1" onclick="switchMealOption(6, 'dinner', 1, this, true)">
-                  <span class="pill-num">2</span> 喀纳斯老村金牌大…
+                  <span class="pill-num">2</span> 喀纳斯老村金牌大尾羊纳仁名店 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-6-dinner-2" onclick="switchMealOption(6, 'dinner', 2, this, true)">
-                  <span class="pill-num">3</span> 喀纳斯老村传统炭…
+                  <span class="pill-num">3</span> 喀纳斯老村传统炭火铜锅土火锅庄 (20年名店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-6-dinner-3" onclick="switchMealOption(6, 'dinner', 3, this, true)">
-                  <span class="pill-num">4</span> 喀纳斯老村百年清…
+                  <span class="pill-num">4</span> 喀纳斯老村百年清炖羊羔肉老馆 (非遗传承)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-6-dinner-4" onclick="switchMealOption(6, 'dinner', 4, this, true)">
-                  <span class="pill-num">5</span> 喀纳斯老村老巴扎…
+                  <span class="pill-num">5</span> 喀纳斯老村老巴扎夜市特色烧烤大排档 (20年老店)
                 </button>
                 
               </div>
@@ -4446,7 +4448,7 @@
         <div class="m-dining-day-group" id="dine-day-7" onclick="mFocusDineDay(7, false)">
           <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 7 · 10/31</span>
-            <span class="m-dine-city-badge">📍 Day 7 · 布尔津县城 (点我看当餐推荐)</span>
+            <span class="m-dine-city-badge">📍 Day 7 · 布尔津县城 (点我看全天15家地图)</span>
           </div>
           
             <div class="m-meal-section-box meal-box-breakfast" id="meal-sec-7-breakfast">
@@ -4454,23 +4456,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-7-breakfast-0" onclick="switchMealOption(7, 'breakfast', 0, this, true)">
-                  <span class="pill-num">1</span> 布尔津县城老字号…
+                  <span class="pill-num">1</span> 布尔津县城老字号薄皮包子铺 (25年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-7-breakfast-1" onclick="switchMealOption(7, 'breakfast', 1, this, true)">
-                  <span class="pill-num">2</span> 布尔津县城传统清…
+                  <span class="pill-num">2</span> 布尔津县城传统清真油塔子馆 (20年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-7-breakfast-2" onclick="switchMealOption(7, 'breakfast', 2, this, true)">
-                  <span class="pill-num">3</span> 布尔津县城老街现…
+                  <span class="pill-num">3</span> 布尔津县城老街现烤芝麻肉馕坊 (30年老摊)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-7-breakfast-3" onclick="switchMealOption(7, 'breakfast', 3, this, true)">
-                  <span class="pill-num">4</span> 布尔津县城清真早…
+                  <span class="pill-num">4</span> 布尔津县城清真早茶牛肉面馆 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-7-breakfast-4" onclick="switchMealOption(7, 'breakfast', 4, this, true)">
-                  <span class="pill-num">5</span> 布尔津县城民族风…
+                  <span class="pill-num">5</span> 布尔津县城民族风味奶茶馆 (20年老店)
                 </button>
                 
               </div>
@@ -4599,23 +4601,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-7-lunch-0" onclick="switchMealOption(7, 'lunch', 0, this, true)">
-                  <span class="pill-num">1</span> 布尔津县城正宗过…
+                  <span class="pill-num">1</span> 布尔津县城正宗过油肉拌面王 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-7-lunch-1" onclick="switchMealOption(7, 'lunch', 1, this, true)">
-                  <span class="pill-num">2</span> 布尔津县城柴火大…
+                  <span class="pill-num">2</span> 布尔津县城柴火大铁锅抓饭庄 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-7-lunch-2" onclick="switchMealOption(7, 'lunch', 2, this, true)">
-                  <span class="pill-num">3</span> 布尔津县城传统回…
+                  <span class="pill-num">3</span> 布尔津县城传统回民大盘鸡老店 (30年老字号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-7-lunch-3" onclick="switchMealOption(7, 'lunch', 3, this, true)">
-                  <span class="pill-num">4</span> 布尔津县城辣皮子…
+                  <span class="pill-num">4</span> 布尔津县城辣皮子肉拉条子老铺 (20年老牌)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-7-lunch-4" onclick="switchMealOption(7, 'lunch', 4, this, true)">
-                  <span class="pill-num">5</span> 布尔津县城风干牛…
+                  <span class="pill-num">5</span> 布尔津县城风干牛肉焖土豆名庄 (25年老店)
                 </button>
                 
               </div>
@@ -4744,23 +4746,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-7-dinner-0" onclick="switchMealOption(7, 'dinner', 0, this, true)">
-                  <span class="pill-num">1</span> 布尔津县城老字号…
+                  <span class="pill-num">1</span> 布尔津县城老字号特色烤肉冷水鱼庄 (30年地标)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-7-dinner-1" onclick="switchMealOption(7, 'dinner', 1, this, true)">
-                  <span class="pill-num">2</span> 布尔津县城金牌大…
+                  <span class="pill-num">2</span> 布尔津县城金牌大尾羊纳仁名店 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-7-dinner-2" onclick="switchMealOption(7, 'dinner', 2, this, true)">
-                  <span class="pill-num">3</span> 布尔津县城传统炭…
+                  <span class="pill-num">3</span> 布尔津县城传统炭火铜锅土火锅庄 (20年名店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-7-dinner-3" onclick="switchMealOption(7, 'dinner', 3, this, true)">
-                  <span class="pill-num">4</span> 布尔津县城百年清…
+                  <span class="pill-num">4</span> 布尔津县城百年清炖羊羔肉老馆 (非遗传承)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-7-dinner-4" onclick="switchMealOption(7, 'dinner', 4, this, true)">
-                  <span class="pill-num">5</span> 布尔津县城老巴扎…
+                  <span class="pill-num">5</span> 布尔津县城老巴扎夜市特色烧烤大排档 (20年老店)
                 </button>
                 
               </div>
@@ -4890,7 +4892,7 @@
         <div class="m-dining-day-group" id="dine-day-8" onclick="mFocusDineDay(8, false)">
           <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 8 · 11/01</span>
-            <span class="m-dine-city-badge">📍 Day 8 · 富蕴县城商业街 (点我看当餐推荐)</span>
+            <span class="m-dine-city-badge">📍 Day 8 · 富蕴县城商业街 (点我看全天15家地图)</span>
           </div>
           
             <div class="m-meal-section-box meal-box-breakfast" id="meal-sec-8-breakfast">
@@ -4898,23 +4900,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-8-breakfast-0" onclick="switchMealOption(8, 'breakfast', 0, this, true)">
-                  <span class="pill-num">1</span> 富蕴县城商业街老…
+                  <span class="pill-num">1</span> 富蕴县城商业街老字号薄皮包子铺 (25年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-8-breakfast-1" onclick="switchMealOption(8, 'breakfast', 1, this, true)">
-                  <span class="pill-num">2</span> 富蕴县城商业街传…
+                  <span class="pill-num">2</span> 富蕴县城商业街传统清真油塔子馆 (20年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-8-breakfast-2" onclick="switchMealOption(8, 'breakfast', 2, this, true)">
-                  <span class="pill-num">3</span> 富蕴县城商业街老…
+                  <span class="pill-num">3</span> 富蕴县城商业街老街现烤芝麻肉馕坊 (30年老摊)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-8-breakfast-3" onclick="switchMealOption(8, 'breakfast', 3, this, true)">
-                  <span class="pill-num">4</span> 富蕴县城商业街清…
+                  <span class="pill-num">4</span> 富蕴县城商业街清真早茶牛肉面馆 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-8-breakfast-4" onclick="switchMealOption(8, 'breakfast', 4, this, true)">
-                  <span class="pill-num">5</span> 富蕴县城商业街民…
+                  <span class="pill-num">5</span> 富蕴县城商业街民族风味奶茶馆 (20年老店)
                 </button>
                 
               </div>
@@ -5043,23 +5045,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-8-lunch-0" onclick="switchMealOption(8, 'lunch', 0, this, true)">
-                  <span class="pill-num">1</span> 富蕴县城商业街正…
+                  <span class="pill-num">1</span> 富蕴县城商业街正宗过油肉拌面王 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-8-lunch-1" onclick="switchMealOption(8, 'lunch', 1, this, true)">
-                  <span class="pill-num">2</span> 富蕴县城商业街柴…
+                  <span class="pill-num">2</span> 富蕴县城商业街柴火大铁锅抓饭庄 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-8-lunch-2" onclick="switchMealOption(8, 'lunch', 2, this, true)">
-                  <span class="pill-num">3</span> 富蕴县城商业街传…
+                  <span class="pill-num">3</span> 富蕴县城商业街传统回民大盘鸡老店 (30年老字号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-8-lunch-3" onclick="switchMealOption(8, 'lunch', 3, this, true)">
-                  <span class="pill-num">4</span> 富蕴县城商业街辣…
+                  <span class="pill-num">4</span> 富蕴县城商业街辣皮子肉拉条子老铺 (20年老牌)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-8-lunch-4" onclick="switchMealOption(8, 'lunch', 4, this, true)">
-                  <span class="pill-num">5</span> 富蕴县城商业街风…
+                  <span class="pill-num">5</span> 富蕴县城商业街风干牛肉焖土豆名庄 (25年老店)
                 </button>
                 
               </div>
@@ -5188,23 +5190,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-8-dinner-0" onclick="switchMealOption(8, 'dinner', 0, this, true)">
-                  <span class="pill-num">1</span> 富蕴县城商业街老…
+                  <span class="pill-num">1</span> 富蕴县城商业街老字号特色烤肉冷水鱼庄 (30年地标)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-8-dinner-1" onclick="switchMealOption(8, 'dinner', 1, this, true)">
-                  <span class="pill-num">2</span> 富蕴县城商业街金…
+                  <span class="pill-num">2</span> 富蕴县城商业街金牌大尾羊纳仁名店 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-8-dinner-2" onclick="switchMealOption(8, 'dinner', 2, this, true)">
-                  <span class="pill-num">3</span> 富蕴县城商业街传…
+                  <span class="pill-num">3</span> 富蕴县城商业街传统炭火铜锅土火锅庄 (20年名店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-8-dinner-3" onclick="switchMealOption(8, 'dinner', 3, this, true)">
-                  <span class="pill-num">4</span> 富蕴县城商业街百…
+                  <span class="pill-num">4</span> 富蕴县城商业街百年清炖羊羔肉老馆 (非遗传承)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-8-dinner-4" onclick="switchMealOption(8, 'dinner', 4, this, true)">
-                  <span class="pill-num">5</span> 富蕴县城商业街老…
+                  <span class="pill-num">5</span> 富蕴县城商业街老巴扎夜市特色烧烤大排档 (20年老店)
                 </button>
                 
               </div>
@@ -5334,7 +5336,7 @@
         <div class="m-dining-day-group" id="dine-day-9" onclick="mFocusDineDay(9, false)">
           <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 9 · 11/02</span>
-            <span class="m-dine-city-badge">📍 Day 9 · 奇台县城老街 (点我看当餐推荐)</span>
+            <span class="m-dine-city-badge">📍 Day 9 · 奇台县城老街 (点我看全天15家地图)</span>
           </div>
           
             <div class="m-meal-section-box meal-box-breakfast" id="meal-sec-9-breakfast">
@@ -5342,23 +5344,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-9-breakfast-0" onclick="switchMealOption(9, 'breakfast', 0, this, true)">
-                  <span class="pill-num">1</span> 奇台县城老街老字…
+                  <span class="pill-num">1</span> 奇台县城老街老字号薄皮包子铺 (25年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-9-breakfast-1" onclick="switchMealOption(9, 'breakfast', 1, this, true)">
-                  <span class="pill-num">2</span> 奇台县城老街传统…
+                  <span class="pill-num">2</span> 奇台县城老街传统清真油塔子馆 (20年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-9-breakfast-2" onclick="switchMealOption(9, 'breakfast', 2, this, true)">
-                  <span class="pill-num">3</span> 奇台县城老街老街…
+                  <span class="pill-num">3</span> 奇台县城老街老街现烤芝麻肉馕坊 (30年老摊)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-9-breakfast-3" onclick="switchMealOption(9, 'breakfast', 3, this, true)">
-                  <span class="pill-num">4</span> 奇台县城老街清真…
+                  <span class="pill-num">4</span> 奇台县城老街清真早茶牛肉面馆 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-9-breakfast-4" onclick="switchMealOption(9, 'breakfast', 4, this, true)">
-                  <span class="pill-num">5</span> 奇台县城老街民族…
+                  <span class="pill-num">5</span> 奇台县城老街民族风味奶茶馆 (20年老店)
                 </button>
                 
               </div>
@@ -5487,23 +5489,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-9-lunch-0" onclick="switchMealOption(9, 'lunch', 0, this, true)">
-                  <span class="pill-num">1</span> 奇台县城老街正宗…
+                  <span class="pill-num">1</span> 奇台县城老街正宗过油肉拌面王 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-9-lunch-1" onclick="switchMealOption(9, 'lunch', 1, this, true)">
-                  <span class="pill-num">2</span> 奇台县城老街柴火…
+                  <span class="pill-num">2</span> 奇台县城老街柴火大铁锅抓饭庄 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-9-lunch-2" onclick="switchMealOption(9, 'lunch', 2, this, true)">
-                  <span class="pill-num">3</span> 奇台县城老街传统…
+                  <span class="pill-num">3</span> 奇台县城老街传统回民大盘鸡老店 (30年老字号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-9-lunch-3" onclick="switchMealOption(9, 'lunch', 3, this, true)">
-                  <span class="pill-num">4</span> 奇台县城老街辣皮…
+                  <span class="pill-num">4</span> 奇台县城老街辣皮子肉拉条子老铺 (20年老牌)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-9-lunch-4" onclick="switchMealOption(9, 'lunch', 4, this, true)">
-                  <span class="pill-num">5</span> 奇台县城老街风干…
+                  <span class="pill-num">5</span> 奇台县城老街风干牛肉焖土豆名庄 (25年老店)
                 </button>
                 
               </div>
@@ -5632,23 +5634,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-9-dinner-0" onclick="switchMealOption(9, 'dinner', 0, this, true)">
-                  <span class="pill-num">1</span> 奇台县城老街老字…
+                  <span class="pill-num">1</span> 奇台县城老街老字号特色烤肉冷水鱼庄 (30年地标)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-9-dinner-1" onclick="switchMealOption(9, 'dinner', 1, this, true)">
-                  <span class="pill-num">2</span> 奇台县城老街金牌…
+                  <span class="pill-num">2</span> 奇台县城老街金牌大尾羊纳仁名店 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-9-dinner-2" onclick="switchMealOption(9, 'dinner', 2, this, true)">
-                  <span class="pill-num">3</span> 奇台县城老街传统…
+                  <span class="pill-num">3</span> 奇台县城老街传统炭火铜锅土火锅庄 (20年名店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-9-dinner-3" onclick="switchMealOption(9, 'dinner', 3, this, true)">
-                  <span class="pill-num">4</span> 奇台县城老街百年…
+                  <span class="pill-num">4</span> 奇台县城老街百年清炖羊羔肉老馆 (非遗传承)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-9-dinner-4" onclick="switchMealOption(9, 'dinner', 4, this, true)">
-                  <span class="pill-num">5</span> 奇台县城老街老巴…
+                  <span class="pill-num">5</span> 奇台县城老街老巴扎夜市特色烧烤大排档 (20年老店)
                 </button>
                 
               </div>
@@ -5778,7 +5780,7 @@
         <div class="m-dining-day-group" id="dine-day-10" onclick="mFocusDineDay(10, false)">
           <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 10 · 11/03</span>
-            <span class="m-dine-city-badge">📍 Day 10 · 吐鲁番高昌区老城 (点我看当餐推荐)</span>
+            <span class="m-dine-city-badge">📍 Day 10 · 吐鲁番高昌区老城 (点我看全天15家地图)</span>
           </div>
           
             <div class="m-meal-section-box meal-box-breakfast" id="meal-sec-10-breakfast">
@@ -5786,23 +5788,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-10-breakfast-0" onclick="switchMealOption(10, 'breakfast', 0, this, true)">
-                  <span class="pill-num">1</span> 吐鲁番高昌区老城…
+                  <span class="pill-num">1</span> 吐鲁番高昌区老城老字号薄皮包子铺 (25年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-10-breakfast-1" onclick="switchMealOption(10, 'breakfast', 1, this, true)">
-                  <span class="pill-num">2</span> 吐鲁番高昌区老城…
+                  <span class="pill-num">2</span> 吐鲁番高昌区老城传统清真油塔子馆 (20年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-10-breakfast-2" onclick="switchMealOption(10, 'breakfast', 2, this, true)">
-                  <span class="pill-num">3</span> 吐鲁番高昌区老城…
+                  <span class="pill-num">3</span> 吐鲁番高昌区老城老街现烤芝麻肉馕坊 (30年老摊)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-10-breakfast-3" onclick="switchMealOption(10, 'breakfast', 3, this, true)">
-                  <span class="pill-num">4</span> 吐鲁番高昌区老城…
+                  <span class="pill-num">4</span> 吐鲁番高昌区老城清真早茶牛肉面馆 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-10-breakfast-4" onclick="switchMealOption(10, 'breakfast', 4, this, true)">
-                  <span class="pill-num">5</span> 吐鲁番高昌区老城…
+                  <span class="pill-num">5</span> 吐鲁番高昌区老城民族风味奶茶馆 (20年老店)
                 </button>
                 
               </div>
@@ -5931,23 +5933,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-10-lunch-0" onclick="switchMealOption(10, 'lunch', 0, this, true)">
-                  <span class="pill-num">1</span> 吐鲁番高昌区老城…
+                  <span class="pill-num">1</span> 吐鲁番高昌区老城正宗过油肉拌面王 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-10-lunch-1" onclick="switchMealOption(10, 'lunch', 1, this, true)">
-                  <span class="pill-num">2</span> 吐鲁番高昌区老城…
+                  <span class="pill-num">2</span> 吐鲁番高昌区老城柴火大铁锅抓饭庄 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-10-lunch-2" onclick="switchMealOption(10, 'lunch', 2, this, true)">
-                  <span class="pill-num">3</span> 吐鲁番高昌区老城…
+                  <span class="pill-num">3</span> 吐鲁番高昌区老城传统回民大盘鸡老店 (30年老字号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-10-lunch-3" onclick="switchMealOption(10, 'lunch', 3, this, true)">
-                  <span class="pill-num">4</span> 吐鲁番高昌区老城…
+                  <span class="pill-num">4</span> 吐鲁番高昌区老城辣皮子肉拉条子老铺 (20年老牌)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-10-lunch-4" onclick="switchMealOption(10, 'lunch', 4, this, true)">
-                  <span class="pill-num">5</span> 吐鲁番高昌区老城…
+                  <span class="pill-num">5</span> 吐鲁番高昌区老城风干牛肉焖土豆名庄 (25年老店)
                 </button>
                 
               </div>
@@ -6076,23 +6078,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-10-dinner-0" onclick="switchMealOption(10, 'dinner', 0, this, true)">
-                  <span class="pill-num">1</span> 吐鲁番高昌区老城…
+                  <span class="pill-num">1</span> 吐鲁番高昌区老城老字号特色烤肉冷水鱼庄 (30年地标)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-10-dinner-1" onclick="switchMealOption(10, 'dinner', 1, this, true)">
-                  <span class="pill-num">2</span> 吐鲁番高昌区老城…
+                  <span class="pill-num">2</span> 吐鲁番高昌区老城金牌大尾羊纳仁名店 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-10-dinner-2" onclick="switchMealOption(10, 'dinner', 2, this, true)">
-                  <span class="pill-num">3</span> 吐鲁番高昌区老城…
+                  <span class="pill-num">3</span> 吐鲁番高昌区老城传统炭火铜锅土火锅庄 (20年名店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-10-dinner-3" onclick="switchMealOption(10, 'dinner', 3, this, true)">
-                  <span class="pill-num">4</span> 吐鲁番高昌区老城…
+                  <span class="pill-num">4</span> 吐鲁番高昌区老城百年清炖羊羔肉老馆 (非遗传承)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-10-dinner-4" onclick="switchMealOption(10, 'dinner', 4, this, true)">
-                  <span class="pill-num">5</span> 吐鲁番高昌区老城…
+                  <span class="pill-num">5</span> 吐鲁番高昌区老城老巴扎夜市特色烧烤大排档 (20年老店)
                 </button>
                 
               </div>
@@ -6222,7 +6224,7 @@
         <div class="m-dining-day-group" id="dine-day-11" onclick="mFocusDineDay(11, false)">
           <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 11 · 11/04</span>
-            <span class="m-dine-city-badge">📍 Day 11 · 吐峪沟/鄯善 (点我看当餐推荐)</span>
+            <span class="m-dine-city-badge">📍 Day 11 · 吐峪沟/鄯善 (点我看全天15家地图)</span>
           </div>
           
             <div class="m-meal-section-box meal-box-breakfast" id="meal-sec-11-breakfast">
@@ -6230,23 +6232,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-11-breakfast-0" onclick="switchMealOption(11, 'breakfast', 0, this, true)">
-                  <span class="pill-num">1</span> 吐峪沟/鄯善老字…
+                  <span class="pill-num">1</span> 吐峪沟/鄯善老字号薄皮包子铺 (25年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-11-breakfast-1" onclick="switchMealOption(11, 'breakfast', 1, this, true)">
-                  <span class="pill-num">2</span> 吐峪沟/鄯善传统…
+                  <span class="pill-num">2</span> 吐峪沟/鄯善传统清真油塔子馆 (20年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-11-breakfast-2" onclick="switchMealOption(11, 'breakfast', 2, this, true)">
-                  <span class="pill-num">3</span> 吐峪沟/鄯善老街…
+                  <span class="pill-num">3</span> 吐峪沟/鄯善老街现烤芝麻肉馕坊 (30年老摊)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-11-breakfast-3" onclick="switchMealOption(11, 'breakfast', 3, this, true)">
-                  <span class="pill-num">4</span> 吐峪沟/鄯善清真…
+                  <span class="pill-num">4</span> 吐峪沟/鄯善清真早茶牛肉面馆 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-11-breakfast-4" onclick="switchMealOption(11, 'breakfast', 4, this, true)">
-                  <span class="pill-num">5</span> 吐峪沟/鄯善民族…
+                  <span class="pill-num">5</span> 吐峪沟/鄯善民族风味奶茶馆 (20年老店)
                 </button>
                 
               </div>
@@ -6375,23 +6377,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-11-lunch-0" onclick="switchMealOption(11, 'lunch', 0, this, true)">
-                  <span class="pill-num">1</span> 吐峪沟/鄯善正宗…
+                  <span class="pill-num">1</span> 吐峪沟/鄯善正宗过油肉拌面王 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-11-lunch-1" onclick="switchMealOption(11, 'lunch', 1, this, true)">
-                  <span class="pill-num">2</span> 吐峪沟/鄯善柴火…
+                  <span class="pill-num">2</span> 吐峪沟/鄯善柴火大铁锅抓饭庄 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-11-lunch-2" onclick="switchMealOption(11, 'lunch', 2, this, true)">
-                  <span class="pill-num">3</span> 吐峪沟/鄯善传统…
+                  <span class="pill-num">3</span> 吐峪沟/鄯善传统回民大盘鸡老店 (30年老字号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-11-lunch-3" onclick="switchMealOption(11, 'lunch', 3, this, true)">
-                  <span class="pill-num">4</span> 吐峪沟/鄯善辣皮…
+                  <span class="pill-num">4</span> 吐峪沟/鄯善辣皮子肉拉条子老铺 (20年老牌)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-11-lunch-4" onclick="switchMealOption(11, 'lunch', 4, this, true)">
-                  <span class="pill-num">5</span> 吐峪沟/鄯善风干…
+                  <span class="pill-num">5</span> 吐峪沟/鄯善风干牛肉焖土豆名庄 (25年老店)
                 </button>
                 
               </div>
@@ -6520,23 +6522,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-11-dinner-0" onclick="switchMealOption(11, 'dinner', 0, this, true)">
-                  <span class="pill-num">1</span> 吐峪沟/鄯善老字…
+                  <span class="pill-num">1</span> 吐峪沟/鄯善老字号特色烤肉冷水鱼庄 (30年地标)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-11-dinner-1" onclick="switchMealOption(11, 'dinner', 1, this, true)">
-                  <span class="pill-num">2</span> 吐峪沟/鄯善金牌…
+                  <span class="pill-num">2</span> 吐峪沟/鄯善金牌大尾羊纳仁名店 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-11-dinner-2" onclick="switchMealOption(11, 'dinner', 2, this, true)">
-                  <span class="pill-num">3</span> 吐峪沟/鄯善传统…
+                  <span class="pill-num">3</span> 吐峪沟/鄯善传统炭火铜锅土火锅庄 (20年名店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-11-dinner-3" onclick="switchMealOption(11, 'dinner', 3, this, true)">
-                  <span class="pill-num">4</span> 吐峪沟/鄯善百年…
+                  <span class="pill-num">4</span> 吐峪沟/鄯善百年清炖羊羔肉老馆 (非遗传承)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-11-dinner-4" onclick="switchMealOption(11, 'dinner', 4, this, true)">
-                  <span class="pill-num">5</span> 吐峪沟/鄯善老巴…
+                  <span class="pill-num">5</span> 吐峪沟/鄯善老巴扎夜市特色烧烤大排档 (20年老店)
                 </button>
                 
               </div>
@@ -6666,7 +6668,7 @@
         <div class="m-dining-day-group" id="dine-day-12" onclick="mFocusDineDay(12, false)">
           <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 12 · 11/05</span>
-            <span class="m-dine-city-badge">📍 Day 12 · 吐鲁番高昌区 (点我看当餐推荐)</span>
+            <span class="m-dine-city-badge">📍 Day 12 · 吐鲁番高昌区 (点我看全天15家地图)</span>
           </div>
           
             <div class="m-meal-section-box meal-box-breakfast" id="meal-sec-12-breakfast">
@@ -6674,23 +6676,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-12-breakfast-0" onclick="switchMealOption(12, 'breakfast', 0, this, true)">
-                  <span class="pill-num">1</span> 吐鲁番高昌区老字…
+                  <span class="pill-num">1</span> 吐鲁番高昌区老字号薄皮包子铺 (25年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-12-breakfast-1" onclick="switchMealOption(12, 'breakfast', 1, this, true)">
-                  <span class="pill-num">2</span> 吐鲁番高昌区传统…
+                  <span class="pill-num">2</span> 吐鲁番高昌区传统清真油塔子馆 (20年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-12-breakfast-2" onclick="switchMealOption(12, 'breakfast', 2, this, true)">
-                  <span class="pill-num">3</span> 吐鲁番高昌区老街…
+                  <span class="pill-num">3</span> 吐鲁番高昌区老街现烤芝麻肉馕坊 (30年老摊)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-12-breakfast-3" onclick="switchMealOption(12, 'breakfast', 3, this, true)">
-                  <span class="pill-num">4</span> 吐鲁番高昌区清真…
+                  <span class="pill-num">4</span> 吐鲁番高昌区清真早茶牛肉面馆 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-12-breakfast-4" onclick="switchMealOption(12, 'breakfast', 4, this, true)">
-                  <span class="pill-num">5</span> 吐鲁番高昌区民族…
+                  <span class="pill-num">5</span> 吐鲁番高昌区民族风味奶茶馆 (20年老店)
                 </button>
                 
               </div>
@@ -6819,23 +6821,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-12-lunch-0" onclick="switchMealOption(12, 'lunch', 0, this, true)">
-                  <span class="pill-num">1</span> 吐鲁番高昌区正宗…
+                  <span class="pill-num">1</span> 吐鲁番高昌区正宗过油肉拌面王 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-12-lunch-1" onclick="switchMealOption(12, 'lunch', 1, this, true)">
-                  <span class="pill-num">2</span> 吐鲁番高昌区柴火…
+                  <span class="pill-num">2</span> 吐鲁番高昌区柴火大铁锅抓饭庄 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-12-lunch-2" onclick="switchMealOption(12, 'lunch', 2, this, true)">
-                  <span class="pill-num">3</span> 吐鲁番高昌区传统…
+                  <span class="pill-num">3</span> 吐鲁番高昌区传统回民大盘鸡老店 (30年老字号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-12-lunch-3" onclick="switchMealOption(12, 'lunch', 3, this, true)">
-                  <span class="pill-num">4</span> 吐鲁番高昌区辣皮…
+                  <span class="pill-num">4</span> 吐鲁番高昌区辣皮子肉拉条子老铺 (20年老牌)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-12-lunch-4" onclick="switchMealOption(12, 'lunch', 4, this, true)">
-                  <span class="pill-num">5</span> 吐鲁番高昌区风干…
+                  <span class="pill-num">5</span> 吐鲁番高昌区风干牛肉焖土豆名庄 (25年老店)
                 </button>
                 
               </div>
@@ -6964,23 +6966,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-12-dinner-0" onclick="switchMealOption(12, 'dinner', 0, this, true)">
-                  <span class="pill-num">1</span> 吐鲁番高昌区老字…
+                  <span class="pill-num">1</span> 吐鲁番高昌区老字号特色烤肉冷水鱼庄 (30年地标)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-12-dinner-1" onclick="switchMealOption(12, 'dinner', 1, this, true)">
-                  <span class="pill-num">2</span> 吐鲁番高昌区金牌…
+                  <span class="pill-num">2</span> 吐鲁番高昌区金牌大尾羊纳仁名店 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-12-dinner-2" onclick="switchMealOption(12, 'dinner', 2, this, true)">
-                  <span class="pill-num">3</span> 吐鲁番高昌区传统…
+                  <span class="pill-num">3</span> 吐鲁番高昌区传统炭火铜锅土火锅庄 (20年名店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-12-dinner-3" onclick="switchMealOption(12, 'dinner', 3, this, true)">
-                  <span class="pill-num">4</span> 吐鲁番高昌区百年…
+                  <span class="pill-num">4</span> 吐鲁番高昌区百年清炖羊羔肉老馆 (非遗传承)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-12-dinner-4" onclick="switchMealOption(12, 'dinner', 4, this, true)">
-                  <span class="pill-num">5</span> 吐鲁番高昌区老巴…
+                  <span class="pill-num">5</span> 吐鲁番高昌区老巴扎夜市特色烧烤大排档 (20年老店)
                 </button>
                 
               </div>
@@ -7110,7 +7112,7 @@
         <div class="m-dining-day-group" id="dine-day-13" onclick="mFocusDineDay(13, false)">
           <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 13 · 11/06</span>
-            <span class="m-dine-city-badge">📍 Day 13 · 吐鲁番老城区 (点我看当餐推荐)</span>
+            <span class="m-dine-city-badge">📍 Day 13 · 吐鲁番老城区 (点我看全天15家地图)</span>
           </div>
           
             <div class="m-meal-section-box meal-box-breakfast" id="meal-sec-13-breakfast">
@@ -7118,23 +7120,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-13-breakfast-0" onclick="switchMealOption(13, 'breakfast', 0, this, true)">
-                  <span class="pill-num">1</span> 吐鲁番老城区老字…
+                  <span class="pill-num">1</span> 吐鲁番老城区老字号薄皮包子铺 (25年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-13-breakfast-1" onclick="switchMealOption(13, 'breakfast', 1, this, true)">
-                  <span class="pill-num">2</span> 吐鲁番老城区传统…
+                  <span class="pill-num">2</span> 吐鲁番老城区传统清真油塔子馆 (20年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-13-breakfast-2" onclick="switchMealOption(13, 'breakfast', 2, this, true)">
-                  <span class="pill-num">3</span> 吐鲁番老城区老街…
+                  <span class="pill-num">3</span> 吐鲁番老城区老街现烤芝麻肉馕坊 (30年老摊)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-13-breakfast-3" onclick="switchMealOption(13, 'breakfast', 3, this, true)">
-                  <span class="pill-num">4</span> 吐鲁番老城区清真…
+                  <span class="pill-num">4</span> 吐鲁番老城区清真早茶牛肉面馆 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-13-breakfast-4" onclick="switchMealOption(13, 'breakfast', 4, this, true)">
-                  <span class="pill-num">5</span> 吐鲁番老城区民族…
+                  <span class="pill-num">5</span> 吐鲁番老城区民族风味奶茶馆 (20年老店)
                 </button>
                 
               </div>
@@ -7263,23 +7265,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-13-lunch-0" onclick="switchMealOption(13, 'lunch', 0, this, true)">
-                  <span class="pill-num">1</span> 吐鲁番老城区正宗…
+                  <span class="pill-num">1</span> 吐鲁番老城区正宗过油肉拌面王 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-13-lunch-1" onclick="switchMealOption(13, 'lunch', 1, this, true)">
-                  <span class="pill-num">2</span> 吐鲁番老城区柴火…
+                  <span class="pill-num">2</span> 吐鲁番老城区柴火大铁锅抓饭庄 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-13-lunch-2" onclick="switchMealOption(13, 'lunch', 2, this, true)">
-                  <span class="pill-num">3</span> 吐鲁番老城区传统…
+                  <span class="pill-num">3</span> 吐鲁番老城区传统回民大盘鸡老店 (30年老字号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-13-lunch-3" onclick="switchMealOption(13, 'lunch', 3, this, true)">
-                  <span class="pill-num">4</span> 吐鲁番老城区辣皮…
+                  <span class="pill-num">4</span> 吐鲁番老城区辣皮子肉拉条子老铺 (20年老牌)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-13-lunch-4" onclick="switchMealOption(13, 'lunch', 4, this, true)">
-                  <span class="pill-num">5</span> 吐鲁番老城区风干…
+                  <span class="pill-num">5</span> 吐鲁番老城区风干牛肉焖土豆名庄 (25年老店)
                 </button>
                 
               </div>
@@ -7408,23 +7410,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-13-dinner-0" onclick="switchMealOption(13, 'dinner', 0, this, true)">
-                  <span class="pill-num">1</span> 吐鲁番老城区老字…
+                  <span class="pill-num">1</span> 吐鲁番老城区老字号特色烤肉冷水鱼庄 (30年地标)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-13-dinner-1" onclick="switchMealOption(13, 'dinner', 1, this, true)">
-                  <span class="pill-num">2</span> 吐鲁番老城区金牌…
+                  <span class="pill-num">2</span> 吐鲁番老城区金牌大尾羊纳仁名店 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-13-dinner-2" onclick="switchMealOption(13, 'dinner', 2, this, true)">
-                  <span class="pill-num">3</span> 吐鲁番老城区传统…
+                  <span class="pill-num">3</span> 吐鲁番老城区传统炭火铜锅土火锅庄 (20年名店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-13-dinner-3" onclick="switchMealOption(13, 'dinner', 3, this, true)">
-                  <span class="pill-num">4</span> 吐鲁番老城区百年…
+                  <span class="pill-num">4</span> 吐鲁番老城区百年清炖羊羔肉老馆 (非遗传承)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-13-dinner-4" onclick="switchMealOption(13, 'dinner', 4, this, true)">
-                  <span class="pill-num">5</span> 吐鲁番老城区老巴…
+                  <span class="pill-num">5</span> 吐鲁番老城区老巴扎夜市特色烧烤大排档 (20年老店)
                 </button>
                 
               </div>
@@ -7554,7 +7556,7 @@
         <div class="m-dining-day-group" id="dine-day-14" onclick="mFocusDineDay(14, false)">
           <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day 14 · 11/07</span>
-            <span class="m-dine-city-badge">📍 Day 14 · 柴窝堡/地窝堡 (点我看当餐推荐)</span>
+            <span class="m-dine-city-badge">📍 Day 14 · 柴窝堡/地窝堡 (点我看全天15家地图)</span>
           </div>
           
             <div class="m-meal-section-box meal-box-breakfast" id="meal-sec-14-breakfast">
@@ -7562,23 +7564,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-14-breakfast-0" onclick="switchMealOption(14, 'breakfast', 0, this, true)">
-                  <span class="pill-num">1</span> 柴窝堡/地窝堡老…
+                  <span class="pill-num">1</span> 柴窝堡/地窝堡老字号薄皮包子铺 (25年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-14-breakfast-1" onclick="switchMealOption(14, 'breakfast', 1, this, true)">
-                  <span class="pill-num">2</span> 柴窝堡/地窝堡传…
+                  <span class="pill-num">2</span> 柴窝堡/地窝堡传统清真油塔子馆 (20年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-14-breakfast-2" onclick="switchMealOption(14, 'breakfast', 2, this, true)">
-                  <span class="pill-num">3</span> 柴窝堡/地窝堡老…
+                  <span class="pill-num">3</span> 柴窝堡/地窝堡老街现烤芝麻肉馕坊 (30年老摊)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-14-breakfast-3" onclick="switchMealOption(14, 'breakfast', 3, this, true)">
-                  <span class="pill-num">4</span> 柴窝堡/地窝堡清…
+                  <span class="pill-num">4</span> 柴窝堡/地窝堡清真早茶牛肉面馆 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-14-breakfast-4" onclick="switchMealOption(14, 'breakfast', 4, this, true)">
-                  <span class="pill-num">5</span> 柴窝堡/地窝堡民…
+                  <span class="pill-num">5</span> 柴窝堡/地窝堡民族风味奶茶馆 (20年老店)
                 </button>
                 
               </div>
@@ -7707,23 +7709,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-14-lunch-0" onclick="switchMealOption(14, 'lunch', 0, this, true)">
-                  <span class="pill-num">1</span> 柴窝堡/地窝堡正…
+                  <span class="pill-num">1</span> 柴窝堡/地窝堡正宗过油肉拌面王 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-14-lunch-1" onclick="switchMealOption(14, 'lunch', 1, this, true)">
-                  <span class="pill-num">2</span> 柴窝堡/地窝堡柴…
+                  <span class="pill-num">2</span> 柴窝堡/地窝堡柴火大铁锅抓饭庄 (20年老店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-14-lunch-2" onclick="switchMealOption(14, 'lunch', 2, this, true)">
-                  <span class="pill-num">3</span> 柴窝堡/地窝堡传…
+                  <span class="pill-num">3</span> 柴窝堡/地窝堡传统回民大盘鸡老店 (30年老字号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-14-lunch-3" onclick="switchMealOption(14, 'lunch', 3, this, true)">
-                  <span class="pill-num">4</span> 柴窝堡/地窝堡辣…
+                  <span class="pill-num">4</span> 柴窝堡/地窝堡辣皮子肉拉条子老铺 (20年老牌)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-14-lunch-4" onclick="switchMealOption(14, 'lunch', 4, this, true)">
-                  <span class="pill-num">5</span> 柴窝堡/地窝堡风…
+                  <span class="pill-num">5</span> 柴窝堡/地窝堡风干牛肉焖土豆名庄 (25年老店)
                 </button>
                 
               </div>
@@ -7852,23 +7854,23 @@
               <div class="m-dine-pills-bar">
                 
                 <button class="m-dine-pill active" id="dine-tab-14-dinner-0" onclick="switchMealOption(14, 'dinner', 0, this, true)">
-                  <span class="pill-num">1</span> 柴窝堡/地窝堡老…
+                  <span class="pill-num">1</span> 柴窝堡/地窝堡老字号特色烤肉冷水鱼庄 (30年地标)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-14-dinner-1" onclick="switchMealOption(14, 'dinner', 1, this, true)">
-                  <span class="pill-num">2</span> 柴窝堡/地窝堡金…
+                  <span class="pill-num">2</span> 柴窝堡/地窝堡金牌大尾羊纳仁名店 (25年老号)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-14-dinner-2" onclick="switchMealOption(14, 'dinner', 2, this, true)">
-                  <span class="pill-num">3</span> 柴窝堡/地窝堡传…
+                  <span class="pill-num">3</span> 柴窝堡/地窝堡传统炭火铜锅土火锅庄 (20年名店)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-14-dinner-3" onclick="switchMealOption(14, 'dinner', 3, this, true)">
-                  <span class="pill-num">4</span> 柴窝堡/地窝堡百…
+                  <span class="pill-num">4</span> 柴窝堡/地窝堡百年清炖羊羔肉老馆 (非遗传承)
                 </button>
                 
                 <button class="m-dine-pill " id="dine-tab-14-dinner-4" onclick="switchMealOption(14, 'dinner', 4, this, true)">
-                  <span class="pill-num">5</span> 柴窝堡/地窝堡老…
+                  <span class="pill-num">5</span> 柴窝堡/地窝堡老巴扎夜市特色烧烤大排档 (20年老店)
                 </button>
                 
               </div>
@@ -9558,6 +9560,7 @@
                 target.mk.openPopup();
               }
             } else if (currentViewTab === 'dining') {
+              // 满足需求1：滚动日期变化时，地图默认展示当天三餐全部 15 家餐馆
               showDiningDayOnMap(dayNum, null, -1, false);
             } else if (currentViewTab === 'birding') {
               showBirdingDayOnMap(dayNum);
@@ -9627,98 +9630,79 @@
     }
 
     // ==========================================
-    // 2. 餐饮专区 (切换1~5号药丸：大红金圈脉冲发光 + 弹窗极致精简)
+    // 2. 餐饮专区 (满足需求1 & 2：展示当天三餐全部15家餐馆全景 + 店名完整呈现 + 药丸高亮发光)
     // ==========================================
     let currentDineDay = null;
-    let currentDineMeal = null;
-    let currentDineMarkers = []; // { dayNum, mealKey, idx, mk, lat, lng, opt, shortName }
+    let currentDineMarkers = []; // { dayNum, mealKey, idx, mk, lat, lng, opt, fullName }
 
     function showDiningDayOnMap(dayNum, targetMealKey = null, activeIdx = -1, flyToActive = false) {
       const dayData = mTripData.dining_guide.find(d => d.day === dayNum);
       if (!dayData) return;
 
-      // 若未指定 targetMealKey，自动识别当前卡片激活的餐别或当前时间对应的餐别
-      if (!targetMealKey) {
-        const dayGroup = document.getElementById(`dine-day-${dayNum}`);
-        const activeSec = dayGroup ? dayGroup.querySelector('.m-meal-section-box.active-meal') : null;
-        if (activeSec) {
-          if (activeSec.classList.contains('meal-box-lunch')) targetMealKey = 'lunch';
-          else if (activeSec.classList.contains('meal-box-dinner')) targetMealKey = 'dinner';
-          else targetMealKey = 'breakfast';
-        } else {
-          const tripCtx = getCurrentTripContext();
-          targetMealKey = tripCtx.mealKey;
-        }
-      }
-
-      const mealConfigs = {
-        'breakfast': { label: '早', color: '#f59e0b', name: '早餐' },
-        'lunch': { label: '午', color: '#ef4444', name: '午餐' },
-        'dinner': { label: '晚', color: '#a855f7', name: '晚餐' }
-      };
-
-      const mCfg = mealConfigs[targetMealKey] || mealConfigs['breakfast'];
       const hint = document.getElementById('m-top-map-hint');
 
-      // 仅展示当餐 5 个选项：当日期或餐别改变时重新绘制
-      if (currentDineDay !== dayNum || currentDineMeal !== targetMealKey || currentDineMarkers.length === 0) {
+      // 若日期改变或 Marker 集合为空，则完整绘制当天全部三餐 15 家精选餐馆 (早5 + 午5 + 晚5)
+      if (currentDineDay !== dayNum || currentDineMarkers.length === 0) {
         dynamicLayers.clearLayers();
         currentDineMarkers = [];
         currentDineDay = dayNum;
-        currentDineMeal = targetMealKey;
 
-        const list = dayData.meals[targetMealKey] || [];
-        const pts = [];
+        const meals = dayData.meals;
+        const mealConfigs = [
+          { key: 'breakfast', label: '早', color: '#f59e0b', name: '早餐' },
+          { key: 'lunch', label: '午', color: '#ef4444', name: '午餐' },
+          { key: 'dinner', label: '晚', color: '#a855f7', name: '晚餐' }
+        ];
 
-        list.forEach((opt, idx) => {
-          const lat = opt.lat;
-          const lng = opt.lng;
-          pts.push([lat, lng]);
+        mealConfigs.forEach(mCfg => {
+          const list = meals[mCfg.key] || [];
+          list.forEach((opt, idx) => {
+            const lat = opt.lat;
+            const lng = opt.lng;
+            const fullName = opt.restaurant;
+            const isSelected = (targetMealKey === mCfg.key && idx === activeIdx);
+            const actCls = isSelected ? 'active' : '';
 
-          const shortName = opt.restaurant.split('(')[0].trim();
-          const displayShort = shortName.length > 7 ? shortName.slice(0, 7) + '…' : shortName;
-          const isSelected = (idx === activeIdx);
-          const actCls = isSelected ? 'active' : '';
+            // 满足需求2：店名完整呈现，绝不截断省略
+            const html = `<div class="custom-dine-pin ${actCls} meal-${mCfg.key}" id="dine-pin-${dayNum}-${mCfg.key}-${idx}">
+              <span class="dine-meal-tag" style="background:${mCfg.color}; color:#fff; font-size:8.5px; padding:1px 3px; border-radius:3px; font-weight:700;">${mCfg.label}${idx+1}</span>
+              <b>${fullName}</b>
+            </div>`;
+            const icon = L.divIcon({ className: 'dine-div-icon', html: html, iconSize: null, iconAnchor: [20, 12] });
 
-          // 简洁清爽的当餐 Pin 标牌（仅展示店名和定位点）
-          const html = `<div class="custom-dine-pin ${actCls} meal-${targetMealKey}" id="dine-pin-${dayNum}-${targetMealKey}-${idx}">
-            <span class="dine-meal-tag" style="background:${mCfg.color}; color:#fff; font-size:8.5px; padding:1px 3px; border-radius:3px; font-weight:700;">${mCfg.label}${idx+1}</span>
-            <b>${displayShort}</b>
-          </div>`;
-          const icon = L.divIcon({ className: 'dine-div-icon', html: html, iconSize: null, iconAnchor: [20, 12] });
-
-          const mk = L.marker([lat, lng], { icon: icon, zIndexOffset: isSelected ? 9999 : 10 }).addTo(dynamicLayers);
-          
-          // 极致精简弹窗：仅保留店名、人均、招牌前两道与高德导航按钮
-          const mustTwo = (opt.must_orders || []).slice(0, 2).join(' · ');
-          mk.bindPopup(`
-            <div style="font-size:11.5px; line-height:1.35; color:#0f172a; padding:1px 2px; min-width:160px; max-width:210px;">
-              <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px;">
-                <b style="color:#0f172a; font-size:12.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${shortName}</b>
-                <span style="color:#dc2626; font-weight:700; font-size:11px; white-space:nowrap;">${opt.price_per_person}</span>
+            const mk = L.marker([lat, lng], { icon: icon, zIndexOffset: isSelected ? 9999 : 10 }).addTo(dynamicLayers);
+            
+            // 极致精简弹窗：完整店名 + 人均 + 前两道招牌 + 高德导航
+            const mustTwo = (opt.must_orders || []).slice(0, 2).join(' · ');
+            mk.bindPopup(`
+              <div style="font-size:11.5px; line-height:1.35; color:#0f172a; padding:1px 2px; min-width:180px; max-width:240px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px;">
+                  <b style="color:#0f172a; font-size:12.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${fullName}</b>
+                  <span style="color:#dc2626; font-weight:700; font-size:11px; white-space:nowrap;">${opt.price_per_person}</span>
+                </div>
+                <div style="font-size:11px; color:#475569; margin-bottom:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                  🍲 <b>招牌：</b>${mustTwo}
+                </div>
+                <a href="https://uri.amap.com/navigation?to=${lng},${lat}&mode=car" target="_blank" style="display:block; text-align:center; background:#2563eb; color:#fff; padding:4px 0; border-radius:4px; text-decoration:none; font-weight:700; font-size:10.5px;">🚗 高德一键导航</a>
               </div>
-              <div style="font-size:11px; color:#475569; margin-bottom:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                🍲 <b>招牌：</b>${mustTwo}
-              </div>
-              <a href="https://uri.amap.com/navigation?to=${lng},${lat}&mode=car" target="_blank" style="display:block; text-align:center; background:#2563eb; color:#fff; padding:4px 0; border-radius:4px; text-decoration:none; font-weight:700; font-size:10.5px;">🚗 高德一键导航</a>
-            </div>
-          `, { autoPan: false, offset: [0, -10] });
+            `, { autoPan: false, offset: [0, -10] });
 
-          mk.on('click', () => {
-            switchMealOption(dayNum, targetMealKey, idx, null, true);
-            const optCard = document.getElementById(`opt-${dayNum}-${targetMealKey}-${idx}`);
-            if (optCard) {
-              optCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
+            mk.on('click', () => {
+              switchMealOption(dayNum, mCfg.key, idx, null, true);
+              const optCard = document.getElementById(`opt-${dayNum}-${mCfg.key}-${idx}`);
+              if (optCard) {
+                optCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+            });
+
+            currentDineMarkers.push({ dayNum, mealKey: mCfg.key, idx, mk, lat, lng, opt, fullName });
           });
-
-          currentDineMarkers.push({ dayNum, mealKey: targetMealKey, idx, mk, lat, lng, opt, shortName });
         });
       }
 
-      // 100% 确保切换 1~5 药丸时直接为当前 Marker 赋予大红发光脉冲 active 效果与最高 Z-index
+      // 实时精准更新所有 15 个 Marker 的激活高亮状态与 Z-index
       currentDineMarkers.forEach((m) => {
-        const isMatch = (m.idx === activeIdx);
+        const isMatch = (targetMealKey === m.mealKey && m.idx === activeIdx);
         m.mk.setZIndexOffset(isMatch ? 9999 : 10);
 
         const el = m.mk.getElement();
@@ -9732,12 +9716,13 @@
         }
       });
 
-      // 若指定了具体餐馆，执行高亮与飞至定位
-      if (activeIdx >= 0) {
-        const activeObj = currentDineMarkers.find(m => m.idx === activeIdx);
+      // 若指定了具体餐馆，执行高亮与平滑飞至定位
+      if (targetMealKey && activeIdx >= 0) {
+        const activeObj = currentDineMarkers.find(m => m.mealKey === targetMealKey && m.idx === activeIdx);
         if (activeObj) {
+          const mealNameMap = { 'breakfast': '早餐', 'lunch': '午餐', 'dinner': '晚餐' };
           if (hint) {
-            hint.innerText = `🍽️ Day ${dayNum} · ${mCfg.name} · 正在查看：${activeObj.opt.restaurant}`;
+            hint.innerText = `🍽️ Day ${dayNum} · ${mealNameMap[targetMealKey] || '精选'} · 正在查看：${activeObj.fullName}`;
           }
 
           if (flyToActive) {
@@ -9752,13 +9737,13 @@
         }
       }
 
-      // 默认全景显示当餐 5 家餐馆
+      // 满足需求1：当滚动切换日期或未指定具体餐馆时，默认全景框选当天全部 15 家餐馆
       if (currentDineMarkers.length > 0) {
         const pts = currentDineMarkers.map(m => [m.lat, m.lng]);
         const bounds = L.latLngBounds(pts);
         mMap.fitBounds(bounds, { padding: [35, 35], maxZoom: 15, duration: 0.5 });
         if (hint) {
-          hint.innerText = `🍽️ Day ${dayNum} · ${dayData.city.split('(')[0]} ${mCfg.name} (5选1精选)`;
+          hint.innerText = `🍽️ Day ${dayNum} · ${dayData.city.split('(')[0]} 当天全天餐馆 (共15家·早/午/晚)`;
         }
       }
     }
@@ -9837,7 +9822,7 @@
     }
 
     // ==========================================
-    // 3. 观鸟专区 (满足需求2：去除重复名称，仅保留一个清晰地标)
+    // 3. 观鸟专区 (去除重复名称，仅保留一个清晰地标)
     // ==========================================
     function showBirdingDayOnMap(dayNum) {
       const b = mTripData.birding_guide.find(item => item.day === dayNum);
@@ -9845,12 +9830,10 @@
 
       dynamicLayers.clearLayers();
       currentDineDay = null;
-      currentDineMeal = null;
 
       const hint = document.getElementById('m-top-map-hint');
       hint.innerText = `🦉 Day ${dayNum} · ${b.city} 观鸟点: ${b.location}`;
 
-      // 仅保留一个清晰美观的地标，不触发重复弹窗
       const html = `<div class="custom-bird-pin">🦉 <b>${b.location}</b></div>`;
       const icon = L.divIcon({ className: 'bird-div-icon', html: html, iconSize: null, iconAnchor: [20, 12] });
 
@@ -9891,7 +9874,6 @@
 
       dynamicLayers.clearLayers();
       currentDineDay = null;
-      currentDineMeal = null;
 
       const hint = document.getElementById('m-top-map-hint');
       hint.innerText = `🏛️ Day ${dayNum} · 国保实景照片与行进路线`;
@@ -10189,22 +10171,18 @@
 
       if (viewId === 'timeline') {
         currentDineDay = null;
-        currentDineMeal = null;
         document.getElementById('m-top-map-hint').innerText = "🗺️ 行程路线 · 滚动卡片实时联动";
         setupRouteWithArrows();
         mMap.fitBounds(mPolyline.getBounds(), { padding: [15, 15] });
         mFocusDay(targetDay, false);
       } else if (viewId === 'dining') {
         currentDineDay = null;
-        currentDineMeal = null;
         mFocusDineDay(targetDay, false, tripCtx.mealKey, 0);
       } else if (viewId === 'birding') {
         currentDineDay = null;
-        currentDineMeal = null;
         mFocusBirdDay(targetDay, false);
       } else if (viewId === 'culture') {
         currentDineDay = null;
-        currentDineMeal = null;
         mFocusHeritDay(targetDay, false);
       } else if (viewId === 'tips') {
         renderMChart();
