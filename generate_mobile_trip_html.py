@@ -31,6 +31,7 @@ import urllib.parse
 from dining_data_210 import TRIP_DATA, DINING_210_DATA
 from birding_data_14d import BIRDING_14D_DATA, render_birding_html
 from heritage_data_14d import HERITAGE_14D_DATA, HERITAGE_DAY_ROUTES, render_heritage_html
+from icon_data_uris import DP_ICON_URI, XHS_ICON_URI
 
 # 提取每日最高与最低气温数值
 for d in TRIP_DATA["days"]:
@@ -111,15 +112,15 @@ def render_dining_html_5_options():
                     <span class="m-order-lbl">🍲 必点招牌：</span>{orders_str}
                   </div>
                   <div class="m-meal-desc-box">{opt['highlight']}</div>
-                  <div style="display:flex; gap:6px; margin-top:8px;">
+                  <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
                     <button onclick="event.stopPropagation(); focusDineMapMarker({day_num}, '{m_key}', {idx})" class="m-dine-locate-btn" style="flex:1;">
-                      📍 地图定位
+                      📍 在地图定位
                     </button>
-                    <a href="{dp_href}" onclick="openDianpingDirect(event, '{shop_id}', '{clean_name}', '{clean_city}')" class="m-dine-dp-btn" style="flex:1.2;">
-                      🧡 大众点评
+                    <a href="{dp_href}" onclick="openDianpingDirect(event, '{shop_id}', '{clean_name}', '{clean_city}')" title="大众点评" style="display:flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); box-shadow:0 2px 6px rgba(0,0,0,0.25); text-decoration:none; cursor:pointer; flex-shrink:0;">
+                      <img src="{DP_ICON_URI}" style="width:24px; height:24px; border-radius:6px; display:block;" alt="大众点评" />
                     </a>
-                    <a href="{xhs_href}" onclick="openXiaohongshuDirect(event, '{note_id}', '{clean_name}', '{clean_city}')" class="m-dine-xhs-btn" style="flex:1.2; display:flex; align-items:center; justify-content:center; gap:3px; background:#ff2442; color:#fff; font-size:11px; font-weight:700; border-radius:6px; text-decoration:none; box-shadow:0 2px 6px rgba(255,36,66,0.35); padding:6px 0; border:none; cursor:pointer;">
-                      📕 小红书打卡笔记
+                    <a href="{xhs_href}" onclick="openXiaohongshuDirect(event, '{note_id}', '{clean_name}', '{clean_city}')" title="小红书" style="display:flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); box-shadow:0 2px 6px rgba(0,0,0,0.25); text-decoration:none; cursor:pointer; flex-shrink:0;">
+                      <img src="{XHS_ICON_URI}" style="width:24px; height:24px; border-radius:6px; display:block;" alt="小红书" />
                     </a>
                   </div>
                 </div>
@@ -403,35 +404,116 @@ def build_mobile_split_screen_html():
       }}
     }}
 
-    /* 餐饮地图 Pin (完整店名与定位点呈现) */
-    .custom-dine-pin {{
-      background: #1e293b;
-      border: 1.5px solid #f59e0b;
-      border-radius: 12px;
-      padding: 2px 7px;
-      color: #fff;
-      font-size: 10.5px;
-      font-weight: 700;
-      white-space: nowrap;
+    /* 餐饮地图虚化小圆点 (0文字，0冗余，纯净光晕定位) */
+    .custom-dine-dot {{
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: rgba(245, 158, 11, 0.28);
+      border: 2px solid #f59e0b;
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.7);
       display: flex;
       align-items: center;
-      gap: 4px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.6);
+      justify-content: center;
       cursor: pointer;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }}
-    .custom-dine-pin.meal-breakfast {{ border-color: #f59e0b; }}
-    .custom-dine-pin.meal-lunch {{ border-color: #ef4444; }}
-    .custom-dine-pin.meal-dinner {{ border-color: #a855f7; }}
-
-    /* 选中餐馆的强烈高反差鲜艳大红 + 金黄外圈 + 发光脉冲扩散 */
-    .custom-dine-pin.active {{
-      background: #dc2626 !important;
-      color: #ffffff !important;
-      border: 2px solid #fef08a !important;
+    .custom-dine-dot.meal-breakfast {{
+      background: rgba(245, 158, 11, 0.28);
+      border-color: #f59e0b;
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.7);
+    }}
+    .custom-dine-dot.meal-lunch {{
+      background: rgba(239, 68, 68, 0.28);
+      border-color: #ef4444;
+      box-shadow: 0 0 8px rgba(239, 68, 68, 0.7);
+    }}
+    .custom-dine-dot.meal-dinner {{
+      background: rgba(168, 85, 247, 0.28);
+      border-color: #a855f7;
+      box-shadow: 0 0 8px rgba(168, 85, 247, 0.7);
+    }}
+    .custom-dine-dot.active {{
+      width: 18px !important;
+      height: 18px !important;
+      background: rgba(255, 36, 66, 0.35) !important;
+      border: 2.5px solid #ff2442 !important;
+      box-shadow: 0 0 0 4px rgba(255, 36, 66, 0.25), 0 0 16px rgba(255, 36, 66, 0.95) !important;
       animation: pulse-dine-glow 1.5s infinite !important;
-      transform: scale(1.22) translateY(-2px);
+      transform: scale(1.22);
       z-index: 9999 !important;
+    }}
+    .dine-dot-inner {{
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 0 3px rgba(255,255,255,0.9);
+    }}
+
+    /* 精简悬浮弹窗（仅店名 + 两个图标） */
+    .m-compact-leaflet-popup .leaflet-popup-content-wrapper {{
+      background: transparent !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      border-radius: 20px !important;
+    }}
+    .m-compact-leaflet-popup .leaflet-popup-content {{
+      margin: 0 !important;
+      line-height: 1 !important;
+    }}
+    .m-compact-leaflet-popup .leaflet-popup-tip-container {{
+      display: none !important;
+    }}
+    .m-dine-compact-popup {{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 3px 5px 3px 10px;
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.55);
+      white-space: nowrap;
+    }}
+    .m-popup-title {{
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #f8fafc;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 140px;
+    }}
+    .m-popup-btn-group {{
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+    }}
+    .m-popup-icon-btn {{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }}
+    .m-popup-icon-btn:active {{
+      transform: scale(0.88);
+    }}
+    .m-popup-icon-btn img {{
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      display: block;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
     }}
 
     .custom-bird-pin {{
@@ -2139,33 +2221,29 @@ def build_mobile_split_screen_html():
           const isSelected = (idx === activeIdx);
           const actCls = isSelected ? 'active' : '';
 
-          // 完整显示店名，绝不截断省略
-          const html = `<div class="custom-dine-pin ${{actCls}} meal-${{targetMealKey}}" id="dine-pin-${{dayNum}}-${{targetMealKey}}-${{idx}}">
-            <span class="dine-meal-tag" style="background:${{mCfg.color}}; color:#fff; font-size:8.5px; padding:1px 3px; border-radius:3px; font-weight:700;">${{mCfg.label}}${{idx+1}}</span>
-            <b>${{fullName}}</b>
-          </div>`;
-          const icon = L.divIcon({{ className: 'dine-div-icon', html: html, iconSize: null, iconAnchor: [20, 12] }});
+          // 地图定位点：虚化发光小圆点，0文字无重复
+          const html = `<div class="custom-dine-dot ${{actCls}} meal-${{targetMealKey}}" id="dine-dot-${{dayNum}}-${{targetMealKey}}-${{idx}}"><div class="dine-dot-inner"></div></div>`;
+          const icon = L.divIcon({{ className: 'dine-div-icon', html: html, iconSize: [18, 18], iconAnchor: [9, 9] }});
 
           const mk = L.marker([lat, lng], {{ icon: icon, zIndexOffset: isSelected ? 9999 : 10 }}).addTo(dynamicLayers);
           
-          const mustTwo = (opt.must_orders || []).slice(0, 2).join(' · ');
           const noteId = opt.note_id || '6a7d9b71000000002c001b44';
           const xhsHref = `https://www.xiaohongshu.com/discovery/item/${{noteId}}`;
+          
+          // 定位点上方精简弹出：仅显示店名 + 两个官方精简图标按钮，避免遮挡地图
           mk.bindPopup(`
-            <div style="font-size:11.5px; line-height:1.35; color:#0f172a; padding:2px; min-width:180px; max-width:240px;">
-              <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px;">
-                <b style="color:#0f172a; font-size:12.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${{fullName}}</b>
-                <span style="color:#dc2626; font-weight:700; font-size:11px; white-space:nowrap;">${{opt.price_per_person}}</span>
-              </div>
-              <div style="font-size:11px; color:#475569; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                🍲 <b>招牌：</b>${{mustTwo}}
-              </div>
-              <div style="display:flex; gap:6px; margin-top:6px;">
-                <a href="${{dpHref}}" onclick="openDianpingDirect(event, '${{shopId}}', '${{cleanName}}', '${{cleanCity}}')" style="flex:1; text-align:center; background:#ff6600; color:#fff; padding:6px 0; border-radius:6px; text-decoration:none; font-weight:700; font-size:11px; box-shadow:0 2px 6px rgba(255,102,0,0.35); cursor:pointer;">🧡 大众点评</a>
-                <a href="${{xhsHref}}" onclick="openXiaohongshuDirect(event, '${{noteId}}', '${{cleanName}}', '${{cleanCity}}')" style="flex:1; text-align:center; background:#ff2442; color:#fff; padding:6px 0; border-radius:6px; text-decoration:none; font-weight:700; font-size:11px; box-shadow:0 2px 6px rgba(255,36,66,0.35); cursor:pointer;">📕 小红书打卡笔记</a>
+            <div class="m-dine-compact-popup">
+              <span class="m-popup-title">${{fullName}}</span>
+              <div class="m-popup-btn-group">
+                <a href="${{dpHref}}" onclick="openDianpingDirect(event, '${{shopId}}', '${{cleanName}}', '${{cleanCity}}')" class="m-popup-icon-btn" title="大众点评">
+                  <img src="${DP_ICON_URI}" alt="大众点评" />
+                </a>
+                <a href="${{xhsHref}}" onclick="openXiaohongshuDirect(event, '${{noteId}}', '${{cleanName}}', '${{cleanCity}}')" class="m-popup-icon-btn" title="小红书">
+                  <img src="${XHS_ICON_URI}" alt="小红书" />
+                </a>
               </div>
             </div>
-          `, {{ autoPan: false, offset: [0, -10] }});
+          `, {{ autoPan: false, offset: [0, -9], className: 'm-compact-leaflet-popup' }});
 
           mk.on('click', () => {{
             switchMealOption(dayNum, targetMealKey, idx, null, true);
@@ -2186,11 +2264,11 @@ def build_mobile_split_screen_html():
 
         const el = m.mk.getElement();
         if (el) {{
-          const pin = el.querySelector('.custom-dine-pin') || el;
+          const dot = el.querySelector('.custom-dine-dot') || el;
           if (isMatch) {{
-            pin.classList.add('active');
+            dot.classList.add('active');
           }} else {{
-            pin.classList.remove('active');
+            dot.classList.remove('active');
           }}
         }}
       }});
