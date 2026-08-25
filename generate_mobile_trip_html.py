@@ -2163,98 +2163,90 @@ def build_mobile_split_screen_html():
       const dayData = mTripData.dining_guide.find(d => d.day === dayNum);
       if (!dayData) return;
 
-      // 若未指定 targetMealKey，自动识别当前卡片激活的餐别或当前时间对应的餐别
-      if (!targetMealKey) {{
-        const dayGroup = document.getElementById(`dine-day-${{dayNum}}`);
-        const activeSec = dayGroup ? dayGroup.querySelector('.m-meal-section-box.active-meal') : null;
-        if (activeSec) {{
-          if (activeSec.classList.contains('meal-box-lunch')) targetMealKey = 'lunch';
-          else if (activeSec.classList.contains('meal-box-dinner')) targetMealKey = 'dinner';
-          else targetMealKey = 'breakfast';
-        }} else {{
-          const tripCtx = getCurrentTripContext();
-          targetMealKey = tripCtx.mealKey;
-        }}
-      }}
-
       const mealConfigs = {{
         'breakfast': {{ label: '早', color: '#f59e0b', name: '早餐' }},
         'lunch': {{ label: '午', color: '#ef4444', name: '午餐' }},
         'dinner': {{ label: '晚', color: '#a855f7', name: '晚餐' }}
       }};
 
-      const mCfg = mealConfigs[targetMealKey] || mealConfigs['breakfast'];
       const hint = document.getElementById('m-top-map-hint');
       const cleanCity = dayData.city.split('(')[0].split('/')[0].trim();
 
-      // 单餐5家严格隔离，日期或餐别变化时清空其他餐并仅绘制该餐 5 家
-      if (currentDineDay !== dayNum || currentDineMeal !== targetMealKey || currentDineMarkers.length === 0) {{
+      // 当切换天数或首次加载时，全量绘制当天 15 家餐馆点位（早5 + 午5 + 晚5）
+      if (currentDineDay !== dayNum || currentDineMarkers.length === 0) {{
         dynamicLayers.clearLayers();
         currentDineMarkers = [];
         currentDineDay = dayNum;
-        currentDineMeal = targetMealKey;
 
-        const list = dayData.meals[targetMealKey] || [];
-        const pts = [];
+        const cityMap = {{
+          '乌鲁木齐': 325, '福海': 2278, '布尔津': 2276, '禾木': 338, '喀纳斯': 338,
+          '富蕴': 2277, '奇台': 2248, '吉木萨尔': 2249, '吐鲁番': 327, '鄯善': 2231, '柴窝堡': 325
+        }};
+        const cityId = cityMap[cleanCity] || 325;
+        const allPts = [];
 
-        list.forEach((opt, idx) => {{
-          const lat = opt.lat;
-          const lng = opt.lng;
-          pts.push([lat, lng]);
+        ['breakfast', 'lunch', 'dinner'].forEach(mKey => {{
+          const list = dayData.meals[mKey] || [];
+          list.forEach((opt, idx) => {{
+            const lat = opt.lat;
+            const lng = opt.lng;
+            allPts.push([lat, lng]);
 
-          const fullName = opt.restaurant;
-          const shopId = opt.shop_id || '';
-          const cleanName = fullName;
-          const fullSearch = `${{cleanCity}} ${{cleanName}}`;
-          const encodedSearch = encodeURIComponent(fullSearch);
-          const cityMap = {{
-            '乌鲁木齐': 325, '福海': 2278, '布尔津': 2276, '禾木': 338, '喀纳斯': 338,
-            '富蕴': 2277, '奇台': 2248, '吉木萨尔': 2249, '吐鲁番': 327, '鄯善': 2231, '柴窝堡': 325
-          }};
-          const cityId = cityMap[cleanCity] || 325;
-          const dpHref = (shopId && /^\\d+$/.test(shopId)) ? `dianping://shopinfo?id=${{shopId}}` : `dianping://searchshoplist?keyword=${{encodedSearch}}&cityid=${{cityId}}`;
-          const isSelected = (idx === activeIdx);
-          const actCls = isSelected ? 'active' : '';
+            const fullName = opt.restaurant;
+            const shopId = opt.shop_id || '';
+            const cleanName = fullName;
+            const fullSearch = `${{cleanCity}} ${{cleanName}}`;
+            const encodedSearch = encodeURIComponent(fullSearch);
+            const dpHref = (shopId && /^\\d+$/.test(shopId)) ? `dianping://shopinfo?id=${{shopId}}` : `dianping://searchshoplist?keyword=${{encodedSearch}}&cityid=${{cityId}}`;
+            const noteId = opt.note_id || '6a7d9b71000000002c001b44';
+            const xhsHref = `xhsdiscover://item/${{noteId}}`;
 
-          // 地图定位点：虚化发光小圆点，0文字无重复
-          const html = `<div class="custom-dine-dot ${{actCls}} meal-${{targetMealKey}}" id="dine-dot-${{dayNum}}-${{targetMealKey}}-${{idx}}"><div class="dine-dot-inner"></div></div>`;
-          const icon = L.divIcon({{ className: 'dine-div-icon', html: html, iconSize: [18, 18], iconAnchor: [9, 9] }});
+            // 地图定位点：纯净虚化发光小圆点，0文字无重复
+            const isMatch = (targetMealKey === mKey && idx === activeIdx);
+            const actCls = isMatch ? 'active' : '';
+            const html = `<div class="custom-dine-dot ${{actCls}} meal-${{mKey}}" id="dine-dot-${{dayNum}}-${{mKey}}-${{idx}}"><div class="dine-dot-inner"></div></div>`;
+            const icon = L.divIcon({{ className: 'dine-div-icon', html: html, iconSize: [18, 18], iconAnchor: [9, 9] }});
 
-          const mk = L.marker([lat, lng], {{ icon: icon, zIndexOffset: isSelected ? 9999 : 10 }}).addTo(dynamicLayers);
-          
-          const noteId = opt.note_id || '6a7d9b71000000002c001b44';
-          const xhsHref = `xhsdiscover://item/${{noteId}}`;
-          
-          // 定位点上方精简弹出：仅显示店名 + 两个官方精简图标按钮，避免遮挡地图
-          mk.bindPopup(`
-            <div class="m-dine-compact-popup">
-              <span class="m-popup-title">${{fullName}}</span>
-              <div class="m-popup-btn-group">
-                <a href="${{dpHref}}" onclick="openDianpingDirect(event, '${{shopId}}', '${{cleanName}}', '${{cleanCity}}')" class="m-popup-icon-btn" title="大众点评">
-                  <img src="{DP_ICON_URI}" alt="大众点评" />
-                </a>
-                <a href="${{xhsHref}}" onclick="openXiaohongshuDirect(event, '${{noteId}}', '${{cleanName}}', '${{cleanCity}}')" class="m-popup-icon-btn" title="小红书">
-                  <img src="{XHS_ICON_URI}" alt="小红书" />
-                </a>
+            const mk = L.marker([lat, lng], {{ icon: icon, zIndexOffset: isMatch ? 9999 : 10 }}).addTo(dynamicLayers);
+
+            // 定位点上方精简弹出：仅显示店名 + 两个官方精简图标按钮，避免遮挡地图
+            mk.bindPopup(`
+              <div class="m-dine-compact-popup">
+                <span class="m-popup-title">${{fullName}}</span>
+                <div class="m-popup-btn-group">
+                  <a href="${{dpHref}}" onclick="openDianpingDirect(event, '${{shopId}}', '${{cleanName}}', '${{cleanCity}}')" class="m-popup-icon-btn" title="大众点评">
+                    <img src="{DP_ICON_URI}" alt="大众点评" />
+                  </a>
+                  <a href="${{xhsHref}}" onclick="openXiaohongshuDirect(event, '${{noteId}}', '${{cleanName}}', '${{cleanCity}}')" class="m-popup-icon-btn" title="小红书">
+                    <img src="{XHS_ICON_URI}" alt="小红书" />
+                  </a>
+                </div>
               </div>
-            </div>
-          `, {{ autoPan: false, offset: [0, -9], closeButton: false, className: 'm-compact-leaflet-popup' }});
+            `, {{ autoPan: false, offset: [0, -9], closeButton: false, className: 'm-compact-leaflet-popup' }});
 
-          mk.on('click', () => {{
-            switchMealOption(dayNum, targetMealKey, idx, null, true);
-            const optCard = document.getElementById(`opt-${{dayNum}}-${{targetMealKey}}-${{idx}}`);
-            if (optCard) {{
-              optCard.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
-            }}
+            mk.on('click', () => {{
+              switchMealOption(dayNum, mKey, idx, null, true);
+              const optCard = document.getElementById(`opt-${{dayNum}}-${{mKey}}-${{idx}}`);
+              if (optCard) {{
+                optCard.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+              }}
+            }});
+
+            currentDineMarkers.push({{ dayNum, mealKey: mKey, idx, mk, lat, lng, opt, fullName, cleanName, cleanCity }});
           }});
-
-          currentDineMarkers.push({{ dayNum, mealKey: targetMealKey, idx, mk, lat, lng, opt, fullName, cleanName, cleanCity }});
         }});
+
+        // 首次加载或切换天数且未明确指定餐馆时，自适应框选全天15家餐馆
+        if (activeIdx < 0 && allPts.length > 0) {{
+          const bounds = L.latLngBounds(allPts);
+          mMap.fitBounds(bounds, {{ padding: [35, 35], maxZoom: 15, duration: 0.5 }});
+        }}
       }}
 
-      // 实时精准更新该餐 5 个 Marker 的激活高亮状态与 Z-index
+      // 实时精准更新全天 15 个 Marker 的激活高亮状态与 Z-index
+      let activeMarkerObj = null;
       currentDineMarkers.forEach((m) => {{
-        const isMatch = (m.idx === activeIdx);
+        const isMatch = (m.mealKey === targetMealKey && m.idx === activeIdx);
         m.mk.setZIndexOffset(isMatch ? 9999 : 10);
 
         const el = m.mk.getElement();
@@ -2266,35 +2258,29 @@ def build_mobile_split_screen_html():
             dot.classList.remove('active');
           }}
         }}
+        if (isMatch) {{
+          activeMarkerObj = m;
+        }}
       }});
 
       // 若指定了具体餐馆，执行高亮与平滑飞至定位
-      if (activeIdx >= 0) {{
-        const activeObj = currentDineMarkers.find(m => m.idx === activeIdx);
-        if (activeObj) {{
-          if (hint) {{
-            hint.innerText = `🍽️ Day ${{dayNum}} · ${{mCfg.name}} · 正在查看：${{activeObj.fullName}}`;
-          }}
-
-          if (flyToActive) {{
-            mMap.flyTo([activeObj.lat, activeObj.lng], 15, {{ animate: true, duration: 0.6 }});
-            setTimeout(() => {{
-              activeObj.mk.openPopup();
-            }}, 300);
-          }} else {{
-            activeObj.mk.openPopup();
-          }}
-          return;
-        }}
-      }}
-
-      // 默认全景框选当餐 5 家餐馆
-      if (currentDineMarkers.length > 0) {{
-        const pts = currentDineMarkers.map(m => [m.lat, m.lng]);
-        const bounds = L.latLngBounds(pts);
-        mMap.fitBounds(bounds, {{ padding: [35, 35], maxZoom: 15, duration: 0.5 }});
+      if (activeMarkerObj) {{
+        const mCfg = mealConfigs[targetMealKey] || mealConfigs['breakfast'];
         if (hint) {{
-          hint.innerText = `🍽️ Day ${{dayNum}} · ${{dayData.city.split('(')[0]}} ${{mCfg.name}} (5选1精选)`;
+          hint.innerText = `🍽️ Day ${{dayNum}} · ${{mCfg.name}} · 正在查看：${{activeMarkerObj.fullName}}`;
+        }}
+
+        if (flyToActive) {{
+          mMap.flyTo([activeMarkerObj.lat, activeMarkerObj.lng], 15, {{ animate: true, duration: 0.6 }});
+          setTimeout(() => {{
+            activeMarkerObj.mk.openPopup();
+          }}, 300);
+        }} else {{
+          activeMarkerObj.mk.openPopup();
+        }}
+      }} else {{
+        if (hint) {{
+          hint.innerText = `🍽️ Day ${{dayNum}} · ${{dayData.city.split('(')[0]}} (全天15家地道餐饮名店)`;
         }}
       }}
     }}
