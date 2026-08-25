@@ -888,6 +888,35 @@ def build_full_html():
       }}
     }}
 
+    const verticalCrosshairPlugin = {{
+      id: 'verticalCrosshair',
+      afterDraw: (chart) => {{
+        if (chart.tooltip && chart.tooltip.opacity > 0 && chart.tooltip._active && chart.tooltip._active.length) {{
+          const activePoint = chart.tooltip._active[0];
+          const ctx = chart.ctx;
+          const x = activePoint.element.x;
+          const topY = chart.scales.yElevation ? chart.scales.yElevation.top : chart.chartArea.top;
+          const bottomY = chart.scales.yElevation ? chart.scales.yElevation.bottom : chart.chartArea.bottom;
+
+          ctx.save();
+          ctx.beginPath();
+          ctx.setLineDash([5, 4]);
+          ctx.lineWidth = 1.8;
+          ctx.strokeStyle = '#f87171';
+          ctx.moveTo(x, topY);
+          ctx.lineTo(x, bottomY);
+          ctx.stroke();
+
+          ctx.fillStyle = '#f87171';
+          ctx.beginPath();
+          ctx.arc(x, bottomY, 3.5, 0, 2 * Math.PI);
+          ctx.fill();
+
+          ctx.restore();
+        }}
+      }}
+    }};
+
     let chartInstance = null;
     function renderElevationChart() {{
       if (chartInstance) return;
@@ -899,6 +928,7 @@ def build_full_html():
 
       chartInstance = new Chart(ctx, {{
         type: 'line',
+        plugins: [verticalCrosshairPlugin],
         data: {{
           labels: labels,
           datasets: [
@@ -910,6 +940,7 @@ def build_full_html():
               fill: true,
               tension: 0.35,
               pointBackgroundColor: '#0284c7',
+              pointHoverRadius: 6,
               pointRadius: 4,
               yAxisID: 'yElevation'
             }},
@@ -920,6 +951,7 @@ def build_full_html():
               backgroundColor: 'transparent',
               borderWidth: 2,
               pointBackgroundColor: '#ef4444',
+              pointHoverRadius: 6,
               pointRadius: 4,
               tension: 0.35,
               yAxisID: 'yTemp'
@@ -932,6 +964,7 @@ def build_full_html():
               borderWidth: 2,
               borderDash: [4, 4],
               pointBackgroundColor: '#6366f1',
+              pointHoverRadius: 6,
               pointRadius: 4,
               tension: 0.35,
               yAxisID: 'yTemp'
@@ -941,9 +974,11 @@ def build_full_html():
         options: {{
           responsive: true,
           maintainAspectRatio: false,
+          events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],
           interaction: {{
             mode: 'index',
-            intersect: false
+            intersect: false,
+            axis: 'x'
           }},
           scales: {{
             yElevation: {{
