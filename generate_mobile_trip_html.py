@@ -85,7 +85,12 @@ def render_dining_html_5_options():
                 clean_name = full_name
                 full_search = f"{clean_city} {clean_name}"
                 encoded_search = urllib.parse.quote(full_search)
-                dp_href = f"dianping://shopinfo?id={shop_id}" if shop_id else f"dianping://searchshoplist?keyword={encoded_search}"
+                city_map = {
+                    '乌鲁木齐': 325, '福海': 2278, '布尔津': 2276, '禾木': 338, '喀纳斯': 338,
+                    '富蕴': 2277, '奇台': 2248, '吉木萨尔': 2249, '吐鲁番': 327, '鄯善': 2231, '柴窝堡': 325
+                }
+                city_id = city_map.get(clean_city, 325)
+                dp_href = f"dianping://shopinfo?id={shop_id}" if (shop_id and str(shop_id).isdigit()) else f"dianping://searchshoplist?keyword={encoded_search}&cityid={city_id}"
                 xhs_href = f"xhsdiscover://item/{note_id}" if note_id else f"xhsdiscover://search/result?keyword={encoded_search}"
 
                 # 药丸竖向列表排列
@@ -1802,7 +1807,7 @@ def build_mobile_split_screen_html():
       let appScheme = '';
       let webUrl = '';
 
-      if (shopId && shopId.length >= 6) {{
+      if (shopId && /^\\d+$/.test(shopId) && shopId.length >= 6) {{
         appScheme = `dianping://shopinfo?id=${{shopId}}`;
         webUrl = `https://m.dianping.com/shop/${{shopId}}`;
       }} else {{
@@ -2201,8 +2206,12 @@ def build_mobile_split_screen_html():
           const shopId = opt.shop_id || '';
           const cleanName = fullName;
           const fullSearch = `${{cleanCity}} ${{cleanName}}`;
-          const encodedSearch = encodeURIComponent(fullSearch);
-          const dpHref = shopId ? `dianping://shopinfo?id=${{shopId}}` : `dianping://searchshoplist?keyword=${{encodedSearch}}`;
+          const cityMap = {{
+            '乌鲁木齐': 325, '福海': 2278, '布尔津': 2276, '禾木': 338, '喀纳斯': 338,
+            '富蕴': 2277, '奇台': 2248, '吉木萨尔': 2249, '吐鲁番': 327, '鄯善': 2231, '柴窝堡': 325
+          }};
+          const cityId = cityMap[cleanCity] || 325;
+          const dpHref = (shopId && /^\\d+$/.test(shopId)) ? `dianping://shopinfo?id=${{shopId}}` : `dianping://searchshoplist?keyword=${{encodedSearch}}&cityid=${{cityId}}`;
           const isSelected = (idx === activeIdx);
           const actCls = isSelected ? 'active' : '';
 
