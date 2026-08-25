@@ -80,7 +80,7 @@ def render_dining_html_5_options():
 
                 full_name = opt["restaurant"]
                 clean_name = full_name
-                full_search = full_name
+                full_search = f"{clean_city} {clean_name}"
                 encoded_search = urllib.parse.quote(full_search)
 
                 # 药丸竖向列表排列
@@ -1709,7 +1709,7 @@ def build_mobile_split_screen_html():
       const cleanName = (shopName || '').replace(/\\([^)]*\\)/g, '').trim();
       const cleanCity = (cityName || '').split('(')[0].split('/')[0].trim();
       
-      const fullSearchTerm = cleanName;
+      const fullSearchTerm = `${{cleanCity}} ${{cleanName}}`;
       const encoded = encodeURIComponent(fullSearchTerm);
 
       // 新疆各目的地城市代码表
@@ -2082,7 +2082,7 @@ def build_mobile_split_screen_html():
 
           const fullName = opt.restaurant;
           const cleanName = fullName;
-          const fullSearch = cleanName;
+          const fullSearch = `${{cleanCity}} ${{cleanName}}`;
           const encodedSearch = encodeURIComponent(fullSearch);
           const isSelected = (idx === activeIdx);
           const actCls = isSelected ? 'active' : '';
