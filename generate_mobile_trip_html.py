@@ -465,6 +465,9 @@ def build_mobile_split_screen_html():
     .m-compact-leaflet-popup .leaflet-popup-tip-container {{
       display: none !important;
     }}
+    .m-compact-leaflet-popup .leaflet-popup-close-button {{
+      display: none !important;
+    }}
     .m-dine-compact-popup {{
       display: flex;
       align-items: center;
@@ -2243,7 +2246,7 @@ def build_mobile_split_screen_html():
                 </a>
               </div>
             </div>
-          `, {{ autoPan: false, offset: [0, -9], className: 'm-compact-leaflet-popup' }});
+          `, {{ autoPan: false, offset: [0, -9], closeButton: false, className: 'm-compact-leaflet-popup' }});
 
           mk.on('click', () => {{
             switchMealOption(dayNum, targetMealKey, idx, null, true);
