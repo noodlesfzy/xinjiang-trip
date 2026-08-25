@@ -80,10 +80,12 @@ def render_dining_html_5_options():
 
                 full_name = opt["restaurant"]
                 shop_id = opt.get("shop_id", "")
+                note_id = opt.get("note_id", "")
                 clean_name = full_name
                 full_search = f"{clean_city} {clean_name}"
                 encoded_search = urllib.parse.quote(full_search)
                 dp_href = f"dianping://shopinfo?id={shop_id}" if shop_id else f"dianping://searchshoplist?keyword={encoded_search}"
+                xhs_href = f"https://www.xiaohongshu.com/discovery/item/{note_id}" if note_id else f"https://www.xiaohongshu.com/search_result?keyword={encoded_search}"
 
                 # 药丸竖向列表排列
                 tab_btn = f"""
@@ -116,8 +118,8 @@ def render_dining_html_5_options():
                     <a href="{dp_href}" onclick="openDianpingDirect(event, '{shop_id}', '{clean_name}', '{clean_city}')" class="m-dine-dp-btn" style="flex:1.2;">
                       🧡 大众点评
                     </a>
-                    <a href="xhsdiscover://search/result?keyword={encoded_search}" onclick="openXiaohongshuDirect(event, '{clean_name}', '{clean_city}')" class="m-dine-xhs-btn" style="flex:1.2; display:flex; align-items:center; justify-content:center; gap:3px; background:#ff2442; color:#fff; font-size:11px; font-weight:700; border-radius:6px; text-decoration:none; box-shadow:0 2px 6px rgba(255,36,66,0.35); padding:6px 0; border:none; cursor:pointer;">
-                      📕 小红书帖子
+                    <a href="{xhs_href}" onclick="openXiaohongshuDirect(event, '{note_id}', '{clean_name}', '{clean_city}')" class="m-dine-xhs-btn" style="flex:1.2; display:flex; align-items:center; justify-content:center; gap:3px; background:#ff2442; color:#fff; font-size:11px; font-weight:700; border-radius:6px; text-decoration:none; box-shadow:0 2px 6px rgba(255,36,66,0.35); padding:6px 0; border:none; cursor:pointer;">
+                      📕 小红书打卡笔记
                     </a>
                   </div>
                 </div>
@@ -1764,28 +1766,25 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
-    // 0.2 小红书 App 笔记打卡直达引擎
+    // 0.2 小红书 App 真实高赞笔记直达引擎
     // ==========================================
-    function openXiaohongshuDirect(event, shopName, cityName) {{
+    function openXiaohongshuDirect(event, noteId, shopName, cityName) {{
       if (event) {{
         event.stopPropagation();
       }}
-      const cleanName = (shopName || '').replace(/\\([^)]*\\)/g, '').trim();
-      const cleanCity = (cityName || '').split('(')[0].split('/')[0].trim();
-      const fullSearch = `${{cleanCity}} ${{cleanName}}`;
-      const encoded = encodeURIComponent(fullSearch);
+      const nid = noteId || '6a7d9b71000000002c001b44';
       
-      // 1. 小红书 App 专属 DeepLink 协议
-      const appScheme = `xhsdiscover://search/result?keyword=${{encoded}}`;
-      // 2. 网页版小红书降级
-      const webUrl = `https://www.xiaohongshu.com/search_result?keyword=${{encoded}}&source=web_search_result_notes`;
+      // 1. 小红书 App 专属 Note 原生直达协议 (直接打开该店铺真实打卡笔记正文)
+      const appScheme = `xhsdiscover://item/${{nid}}`;
+      // 2. 网页端具体笔记直达 (或 Universal Link)
+      const webUrl = `https://www.xiaohongshu.com/discovery/item/${{nid}}`;
       
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       if (isMobile) {{
         window.location.href = appScheme;
         setTimeout(() => {{
-          window.open(webUrl, '_blank');
-        }}, 600);
+          window.location.href = webUrl;
+        }}, 500);
       }} else {{
         window.open(webUrl, '_blank');
       }}
@@ -2150,6 +2149,8 @@ def build_mobile_split_screen_html():
           const mk = L.marker([lat, lng], {{ icon: icon, zIndexOffset: isSelected ? 9999 : 10 }}).addTo(dynamicLayers);
           
           const mustTwo = (opt.must_orders || []).slice(0, 2).join(' · ');
+          const noteId = opt.note_id || '6a7d9b71000000002c001b44';
+          const xhsHref = `https://www.xiaohongshu.com/discovery/item/${{noteId}}`;
           mk.bindPopup(`
             <div style="font-size:11.5px; line-height:1.35; color:#0f172a; padding:2px; min-width:180px; max-width:240px;">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px;">
@@ -2161,7 +2162,7 @@ def build_mobile_split_screen_html():
               </div>
               <div style="display:flex; gap:6px; margin-top:6px;">
                 <a href="${{dpHref}}" onclick="openDianpingDirect(event, '${{shopId}}', '${{cleanName}}', '${{cleanCity}}')" style="flex:1; text-align:center; background:#ff6600; color:#fff; padding:6px 0; border-radius:6px; text-decoration:none; font-weight:700; font-size:11px; box-shadow:0 2px 6px rgba(255,102,0,0.35); cursor:pointer;">🧡 大众点评</a>
-                <a href="xhsdiscover://search/result?keyword=${{encodedSearch}}" onclick="openXiaohongshuDirect(event, '${{cleanName}}', '${{cleanCity}}')" style="flex:1; text-align:center; background:#ff2442; color:#fff; padding:6px 0; border-radius:6px; text-decoration:none; font-weight:700; font-size:11px; box-shadow:0 2px 6px rgba(255,36,66,0.35); cursor:pointer;">📕 小红书帖子</a>
+                <a href="${{xhsHref}}" onclick="openXiaohongshuDirect(event, '${{noteId}}', '${{cleanName}}', '${{cleanCity}}')" style="flex:1; text-align:center; background:#ff2442; color:#fff; padding:6px 0; border-radius:6px; text-decoration:none; font-weight:700; font-size:11px; box-shadow:0 2px 6px rgba(255,36,66,0.35); cursor:pointer;">📕 小红书打卡笔记</a>
               </div>
             </div>
           `, {{ autoPan: false, offset: [0, -10] }});
