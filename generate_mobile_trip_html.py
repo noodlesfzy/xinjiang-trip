@@ -110,11 +110,14 @@ def render_dining_html_5_options():
                   </div>
                   <div class="m-meal-desc-box">{opt['highlight']}</div>
                   <div style="display:flex; gap:6px; margin-top:8px;">
-                    <button onclick="event.stopPropagation(); focusDineMapMarker({day_num}, '{m_key}', {idx})" class="m-dine-locate-btn">
-                      📍 在上方地图查看位置
+                    <button onclick="event.stopPropagation(); focusDineMapMarker({day_num}, '{m_key}', {idx})" class="m-dine-locate-btn" style="flex:1;">
+                      📍 地图定位
                     </button>
-                    <a href="{dp_href}" onclick="openDianpingDirect(event, '{shop_id}', '{clean_name}', '{clean_city}')" class="m-dine-dp-btn">
-                      🧡 大众点评详情直达
+                    <a href="{dp_href}" onclick="openDianpingDirect(event, '{shop_id}', '{clean_name}', '{clean_city}')" class="m-dine-dp-btn" style="flex:1.2;">
+                      🧡 大众点评
+                    </a>
+                    <a href="xhsdiscover://search/result?keyword={encoded_search}" onclick="openXiaohongshuDirect(event, '{clean_name}', '{clean_city}')" class="m-dine-xhs-btn" style="flex:1.2; display:flex; align-items:center; justify-content:center; gap:3px; background:#ff2442; color:#fff; font-size:11px; font-weight:700; border-radius:6px; text-decoration:none; box-shadow:0 2px 6px rgba(255,36,66,0.35); padding:6px 0; border:none; cursor:pointer;">
+                      📕 小红书帖子
                     </a>
                   </div>
                 </div>
@@ -1761,6 +1764,34 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
+    // 0.2 小红书 App 笔记打卡直达引擎
+    // ==========================================
+    function openXiaohongshuDirect(event, shopName, cityName) {{
+      if (event) {{
+        event.stopPropagation();
+      }}
+      const cleanName = (shopName || '').replace(/\\([^)]*\\)/g, '').trim();
+      const cleanCity = (cityName || '').split('(')[0].split('/')[0].trim();
+      const fullSearch = `${{cleanCity}} ${{cleanName}}`;
+      const encoded = encodeURIComponent(fullSearch);
+      
+      // 1. 小红书 App 专属 DeepLink 协议
+      const appScheme = `xhsdiscover://search/result?keyword=${{encoded}}`;
+      // 2. 网页版小红书降级
+      const webUrl = `https://www.xiaohongshu.com/search_result?keyword=${{encoded}}&source=web_search_result_notes`;
+      
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobile) {{
+        window.location.href = appScheme;
+        setTimeout(() => {{
+          window.open(webUrl, '_blank');
+        }}, 600);
+      }} else {{
+        window.open(webUrl, '_blank');
+      }}
+    }}
+
+    // ==========================================
     // 1. 初始化顶部全局自适应小地图
     // ==========================================
     const mMap = L.map('m-map', {{
@@ -2128,8 +2159,9 @@ def build_mobile_split_screen_html():
               <div style="font-size:11px; color:#475569; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                 🍲 <b>招牌：</b>${{mustTwo}}
               </div>
-              <div style="margin-top:6px;">
-                <a href="${{dpHref}}" onclick="openDianpingDirect(event, '${{shopId}}', '${{cleanName}}', '${{cleanCity}}')" style="display:block; text-align:center; background:#ff6600; color:#fff; padding:6px 0; border-radius:6px; text-decoration:none; font-weight:700; font-size:11.5px; box-shadow:0 2px 6px rgba(255,102,0,0.35); cursor:pointer;">🧡 大众点评详情直达</a>
+              <div style="display:flex; gap:6px; margin-top:6px;">
+                <a href="${{dpHref}}" onclick="openDianpingDirect(event, '${{shopId}}', '${{cleanName}}', '${{cleanCity}}')" style="flex:1; text-align:center; background:#ff6600; color:#fff; padding:6px 0; border-radius:6px; text-decoration:none; font-weight:700; font-size:11px; box-shadow:0 2px 6px rgba(255,102,0,0.35); cursor:pointer;">🧡 大众点评</a>
+                <a href="xhsdiscover://search/result?keyword=${{encodedSearch}}" onclick="openXiaohongshuDirect(event, '${{cleanName}}', '${{cleanCity}}')" style="flex:1; text-align:center; background:#ff2442; color:#fff; padding:6px 0; border-radius:6px; text-decoration:none; font-weight:700; font-size:11px; box-shadow:0 2px 6px rgba(255,36,66,0.35); cursor:pointer;">📕 小红书帖子</a>
               </div>
             </div>
           `, {{ autoPan: false, offset: [0, -10] }});
