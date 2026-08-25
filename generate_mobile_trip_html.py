@@ -3,25 +3,39 @@
 """
 generate_mobile_trip_html.py — 专为手机端打造的自驾全景路书 (trip_mobile.html)
 核心特性：
-1. 【大地图真正全屏显示】：修复 flex 容器布局，大地图彻底填满整个视口，顶部横向滑动条 + 底部防遮挡详情浮层。
-2. 【左侧动态快捷导航条】：
-   - 行程/餐饮：显示 D1 ~ D14
-   - 观鸟/国保：仅动态显示有实际内容的 Day 按钮（如国保仅显示 D1, D8, D9, D10, D11, D12, D13，自动隐藏无内容天数）
-3. 【全卡片对比反差色变色高亮】：
-   - 📅 行程：深绯红渐变反差高亮 (#3d1414)
-   - 🍽️ 餐饮：暖金琥珀渐变反差高亮 (#3b2003)
-   - 🦉 观鸟：翡翠森林绿渐变反差高亮 (#052e1f)
-   - 🏛️ 国保：帝王紫罗兰渐变反差高亮 (#340c4e)
-4. 【100% 真实国保古建筑实景照片】：16:9 黄金宽屏无畸变展示
-5. 【210家多年口碑老店街道坐标联动与高亮聚焦】
+1. 【地图与卡片滚动双向实时联动】：
+   - 随页面滚动，上方地图实时同步定位到当前卡片对应地点（行程点、当日全部餐馆分布、观鸟点、国保多点行进路线与实景照片）。
+   - 地图高度支持 3 档一键切换：标准 35% ➔ 全屏 70% ➔ 小窗 18% 循环。
+2. 【餐饮全天餐馆全景地图 + 选项切换精准定位】：
+   - 滚动到或选择某天时，地图默认以最佳缩放比例展示当天所有的 15 家候选餐馆（早/午/晚）。
+   - 在卡片内点击选择任一餐馆（或点击“在上方地图查看位置”），地图自动平滑飞至该餐馆坐标并高亮弹窗！
+3. 【海拔剖面 + 每日最高/最低气温双轴曲线图】：
+   - 融合落脚点海拔曲线与每日最低/最高温差走势，并提供极值指标看板。
+4. 【左侧动态快捷导航条】：按内容动态过滤，仅显示有内容的天数（国保仅显示 D1, D8~D13）。
+5. 【全卡片对比反差色变色高亮与 100% 真实国保实景大图卡片】。
 """
 
 import os
 import json
+import re
 
 from dining_data_210 import TRIP_DATA, DINING_210_DATA
 from birding_data_14d import BIRDING_14D_DATA, render_birding_html
 from heritage_data_14d import HERITAGE_14D_DATA, HERITAGE_DAY_ROUTES, render_heritage_html
+
+# 补充提取每日最高与最低气温数值
+for d in TRIP_DATA["days"]:
+    w = d.get("weather", "")
+    temps = re.findall(r'(-?\d+)°C', w)
+    if len(temps) >= 2:
+        d["temp_min"] = int(temps[0])
+        d["temp_max"] = int(temps[1])
+    elif len(temps) == 1:
+        d["temp_min"] = int(temps[0])
+        d["temp_max"] = int(temps[0])
+    else:
+        d["temp_min"] = 0
+        d["temp_max"] = 10
 
 TRIP_DATA["dining_guide"] = DINING_210_DATA
 TRIP_DATA["birding_guide"] = BIRDING_14D_DATA
@@ -59,7 +73,7 @@ def render_dining_html_5_options():
                     short_name = short_name[:8] + "…"
 
                 tab_btn = f"""
-                <button class="m-dine-pill {active_tab_cls}" onclick="switchMealOption({day_num}, '{m_key}', {idx}, this)">
+                <button class="m-dine-pill {active_tab_cls}" onclick="switchMealOption({day_num}, '{m_key}', {idx}, this, true)">
                   <span class="pill-num">{idx+1}</span> {short_name}
                 </button>
                 """
@@ -106,10 +120,10 @@ def render_dining_html_5_options():
             meals_html_blocks.append(meal_section)
 
         day_group = f"""
-        <div class="m-dining-day-group" id="dine-day-{day_num}" onclick="mFocusDineDay({day_num})">
+        <div class="m-dining-day-group" id="dine-day-{day_num}" onclick="mFocusDineDay({day_num}, false)">
           <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day {day_num} · {date_str}</span>
-            <span class="m-dine-city-badge">📍 {city_str} (点我看地图)</span>
+            <span class="m-dine-city-badge">📍 {city_str} (点我看当天全景地图)</span>
           </div>
           {"".join(meals_html_blocks)}
         </div>
@@ -137,10 +151,10 @@ def build_mobile_split_screen_html():
             herit_btn = f'<button onclick="event.stopPropagation(); jumpToHeritage({day_num})" class="m-btn-herit">🏛️ 国保</button>'
 
         card = f"""
-        <div class="m-card" id="m-day-{d['day']}" onclick="mFocusDay({d['day']})">
+        <div class="m-card" id="m-day-{d['day']}" onclick="mFocusDay({d['day']}, false)">
           <div class="m-card-header">
             <span class="m-day-badge">Day {d['day']} · {d['weekday']}</span>
-            <span class="m-day-date">{d['date']}</span>
+            <span class="m-day-date">{d['date']} · {d.get('weather', '')}</span>
           </div>
           <div class="m-card-title">{d['title']}</div>
           
@@ -185,7 +199,7 @@ def build_mobile_split_screen_html():
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>新疆14天自驾路书 (全屏大地图 + 动态快捷导航 + 反差色联动)</title>
+  <title>新疆14天自驾路书 (地图全屏比例 + 卡片滚动联动 + 气温海拔图)</title>
   <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -265,7 +279,7 @@ def build_mobile_split_screen_html():
     }}
 
     /* ========================================================
-       TOP PINNED MAP ZONE
+       TOP PINNED MAP ZONE (支持标准 35%、全屏 70%、小窗 18% 三档)
        ======================================================== */
     .m-map-pinned-zone {{
       flex: 0 0 35vh;
@@ -280,8 +294,14 @@ def build_mobile_split_screen_html():
       transition: flex-basis 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }}
     .m-map-pinned-zone.mode-compact {{
-      flex-basis: 18vh;
-      min-height: 120px;
+      flex-basis: 18vh !important;
+      min-height: 120px !important;
+      max-height: 22vh !important;
+    }}
+    .m-map-pinned-zone.mode-expanded {{
+      flex-basis: 68vh !important;
+      min-height: 55vh !important;
+      max-height: 82vh !important;
     }}
     .m-map-pinned-zone.mode-hidden {{
       display: none !important;
@@ -294,35 +314,36 @@ def build_mobile_split_screen_html():
       bottom: 8px;
       right: 8px;
       z-index: 500;
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(15, 23, 42, 0.9);
       backdrop-filter: blur(8px);
       border: 1px solid var(--card-border);
       color: #f1f5f9;
       font-size: 10px;
-      font-weight: 600;
-      padding: 3px 8px;
+      font-weight: 700;
+      padding: 4px 9px;
       border-radius: 14px;
       display: flex;
       align-items: center;
-      gap: 3px;
+      gap: 4px;
       box-shadow: 0 3px 8px rgba(0,0,0,0.6);
       cursor: pointer;
     }}
+    .m-map-pill:active {{ transform: scale(0.95); background: #96382d; }}
 
     .m-map-hint {{
       position: absolute;
       top: 6px;
       left: 8px;
       z-index: 500;
-      background: rgba(13, 19, 34, 0.85);
+      background: rgba(13, 19, 34, 0.88);
       backdrop-filter: blur(6px);
       padding: 3px 8px;
       border-radius: 4px;
       font-size: 10.5px;
       color: #f8fafc;
-      border-left: 2px solid #f87171;
+      border-left: 2.5px solid #f87171;
       pointer-events: none;
-      max-width: 80%;
+      max-width: 82%;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -332,17 +353,24 @@ def build_mobile_split_screen_html():
     .custom-m-marker {{
       background: #96382d;
       color: #fff;
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      font-size: 10.5px;
+      font-size: 11px;
       border: 1.5px solid #fff;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.6);
     }}
+    .custom-m-marker.active {{
+      background: #ef4444;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.6), 0 4px 10px rgba(0,0,0,0.7);
+      transform: scale(1.15);
+    }}
+
+    /* 餐饮地图 Pin */
     .custom-dine-pin {{
       background: #1e293b;
       border: 1.5px solid #f59e0b;
@@ -356,13 +384,21 @@ def build_mobile_split_screen_html():
       align-items: center;
       gap: 3px;
       box-shadow: 0 3px 8px rgba(0,0,0,0.6);
+      cursor: pointer;
+      transition: all 0.2s;
     }}
+    .custom-dine-pin.meal-breakfast {{ border-color: #f59e0b; }}
+    .custom-dine-pin.meal-lunch {{ border-color: #ef4444; }}
+    .custom-dine-pin.meal-dinner {{ border-color: #a855f7; }}
+
     .custom-dine-pin.active {{
-      background: #96382d;
-      border-color: #f87171;
-      box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.6);
-      transform: scale(1.08);
+      background: #96382d !important;
+      border-color: #f87171 !important;
+      box-shadow: 0 0 0 2.5px rgba(248, 113, 113, 0.7), 0 4px 12px rgba(0,0,0,0.8);
+      transform: scale(1.15);
+      z-index: 999;
     }}
+
     .custom-bird-pin {{
       background: #064e3b;
       border: 1.5px solid #34d399;
@@ -515,7 +551,7 @@ def build_mobile_split_screen_html():
     }}
 
     /* ========================================================
-       CONTENT VIEWS (右移留出左侧导航条安全宽度)
+       CONTENT VIEWS
        ======================================================== */
     .m-content-container {{
       flex: 1 1 auto;
@@ -566,7 +602,7 @@ def build_mobile_split_screen_html():
     .m-rules-banner ul {{ list-style: none; display: flex; flex-direction: column; gap: 4px; color: #e2e8f0; }}
 
     /* ========================================================
-       1. 行程卡片 (全卡片对比反差色变色高亮)
+       1. 行程卡片
        ======================================================== */
     .m-card {{
       background: var(--card-bg);
@@ -721,7 +757,7 @@ def build_mobile_split_screen_html():
     .m-btn.amap {{ background: #2563eb; color: #fff; }}
 
     /* ========================================================
-       TAB 2: DEDICATED FULLSCREEN MAP EXPLORER (真正 100% 全屏铺满)
+       TAB 2: DEDICATED FULLSCREEN MAP EXPLORER
        ======================================================== */
     .m-dedicated-map-view {{
       display: none;
@@ -994,7 +1030,7 @@ def build_mobile_split_screen_html():
     .m-dine-nav-btn:active {{ background: #2563eb; color: #fff; }}
 
     /* ========================================================
-       3. 观鸟专区 (全卡片对比反差翡翠绿变色高亮)
+       3. 观鸟专区
        ======================================================== */
     .m-birding-view {{
       display: none;
@@ -1117,7 +1153,7 @@ def build_mobile_split_screen_html():
     }}
 
     /* ========================================================
-       4. 国保专区 (全卡片对比反差紫罗兰变色高亮 + 16:9 大图卡)
+       4. 国保专区 (16:9 大图卡)
        ======================================================== */
     .m-culture-view {{
       display: none;
@@ -1323,7 +1359,7 @@ def build_mobile_split_screen_html():
     }}
 
     /* ========================================================
-       TAB 6: TIPS
+       TAB 6: TIPS (海拔 + 每日最高/最低温差走势图)
        ======================================================== */
     .m-tips-view {{
       display: none;
@@ -1387,10 +1423,10 @@ def build_mobile_split_screen_html():
       </div>
     </div>
 
-    <!-- 顶部自适应联动常驻小地图 -->
+    <!-- 顶部自适应联动常驻小地图 (支持标准 35% ➔ 全屏 70% ➔ 小窗 18%) -->
     <div class="m-map-pinned-zone" id="m-map-zone">
       <div id="m-map"></div>
-      <div class="m-map-hint" id="m-top-map-hint">🗺️ 行程路线 · 点下方卡片联动</div>
+      <div class="m-map-hint" id="m-top-map-hint">🗺️ 行程路线 · 滚动卡片实时联动</div>
       <button class="m-map-pill" onclick="cycleTimelineMapHeight()">
         <span id="pill-icon">↕️</span> <span id="pill-text">高度 35%</span>
       </button>
@@ -1427,7 +1463,7 @@ def build_mobile_split_screen_html():
         <div class="m-dining-view" id="m-view-dining">
           <div class="m-dining-intro">
             🏆 <b>210家多年老店 ✕ 本地人扎堆老号地图：</b><br>
-            已在上方地图实时标记出当前日的备选餐馆位置与店名！点击餐馆或切换餐别，地图将精准聚焦！
+            上方地图默认已完整展示当天全部 15 家候选餐馆！在下方点击切换餐馆或餐别，地图将瞬间切换并高亮定位！
           </div>
           {dining_html}
         </div>
@@ -1436,7 +1472,7 @@ def build_mobile_split_screen_html():
         <div class="m-birding-view" id="m-view-birding">
           <div class="m-birding-intro">
             🦉 <b>小红书 ✕ 中国观鸟记录中心实战纪录：</b><br>
-            上方地图已实时标出当天最佳观鸟点！点击任一天即可在地图上查看位置与一键导航。
+            上方地图实时标出当前日期的最佳观鸟点与观察生境半径！滚动卡片自动切换地图定位！
           </div>
           {birding_html}
         </div>
@@ -1450,14 +1486,34 @@ def build_mobile_split_screen_html():
           {heritage_html}
         </div>
 
-        <!-- ==================== 6. 提醒页 (海拔剖面 + 极寒装备 + 安全整合) ==================== -->
+        <!-- ==================== 6. 提醒页 (海拔剖面 + 气温走势 + 极寒装备 + 安全整合) ==================== -->
         <div class="m-tips-view" id="m-view-tips">
-          <!-- 海拔变化曲线 -->
+          <!-- 海拔与气温双轴走势曲线 -->
           <div class="m-sub-card">
-            <h3>🏔️ 14天自驾落脚点海拔变化曲线 (米)</h3>
-            <p style="font-size:11px; color:var(--text-muted); margin-bottom:10px;">乌鲁木齐 (918m) ➔ 喀纳斯湖 (1374m) ➔ 吐鲁番盆地 (30m)</p>
-            <div style="height: 240px;">
+            <h3>🏔️ 14天自驾落脚点海拔与每日温差曲线</h3>
+            <p style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">
+              双轴联动：左轴海拔高度 (30m~1374m) ✕ 右轴最高温/最低温 (-18°C~19°C)
+            </p>
+            <div style="height: 280px; position: relative;">
               <canvas id="mChart"></canvas>
+            </div>
+            
+            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin-top:10px; font-size:10.5px; text-align:center;">
+              <div style="background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.3); border-radius:6px; padding:6px 4px;">
+                <div style="color:#7dd3fc; font-weight:700;">🏔️ 最高海拔</div>
+                <div style="color:#fff; font-weight:700; margin-top:2px;">喀纳斯 1374m</div>
+                <div style="color:#94a3b8; font-size:9px;">Day 6</div>
+              </div>
+              <div style="background:rgba(99,102,241,0.1); border:1px solid rgba(99,102,241,0.3); border-radius:6px; padding:6px 4px;">
+                <div style="color:#a5b4fc; font-weight:700;">❄️ 极端极寒</div>
+                <div style="color:#fff; font-weight:700; margin-top:2px;">禾木 -18°C</div>
+                <div style="color:#94a3b8; font-size:9px;">Day 5 晨雾日出</div>
+              </div>
+              <div style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:6px; padding:6px 4px;">
+                <div style="color:#fca5a5; font-weight:700;">☀️ 温暖暖阳</div>
+                <div style="color:#fff; font-weight:700; margin-top:2px;">吐鲁番 19°C</div>
+                <div style="color:#94a3b8; font-size:9px;">Day 10/11 火洲秋日</div>
+              </div>
             </div>
           </div>
 
@@ -1487,7 +1543,7 @@ def build_mobile_split_screen_html():
 
     </div>
 
-    <!-- ==================== 2. 独立全屏大地图探索台 (真正 100% 全屏铺满) ==================== -->
+    <!-- ==================== 2. 独立全屏大地图探索台 ==================== -->
     <div class="m-dedicated-map-view" id="m-view-map">
       <div id="m-dedicated-map"></div>
 
@@ -1562,6 +1618,7 @@ def build_mobile_split_screen_html():
   <script>
     const mTripData = {json_dump};
     let currentViewTab = 'timeline';
+    let currentActiveDay = 1;
 
     // ==========================================
     // 1. 初始化顶部全局自适应小地图
@@ -1587,18 +1644,19 @@ def build_mobile_split_screen_html():
       const lng = d.to.lng;
       mLatLngs.push([lat, lng]);
 
-      const iconHtml = `<div class="custom-m-marker">${{d.day}}</div>`;
-      const cIcon = L.divIcon({{ className: 'm-div-icon', html: iconHtml, iconSize: [20, 20], iconAnchor: [10, 10] }});
+      const iconHtml = `<div class="custom-m-marker" id="timeline-marker-${{d.day}}">${{d.day}}</div>`;
+      const cIcon = L.divIcon({{ className: 'm-div-icon', html: iconHtml, iconSize: [22, 22], iconAnchor: [11, 11] }});
 
       const mk = L.marker([lat, lng], {{ icon: cIcon }});
       mk.bindPopup(`
         <div style="font-size:12px; color:#0f172a; line-height:1.4;">
           <b style="color:#96382d;">Day ${{d.day}}: ${{d.title}}</b><br/>
           🏔️ 海拔: ${{d.elevation_m}}m ｜ 🚗 ${{d.distance_km}}km<br/>
+          🌡️ 气温: ${{d.weather || ''}}<br/>
           🏨 ${{d.stay}}
         </div>
       `);
-      mk.on('click', () => {{ mFocusDay(d.day); }});
+      mk.on('click', () => {{ mFocusDay(d.day, true); }});
       mMarkers.push({{ day: d.day, mk, lat, lng }});
     }});
 
@@ -1662,24 +1720,18 @@ def build_mobile_split_screen_html():
       }} else if (viewId === 'birding') {{
         availableDays = mTripData.birding_guide.map(b => b.day);
       }} else if (viewId === 'culture') {{
-        // 仅获取有实际国保内容的 Day 列表，排除无内容天数
         availableDays = Array.from(new Set(mTripData.heritage_guide.map(h => h.day))).sort((a, b) => a - b);
       }}
 
-      // 动态生成有内容的天数按钮
       rail.innerHTML = availableDays.map(d => `
         <div class="m-rail-pill ${{d === activeDay ? 'active' : ''}}" id="rail-pill-${{d}}" onclick="quickJumpDay(${{d}}, this)">D${{d}}</div>
       `).join('');
 
-      // 若当前 activeDay 不在 availableDays 中，则默认选中第一个
       if (!availableDays.includes(activeDay)) {{
         activeDay = availableDays[0] || 1;
       }}
       syncRailActive(activeDay);
     }}
-
-    let isManualScrolling = false;
-    let manualScrollTimer = null;
 
     function syncRailActive(dayNum) {{
       document.querySelectorAll('.m-rail-pill').forEach(p => p.classList.remove('active'));
@@ -1692,18 +1744,22 @@ def build_mobile_split_screen_html():
       }}
     }}
 
+    let isManualScrolling = false;
+    let manualScrollTimer = null;
+
     function quickJumpDay(dayNum, btn) {{
       isManualScrolling = true;
       syncRailActive(dayNum);
+      currentActiveDay = dayNum;
 
       if (currentViewTab === 'timeline') {{
-        mFocusDay(dayNum, false);
+        mFocusDay(dayNum, true);
       }} else if (currentViewTab === 'dining') {{
-        mFocusDineDay(dayNum, false);
+        mFocusDineDay(dayNum, true);
       }} else if (currentViewTab === 'birding') {{
-        mFocusBirdDay(dayNum, false);
+        mFocusBirdDay(dayNum, true);
       }} else if (currentViewTab === 'culture') {{
-        mFocusHeritDay(dayNum, false);
+        mFocusHeritDay(dayNum, true);
       }}
 
       clearTimeout(manualScrollTimer);
@@ -1712,7 +1768,9 @@ def build_mobile_split_screen_html():
       }}, 800);
     }}
 
-    // 页面滚动实时侦测：同步点亮当前屏幕可视卡片对应的左侧 D 按钮与卡片高亮
+    // ==========================================
+    // 页面滚动实时侦测 (Scroll Spy)：同步点亮卡片、左侧按钮、以及上方小地图
+    // ==========================================
     function detectCurrentVisibleDay() {{
       const container = document.getElementById('m-content-container');
       if (!container) return;
@@ -1752,10 +1810,12 @@ def build_mobile_split_screen_html():
       }});
 
       if (bestEl) {{
-        const elId = bestEl.id; // e.g. "m-day-3", "dine-day-5", "bird-day-2", "herit-day-11-1"
+        const elId = bestEl.id;
         const match = elId.match(/day-(\d+)/);
         if (match) {{
           const dayNum = parseInt(match[1], 10);
+
+          // 同步点亮左侧快捷按钮
           syncRailActive(dayNum);
 
           // 保持对应卡片高亮
@@ -1771,6 +1831,24 @@ def build_mobile_split_screen_html():
           }} else if (currentViewTab === 'culture') {{
             document.querySelectorAll('.m-herit-card').forEach(c => c.classList.remove('active'));
             bestEl.classList.add('active');
+          }}
+
+          // 满足需求1：滚动切换到新的一天时，上方地图同步联动定位
+          if (currentActiveDay !== dayNum) {{
+            currentActiveDay = dayNum;
+            if (currentViewTab === 'timeline') {{
+              const target = mMarkers.find(m => m.day === dayNum);
+              if (target) {{
+                mMap.flyTo([target.lat, target.lng], 8, {{ duration: 0.5 }});
+                target.mk.openPopup();
+              }}
+            }} else if (currentViewTab === 'dining') {{
+              showDiningDayOnMap(dayNum, null, -1, false);
+            }} else if (currentViewTab === 'birding') {{
+              showBirdingDayOnMap(dayNum);
+            }} else if (currentViewTab === 'culture') {{
+              showHeritageDayOnMap(dayNum);
+            }}
           }}
         }}
       }}
@@ -1796,6 +1874,7 @@ def build_mobile_split_screen_html():
 
     // 行程卡片全反差色高亮与聚焦
     function mFocusDay(dayNum, shouldScroll = true) {{
+      currentActiveDay = dayNum;
       syncRailActive(dayNum);
       document.querySelectorAll('.m-card').forEach(c => c.classList.remove('active'));
       const activeCard = document.getElementById('m-day-' + dayNum);
@@ -1813,15 +1892,19 @@ def build_mobile_split_screen_html():
       }}
     }}
 
+    // 满足需求1：地图高度三档循环切换（标准 35% ➔ 全屏 70% ➔ 小窗 18%）
     let timelineMapMode = 0;
     function cycleTimelineMapHeight() {{
       const zone = document.getElementById('m-map-zone');
       const text = document.getElementById('pill-text');
-      timelineMapMode = (timelineMapMode + 1) % 2;
+      timelineMapMode = (timelineMapMode + 1) % 3;
+      zone.classList.remove('mode-compact', 'mode-expanded');
       if (timelineMapMode === 0) {{
-        zone.classList.remove('mode-compact');
         text.innerText = "高度 35%";
-      }} else {{
+      }} else if (timelineMapMode === 1) {{
+        zone.classList.add('mode-expanded');
+        text.innerText = "全屏 70%";
+      }} else if (timelineMapMode === 2) {{
         zone.classList.add('mode-compact');
         text.innerText = "小窗 18%";
       }}
@@ -1829,10 +1912,10 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
-    // 2. 餐饮专区 (全卡片对比反差暖金变色高亮)
+    // 2. 餐饮专区 (展示当天全部15家餐馆 + 选项切换精准定位联动)
     // ==========================================
     let currentDineMarkers = [];
-    function showDiningDayOnMap(dayNum, targetMealKey = 'lunch', activeIdx = 0) {{
+    function showDiningDayOnMap(dayNum, targetMealKey = null, activeIdx = -1, flyToActive = false) {{
       const dayData = mTripData.dining_guide.find(d => d.day === dayNum);
       if (!dayData) return;
 
@@ -1841,55 +1924,77 @@ def build_mobile_split_screen_html():
       const pts = [];
 
       const hint = document.getElementById('m-top-map-hint');
-      hint.innerText = `🍽️ Day ${{dayNum}} · ${{dayData.city.split('(')[0]}} 候选餐馆地图`;
+      hint.innerText = `🍽️ Day ${{dayNum}} · ${{dayData.city.split('(')[0]}} 当天全部精选餐馆 (共15家)`;
 
       const meals = dayData.meals;
-      const mealList = [
-        {{ key: 'breakfast', label: '早', items: meals.breakfast }},
-        {{ key: 'lunch', label: '午', items: meals.lunch }},
-        {{ key: 'dinner', label: '晚', items: meals.dinner }}
+      const mealConfigs = [
+        {{ key: 'breakfast', label: '早', color: '#f59e0b' }},
+        {{ key: 'lunch', label: '午', color: '#ef4444' }},
+        {{ key: 'dinner', label: '晚', color: '#a855f7' }}
       ];
 
-      const curMealObj = mealList.find(m => m.key === targetMealKey) || mealList[1];
+      mealConfigs.forEach(mCfg => {{
+        const list = meals[mCfg.key] || [];
+        list.forEach((opt, idx) => {{
+          const lat = opt.lat;
+          const lng = opt.lng;
+          pts.push([lat, lng]);
 
-      curMealObj.items.forEach((opt, idx) => {{
-        const lat = opt.lat;
-        const lng = opt.lng;
-        pts.push([lat, lng]);
+          const isSelected = (targetMealKey === mCfg.key && idx === activeIdx);
+          const actCls = isSelected ? 'active' : '';
+          const shortName = opt.restaurant.split('(')[0].trim();
+          const displayShort = shortName.length > 7 ? shortName.slice(0, 7) + '…' : shortName;
 
-        const isAct = (idx === activeIdx);
-        const actCls = isAct ? 'active' : '';
-        const shortName = opt.restaurant.split('(')[0].trim();
+          const html = `<div class="custom-dine-pin ${{actCls}} meal-${{mCfg.key}}" id="dine-pin-${{dayNum}}-${{mCfg.key}}-${{idx}}">
+            <span class="dine-meal-tag" style="background:${{mCfg.color}}; color:#fff; font-size:8.5px; padding:1px 3px; border-radius:3px; font-weight:700;">${{mCfg.label}}${{idx+1}}</span>
+            <b>${{displayShort}}</b>
+          </div>`;
+          const icon = L.divIcon({{ className: 'dine-div-icon', html: html, iconSize: null, iconAnchor: [20, 12] }});
 
-        const html = `<div class="custom-dine-pin ${{actCls}}"><span>${{idx+1}}</span> <b>${{shortName}}</b></div>`;
-        const icon = L.divIcon({{ className: 'dine-div-icon', html: html, iconSize: null, iconAnchor: [15, 12] }});
+          const mk = L.marker([lat, lng], {{ icon: icon }}).addTo(dynamicLayers);
+          mk.bindPopup(`
+            <div style="font-size:12px; line-height:1.45; color:#0f172a; min-width:180px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <span style="background:${{mCfg.color}}; color:#fff; font-size:10px; padding:1px 5px; border-radius:3px; font-weight:700;">${{mCfg.label}}餐 · 选项${{idx+1}}</span>
+                <span style="font-size:10px; color:#96382d; font-weight:700;">🏆 ${{opt.heritage_years}}</span>
+              </div>
+              <b style="color:#0f172a; font-size:13px;">${{opt.restaurant}}</b><br/>
+              💰 人均: <b>${{opt.price_per_person}}</b> ｜ 来源: ${{opt.source}}<br/>
+              🍲 <b>必点：</b>${{opt.must_orders.slice(0,3).join(' · ')}}<br/>
+              <div style="font-size:11px; color:#475569; margin:4px 0;">${{opt.highlight}}</div>
+              <a href="https://uri.amap.com/navigation?to=${{lng}},${{lat}}&mode=car" target="_blank" style="display:block; text-align:center; background:#2563eb; color:#fff; padding:5px 0; border-radius:4px; text-decoration:none; font-weight:700; font-size:11px; margin-top:4px;">🚗 高德一键导航</a>
+            </div>
+          `);
 
-        const mk = L.marker([lat, lng], {{ icon: icon }}).addTo(dynamicLayers);
-        mk.bindPopup(`
-          <div style="font-size:12px; line-height:1.4; color:#0f172a;">
-            <b style="color:#96382d;">${{opt.restaurant}}</b> (${{opt.heritage_years}})<br/>
-            💰 人均: ${{opt.price_per_person}}<br/>
-            🍲 招牌: ${{opt.must_orders.slice(0,3).join('、')}}<br/>
-            <a href="https://uri.amap.com/navigation?to=${{lng}},${{lat}}&mode=car" target="_blank" style="display:inline-block; margin-top:4px; color:#2563eb; font-weight:700;">🚗 高德一键导航</a>
-          </div>
-        `);
-        if (isAct) {{
-          mk.openPopup();
-        }}
-        currentDineMarkers.push({{ idx, mk, lat, lng, opt }});
+          mk.on('click', () => {{
+            switchMealOption(dayNum, mCfg.key, idx, null, false);
+          }});
+
+          if (isSelected) {{
+            mk.openPopup();
+          }}
+
+          currentDineMarkers.push({{ dayNum, mealKey: mCfg.key, idx, mk, lat, lng, opt }});
+        }});
       }});
 
       if (pts.length > 0) {{
-        if (activeIdx >= 0 && activeIdx < pts.length) {{
-          mMap.flyTo(pts[activeIdx], 14, {{ duration: 0.5 }});
-        }} else {{
-          const bounds = L.latLngBounds(pts);
-          mMap.fitBounds(bounds, {{ padding: [35, 35], maxZoom: 15, duration: 0.5 }});
+        if (flyToActive && targetMealKey && activeIdx >= 0) {{
+          const activeObj = currentDineMarkers.find(m => m.mealKey === targetMealKey && m.idx === activeIdx);
+          if (activeObj) {{
+            mMap.flyTo([activeObj.lat, activeObj.lng], 15, {{ duration: 0.5 }});
+            activeObj.mk.openPopup();
+            return;
+          }}
         }}
+        // 满足需求3：默认缩放比例显示当天所有的餐馆
+        const bounds = L.latLngBounds(pts);
+        mMap.fitBounds(bounds, {{ padding: [35, 35], maxZoom: 15, duration: 0.5 }});
       }}
     }}
 
     function mFocusDineDay(dayNum, shouldScroll = true) {{
+      currentActiveDay = dayNum;
       syncRailActive(dayNum);
       document.querySelectorAll('.m-dining-day-group').forEach(g => g.classList.remove('active'));
       const activeGroup = document.getElementById('dine-day-' + dayNum);
@@ -1899,10 +2004,11 @@ def build_mobile_split_screen_html():
           activeGroup.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
         }}
       }}
-      showDiningDayOnMap(dayNum, 'lunch', 0);
+      showDiningDayOnMap(dayNum, null, -1, false);
     }}
 
-    function switchMealOption(dayNum, mealKey, optIdx, btnEl) {{
+    // 满足需求2：在卡片中选择不同餐馆时，切换地图定位并高亮打开 popup
+    function switchMealOption(dayNum, mealKey, optIdx, btnEl, shouldFly = true) {{
       const section = btnEl ? btnEl.closest('.m-meal-section-box') : document.getElementById(`meal-sec-${{dayNum}}-${{mealKey}}`);
       if (section) {{
         section.querySelectorAll('.m-dine-pill').forEach((pill, idx) => {{
@@ -1916,21 +2022,16 @@ def build_mobile_split_screen_html():
         }});
       }}
 
-      showDiningDayOnMap(dayNum, mealKey, optIdx);
+      showDiningDayOnMap(dayNum, mealKey, optIdx, shouldFly);
     }}
 
     function focusDineMapMarker(dayNum, mealKey, idx) {{
-      mFocusDineDay(dayNum, true);
-      showDiningDayOnMap(dayNum, mealKey, idx);
-      const target = currentDineMarkers.find(m => m.idx === idx);
-      if (target) {{
-        mMap.flyTo([target.lat, target.lng], 15, {{ duration: 0.5 }});
-        target.mk.openPopup();
-      }}
+      mFocusDineDay(dayNum, false);
+      switchMealOption(dayNum, mealKey, idx, null, true);
     }}
 
     // ==========================================
-    // 3. 观鸟专区 (全卡片对比反差翡翠绿变色高亮)
+    // 3. 观鸟专区
     // ==========================================
     function showBirdingDayOnMap(dayNum) {{
       const b = mTripData.birding_guide.find(item => item.day === dayNum);
@@ -1965,6 +2066,7 @@ def build_mobile_split_screen_html():
     }}
 
     function mFocusBirdDay(dayNum, shouldScroll = true) {{
+      currentActiveDay = dayNum;
       syncRailActive(dayNum);
       document.querySelectorAll('.m-birding-card').forEach(c => c.classList.remove('active'));
       const activeCard = document.getElementById('bird-day-' + dayNum);
@@ -1978,7 +2080,7 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
-    // 4. 国保专区 (全卡片对比反差紫罗兰变色高亮 + 真实照片标牌)
+    // 4. 国保专区 (真实实景照片标牌 + 行进路线与方向箭头)
     // ==========================================
     function showHeritageDayOnMap(dayNum) {{
       const routeInfo = mTripData.heritage_routes[dayNum];
@@ -2071,6 +2173,7 @@ def build_mobile_split_screen_html():
     }}
 
     function mFocusHeritDay(dayNum, shouldScroll = true) {{
+      currentActiveDay = dayNum;
       syncRailActive(dayNum);
       document.querySelectorAll('.m-herit-card').forEach(c => c.classList.remove('active'));
       
@@ -2082,7 +2185,6 @@ def build_mobile_split_screen_html():
         }}
         showHeritageDayOnMap(dayNum);
       }} else {{
-        // 若当日无重点国保，则平滑滚向最近的国保日
         const heritDays = [1, 8, 9, 10, 11, 12, 13];
         const closest = heritDays.reduce((prev, curr) => Math.abs(curr - dayNum) < Math.abs(prev - dayNum) ? curr : prev);
         targetCard = document.getElementById('herit-day-' + closest + '-1') || document.querySelector('[id^="herit-day-' + closest + '"]');
@@ -2098,7 +2200,7 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
-    // 5. 初始化独立全屏大地图探索台 (真正 100% 全屏)
+    // 5. 初始化独立全屏大地图探索台
     // ==========================================
     let dedicatedMap = null;
     let transitLayer = null;
@@ -2244,7 +2346,7 @@ def build_mobile_split_screen_html():
       const dedicatedMapView = document.getElementById('m-view-map');
       const rail = document.getElementById('m-quick-nav-rail');
 
-      // 大地图真正 100% 全屏铺满展示
+      // 大地图模式真正 100% 全屏铺满展示
       if (viewId === 'map') {{
         mapZone.classList.add('mode-hidden');
         if (mainLayout) mainLayout.style.display = 'none';
@@ -2273,22 +2375,22 @@ def build_mobile_split_screen_html():
       document.getElementById('m-view-culture').style.display = (viewId === 'culture') ? 'block' : 'none';
       document.getElementById('m-view-tips').style.display = (viewId === 'tips') ? 'block' : 'none';
 
-      // 动态刷新左侧快捷栏（仅生成当前视图包含的天数）
+      // 动态刷新左侧快捷栏
       updateQuickNavRail(viewId, 1);
 
       setTimeout(() => {{ mMap.invalidateSize(); }}, 200);
 
       if (viewId === 'timeline') {{
-        document.getElementById('m-top-map-hint').innerText = "🗺️ 行程路线 · 点下方卡片联动";
+        document.getElementById('m-top-map-hint').innerText = "🗺️ 行程路线 · 滚动卡片实时联动";
         setupRouteWithArrows();
         mMap.fitBounds(mPolyline.getBounds(), {{ padding: [15, 15] }});
-        mFocusDay(1);
+        mFocusDay(1, false);
       }} else if (viewId === 'dining') {{
-        mFocusDineDay(1);
+        mFocusDineDay(1, false);
       }} else if (viewId === 'birding') {{
-        mFocusBirdDay(1);
+        mFocusBirdDay(1, false);
       }} else if (viewId === 'culture') {{
-        mFocusHeritDay(1);
+        mFocusHeritDay(1, false);
       }} else if (viewId === 'tips') {{
         renderMChart();
       }}
@@ -2297,33 +2399,33 @@ def build_mobile_split_screen_html():
     function jumpToDining(dayNum) {{
       const diningDock = document.querySelectorAll('.m-dock-item')[2];
       mSwitch('dining', diningDock);
-      mFocusDineDay(dayNum);
+      mFocusDineDay(dayNum, true);
     }}
 
     function jumpToBirding(dayNum) {{
       const birdingDock = document.querySelectorAll('.m-dock-item')[3];
       mSwitch('birding', birdingDock);
-      mFocusBirdDay(dayNum);
+      mFocusBirdDay(dayNum, true);
     }}
 
     function jumpToHeritage(dayNum) {{
       const cultureDock = document.querySelectorAll('.m-dock-item')[4];
       mSwitch('culture', cultureDock);
-      mFocusHeritDay(dayNum);
+      mFocusHeritDay(dayNum, true);
     }}
 
     document.addEventListener('DOMContentLoaded', () => {{
       mTripData.birding_guide.forEach(b => {{
         const card = document.getElementById('bird-day-' + b.day);
         if (card) {{
-          card.addEventListener('click', () => {{ mFocusBirdDay(b.day); }});
+          card.addEventListener('click', () => {{ mFocusBirdDay(b.day, false); }});
         }}
       }});
 
       mTripData.heritage_guide.forEach(h => {{
         const card = document.getElementById('herit-day-' + h.day + '-' + (h.order_in_day || 1));
         if (card) {{
-          card.addEventListener('click', () => {{ mFocusHeritDay(h.day); }});
+          card.addEventListener('click', () => {{ mFocusHeritDay(h.day, false); }});
         }}
       }});
 
@@ -2332,47 +2434,129 @@ def build_mobile_split_screen_html():
 
       // 初始化并激活 Day 1
       updateQuickNavRail('timeline', 1);
-      mFocusDay(1);
+      mFocusDay(1, false);
     }});
 
+    // 满足需求4：海拔高度 + 每日最低/最高温差走势双轴图表
     let mChartInstance = null;
     function renderMChart() {{
       if (mChartInstance) return;
       const ctx = document.getElementById('mChart').getContext('2d');
       const labels = mTripData.days.map(d => `D${{d.day}}`);
       const elevations = mTripData.days.map(d => d.elevation_m);
+      const minTemps = mTripData.days.map(d => d.temp_min);
+      const maxTemps = mTripData.days.map(d => d.temp_max);
 
       mChartInstance = new Chart(ctx, {{
         type: 'line',
         data: {{
           labels: labels,
-          datasets: [{{
-            label: '海拔高度 (米)',
-            data: elevations,
-            borderColor: '#f87171',
-            backgroundColor: 'rgba(248, 113, 113, 0.18)',
-            fill: true,
-            tension: 0.35,
-            pointBackgroundColor: '#96382d',
-            pointRadius: 4
-          }}]
+          datasets: [
+            {{
+              label: '落脚点海拔 (米)',
+              data: elevations,
+              borderColor: '#38bdf8',
+              backgroundColor: 'rgba(56, 189, 248, 0.12)',
+              fill: true,
+              tension: 0.3,
+              pointBackgroundColor: '#0284c7',
+              pointRadius: 3.5,
+              yAxisID: 'yElevation'
+            }},
+            {{
+              label: '最高气温 (°C)',
+              data: maxTemps,
+              borderColor: '#f87171',
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              pointBackgroundColor: '#ef4444',
+              pointRadius: 3.5,
+              tension: 0.3,
+              yAxisID: 'yTemp'
+            }},
+            {{
+              label: '最低气温 (°C)',
+              data: minTemps,
+              borderColor: '#818cf8',
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              borderDash: [4, 4],
+              pointBackgroundColor: '#6366f1',
+              pointRadius: 3.5,
+              tension: 0.3,
+              yAxisID: 'yTemp'
+            }}
+          ]
         }},
         options: {{
           responsive: true,
           maintainAspectRatio: false,
+          interaction: {{
+            mode: 'index',
+            intersect: false
+          }},
           scales: {{
-            y: {{
-              beginAtZero: true,
-              grid: {{ color: '#1e293b' }},
-              ticks: {{ color: '#94a3b8', font: {{ size: 10 }} }}
+            yElevation: {{
+              type: 'linear',
+              display: true,
+              position: 'left',
+              title: {{
+                display: true,
+                text: '海拔 (m)',
+                color: '#38bdf8',
+                font: {{ size: 10, weight: 'bold' }}
+              }},
+              grid: {{ color: 'rgba(255,255,255,0.06)' }},
+              ticks: {{ color: '#94a3b8', font: {{ size: 9.5 }} }}
+            }},
+            yTemp: {{
+              type: 'linear',
+              display: true,
+              position: 'right',
+              title: {{
+                display: true,
+                text: '气温 (°C)',
+                color: '#f87171',
+                font: {{ size: 10, weight: 'bold' }}
+              }},
+              grid: {{ drawOnChartArea: false }},
+              ticks: {{ color: '#fca5a5', font: {{ size: 9.5 }} }}
             }},
             x: {{
-              grid: {{ color: '#1e293b' }},
-              ticks: {{ color: '#94a3b8', font: {{ size: 10 }} }}
+              grid: {{ color: 'rgba(255,255,255,0.05)' }},
+              ticks: {{ color: '#94a3b8', font: {{ size: 9.5 }} }}
             }}
           }},
           plugins: {{
-            legend: {{ display: false }}
+            legend: {{
+              display: true,
+              position: 'top',
+              labels: {{
+                color: '#cbd5e1',
+                boxWidth: 12,
+                font: {{ size: 10, weight: '600' }}
+              }}
+            }},
+            tooltip: {{
+              backgroundColor: 'rgba(15, 23, 42, 0.95)',
+              titleColor: '#fff',
+              bodyColor: '#f1f5f9',
+              borderColor: '#334155',
+              borderWidth: 1,
+              padding: 8,
+              callbacks: {{
+                label: function(context) {{
+                  if (context.dataset.yAxisID === 'yElevation') {{
+                    return `🏔️ 海拔: ${{context.parsed.y}} 米`;
+                  }} else if (context.datasetIndex === 1) {{
+                    return `☀️ 最高温: ${{context.parsed.y}} °C`;
+                  }} else if (context.datasetIndex === 2) {{
+                    return `❄️ 最低温: ${{context.parsed.y}} °C`;
+                  }}
+                  return '';
+                }}
+              }}
+            }}
           }}
         }}
       }});
@@ -2390,7 +2574,7 @@ def main():
     content = build_mobile_split_screen_html()
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(content)
-    print(f"🎉 包含真正全屏大地图与动态快捷导航条的手机版路书已生成: {out_path}")
+    print(f"🎉 包含全景地图联动、餐饮全景+切换聚焦、以及双轴海拔气温曲线的手机版路书已生成: {out_path}")
 
 
 if __name__ == "__main__":

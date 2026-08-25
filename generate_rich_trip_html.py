@@ -894,30 +894,83 @@ def build_full_html():
       const ctx = document.getElementById('elevationChart').getContext('2d');
       const labels = tripData.days.map(d => `Day ${{d.day}} (${{d.to.name.split('/')[0]}})`);
       const elevations = tripData.days.map(d => d.elevation_m);
+      const minTemps = tripData.days.map(d => d.temp_min);
+      const maxTemps = tripData.days.map(d => d.temp_max);
 
       chartInstance = new Chart(ctx, {{
         type: 'line',
         data: {{
           labels: labels,
-          datasets: [{{
-            label: '海拔高度 (米)',
-            data: elevations,
-            borderColor: '#f87171',
-            backgroundColor: 'rgba(248, 113, 113, 0.15)',
-            fill: true,
-            tension: 0.35,
-            pointBackgroundColor: '#96382d',
-            pointRadius: 5
-          }}]
+          datasets: [
+            {{
+              label: '海拔高度 (米)',
+              data: elevations,
+              borderColor: '#38bdf8',
+              backgroundColor: 'rgba(56, 189, 248, 0.12)',
+              fill: true,
+              tension: 0.35,
+              pointBackgroundColor: '#0284c7',
+              pointRadius: 4,
+              yAxisID: 'yElevation'
+            }},
+            {{
+              label: '最高气温 (°C)',
+              data: maxTemps,
+              borderColor: '#f87171',
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              pointBackgroundColor: '#ef4444',
+              pointRadius: 4,
+              tension: 0.35,
+              yAxisID: 'yTemp'
+            }},
+            {{
+              label: '最低气温 (°C)',
+              data: minTemps,
+              borderColor: '#818cf8',
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              borderDash: [4, 4],
+              pointBackgroundColor: '#6366f1',
+              pointRadius: 4,
+              tension: 0.35,
+              yAxisID: 'yTemp'
+            }}
+          ]
         }},
         options: {{
           responsive: true,
           maintainAspectRatio: false,
+          interaction: {{
+            mode: 'index',
+            intersect: false
+          }},
           scales: {{
-            y: {{
-              beginAtZero: true,
+            yElevation: {{
+              type: 'linear',
+              display: true,
+              position: 'left',
+              title: {{
+                display: true,
+                text: '海拔 (m)',
+                color: '#38bdf8',
+                font: {{ weight: 'bold' }}
+              }},
               grid: {{ color: '#1e293b' }},
               ticks: {{ color: '#94a3b8' }}
+            }},
+            yTemp: {{
+              type: 'linear',
+              display: true,
+              position: 'right',
+              title: {{
+                display: true,
+                text: '气温 (°C)',
+                color: '#f87171',
+                font: {{ weight: 'bold' }}
+              }},
+              grid: {{ drawOnChartArea: false }},
+              ticks: {{ color: '#fca5a5' }}
             }},
             x: {{
               grid: {{ color: '#1e293b' }},
@@ -925,7 +978,21 @@ def build_full_html():
             }}
           }},
           plugins: {{
-            legend: {{ labels: {{ color: '#f1f5f9' }} }}
+            legend: {{ labels: {{ color: '#f1f5f9' }} }},
+            tooltip: {{
+              callbacks: {{
+                label: function(context) {{
+                  if (context.dataset.yAxisID === 'yElevation') {{
+                    return `🏔️ 海拔: ${{context.parsed.y}} 米`;
+                  }} else if (context.datasetIndex === 1) {{
+                    return `☀️ 最高温: ${{context.parsed.y}} °C`;
+                  }} else if (context.datasetIndex === 2) {{
+                    return `❄️ 最低温: ${{context.parsed.y}} °C`;
+                  }}
+                  return '';
+                }}
+              }}
+            }}
           }}
         }}
       }});
