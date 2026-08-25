@@ -212,9 +212,13 @@
       box-shadow: 0 0 8px rgba(239, 68, 68, 0.7);
     }
     .custom-dine-dot.meal-dinner {
-      background: rgba(168, 85, 247, 0.28);
-      border-color: #a855f7;
-      box-shadow: 0 0 8px rgba(168, 85, 247, 0.7);
+      background: rgba(17, 24, 39, 0.45);
+      border-color: #000000;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.8), 0 0 2px rgba(255, 255, 255, 0.6);
+    }
+    .custom-dine-dot.meal-dinner .dine-dot-inner {
+      background: #000000;
+      box-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
     }
     .custom-dine-dot.active {
       width: 18px !important;
@@ -10631,7 +10635,7 @@
       const mealConfigs = {
         'breakfast': { label: '早', color: '#f59e0b', name: '早餐' },
         'lunch': { label: '午', color: '#ef4444', name: '午餐' },
-        'dinner': { label: '晚', color: '#a855f7', name: '晚餐' }
+        'dinner': { label: '晚', color: '#111827', name: '晚餐' }
       };
 
       const hint = document.getElementById('m-top-map-hint');
