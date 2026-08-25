@@ -2128,9 +2128,8 @@ def build_mobile_split_screen_html():
               <div style="font-size:11px; color:#475569; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                 🍲 <b>招牌：</b>${{mustTwo}}
               </div>
-              <div style="display:flex; gap:5px; margin-top:4px;">
-                <a href="${{dpHref}}" onclick="openDianpingDirect(event, '${{shopId}}', '${{cleanName}}', '${{cleanCity}}')" style="flex:1; text-align:center; background:#ff6600; color:#fff; padding:5px 0; border-radius:5px; text-decoration:none; font-weight:700; font-size:10.5px; box-shadow:0 2px 6px rgba(255,102,0,0.35); cursor:pointer;">🧡 大众点评详情直达</a>
-                <a href="https://uri.amap.com/marker?position=${{lng}},${{lat}}&name=${{encodeURIComponent(fullName)}}&coordinate=gaode&callnative=1" target="_blank" style="flex:1; text-align:center; background:#2563eb; color:#fff; padding:5px 0; border-radius:5px; text-decoration:none; font-weight:700; font-size:10.5px; cursor:pointer;">🚗 高德商户详情</a>
+              <div style="margin-top:6px;">
+                <a href="${{dpHref}}" onclick="openDianpingDirect(event, '${{shopId}}', '${{cleanName}}', '${{cleanCity}}')" style="display:block; text-align:center; background:#ff6600; color:#fff; padding:6px 0; border-radius:6px; text-decoration:none; font-weight:700; font-size:11.5px; box-shadow:0 2px 6px rgba(255,102,0,0.35); cursor:pointer;">🧡 大众点评详情直达</a>
               </div>
             </div>
           `, {{ autoPan: false, offset: [0, -10] }});
