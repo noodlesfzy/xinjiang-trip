@@ -2236,10 +2236,10 @@ def build_mobile_split_screen_html():
               <span class="m-popup-title">${{fullName}}</span>
               <div class="m-popup-btn-group">
                 <a href="${{dpHref}}" onclick="openDianpingDirect(event, '${{shopId}}', '${{cleanName}}', '${{cleanCity}}')" class="m-popup-icon-btn" title="大众点评">
-                  <img src="${DP_ICON_URI}" alt="大众点评" />
+                  <img src="{DP_ICON_URI}" alt="大众点评" />
                 </a>
                 <a href="${{xhsHref}}" onclick="openXiaohongshuDirect(event, '${{noteId}}', '${{cleanName}}', '${{cleanCity}}')" class="m-popup-icon-btn" title="小红书">
-                  <img src="${XHS_ICON_URI}" alt="小红书" />
+                  <img src="{XHS_ICON_URI}" alt="小红书" />
                 </a>
               </div>
             </div>
