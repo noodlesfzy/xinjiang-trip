@@ -3,22 +3,25 @@
 """
 generate_mobile_trip_html.py — 专为手机端打造的自驾全景路书 (trip_mobile.html)
 核心特性：
-1. 【餐饮选项切换地图精准平滑飞至与高亮聚焦】：
+1. 【餐饮专区：按餐别（早/午/晚）仅展示当餐 5 个选项】：
+   - 选择早餐时，地图仅展示早餐 5 家店名与定位点；午餐和晚餐同理，不混杂显示其他餐别。
    - 点击早/午/晚任意餐馆 1~5 选项药丸（或点击“📍 在上方地图查看位置” / 点击地图上的餐馆 Pin）：
      * 地图立即以 15 级街区比例平滑飞至该餐馆真实街道坐标 (mMap.flyTo)
      * 该餐馆 Pin 脉冲高亮置顶 (Z-Index 9999) 并弹出详实美食卡
-     * 顶部浮动提示条同步显示餐馆名称与人均
-2. 【智能系统时间与行程日期/早中晚三餐同步联动】：
+     * 顶部浮动提示条同步显示当前餐别、餐馆名称与人均
+2. 【观鸟专区名称去重】：
+   - 彻底去除地图上的重复标题弹窗，仅保留清爽明了的单个观鸟点地标与生境观测半径圈。
+3. 【智能系统时间与行程日期/早中晚三餐同步联动】：
    - 若系统当前时间处于行程计划区间内（2026-10-25 ~ 2026-11-07），各页面默认定位至当天。
    - 餐饮页面按照时间规则：
      * 上午 11:00 前 ➔ 默认选择“早餐”
      * 11:00 ~ 16:00 ➔ 默认选择“午餐”
      * 16:00 之后 ➔ 默认选择“晚餐”
      并自动联动展开对应餐别卡片与上方地图定位！
-3. 【提醒页面图表滑动 X 轴竖向虚线（Vertical Crosshair）实时指示】：
+4. 【提醒页面图表滑动 X 轴竖向虚线（Vertical Crosshair）实时指示】：
    - 在图表上滑动/触摸 X 轴时，Y 轴方向实时呈现高亮虚线竖线，精准标定当前触摸所对应的日期、落脚海拔与早晚温差。
-4. 【地图高度三档一键循环（标准 35% ➔ 全屏 70% ➔ 小窗 18%）】。
-5. 【左侧快捷栏动态按内容过滤】与【全卡片反差色高亮】。
+5. 【地图高度三档一键循环（标准 35% ➔ 全屏 70% ➔ 小窗 18%）】。
+6. 【左侧快捷栏动态按内容过滤】与【全卡片反差色高亮】。
 """
 
 import os
@@ -129,7 +132,7 @@ def render_dining_html_5_options():
         <div class="m-dining-day-group" id="dine-day-{day_num}" onclick="mFocusDineDay({day_num}, false)">
           <div class="m-dining-day-header">
             <span class="m-dine-day-badge">Day {day_num} · {date_str}</span>
-            <span class="m-dine-city-badge">📍 {city_str} (点我看当天全景地图)</span>
+            <span class="m-dine-city-badge">📍 {city_str} (点我看当餐推荐)</span>
           </div>
           {"".join(meals_html_blocks)}
         </div>
@@ -205,7 +208,7 @@ def build_mobile_split_screen_html():
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>新疆14天自驾路书 (餐馆高亮定位 + 时间智能同步 + 曲线虚线指示)</title>
+  <title>新疆14天自驾路书 (当餐5选1精简呈现 + 观鸟名称去重 + 时间智能同步)</title>
   <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -376,7 +379,7 @@ def build_mobile_split_screen_html():
       transform: scale(1.15);
     }}
 
-    /* 餐饮地图 Pin (醒目高亮定位) */
+    /* 餐饮地图 Pin (简洁清爽：仅显示店名和定位点) */
     .custom-dine-pin {{
       background: #1e293b;
       border: 1.5px solid #f59e0b;
@@ -1472,11 +1475,11 @@ def build_mobile_split_screen_html():
           {all_days}
         </div>
 
-        <!-- ==================== 3. 餐饮页 (每餐5选1 + 选项高亮地图聚焦) ==================== -->
+        <!-- ==================== 3. 餐饮页 (当餐5选1 + 选项高亮地图聚焦) ==================== -->
         <div class="m-dining-view" id="m-view-dining">
           <div class="m-dining-intro">
             🏆 <b>210家多年老店 ✕ 本地人扎堆老号地图：</b><br>
-            系统已按当前时间自动推荐对应餐别！点击任意餐馆 1~5 选项，上方地图将立即平滑飞至该店精准街道坐标并高亮弹窗！
+            地图已自动切换展示当前所选餐别的 5 家精选餐馆！点击任意选项即可平滑飞至坐标并高亮弹窗！
           </div>
           {dining_html}
         </div>
@@ -1969,71 +1972,89 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
-    // 2. 餐饮专区 (选项切换精准高亮定位 + 平滑飞至)
+    // 2. 餐饮专区 (满足需求1：按餐别仅显示当餐5家店名与定位点，平滑飞至与高亮)
     // ==========================================
     let currentDineDay = null;
+    let currentDineMeal = null;
     let currentDineMarkers = []; // {{ dayNum, mealKey, idx, mk, lat, lng, opt }}
 
     function showDiningDayOnMap(dayNum, targetMealKey = null, activeIdx = -1, flyToActive = false) {{
       const dayData = mTripData.dining_guide.find(d => d.day === dayNum);
       if (!dayData) return;
 
+      // 若未指定 targetMealKey，自动识别当前卡片激活的餐别或当前时间对应的餐别
+      if (!targetMealKey) {{
+        const dayGroup = document.getElementById(`dine-day-${{dayNum}}`);
+        const activeSec = dayGroup ? dayGroup.querySelector('.m-meal-section-box.active-meal') : null;
+        if (activeSec) {{
+          if (activeSec.classList.contains('meal-box-lunch')) targetMealKey = 'lunch';
+          else if (activeSec.classList.contains('meal-box-dinner')) targetMealKey = 'dinner';
+          else targetMealKey = 'breakfast';
+        }} else {{
+          const tripCtx = getCurrentTripContext();
+          targetMealKey = tripCtx.mealKey;
+        }}
+      }}
+
+      const mealConfigs = {{
+        'breakfast': {{ label: '早', color: '#f59e0b', name: '早餐' }},
+        'lunch': {{ label: '午', color: '#ef4444', name: '午餐' }},
+        'dinner': {{ label: '晚', color: '#a855f7', name: '晚餐' }}
+      }};
+
+      const mCfg = mealConfigs[targetMealKey] || mealConfigs['breakfast'];
       const hint = document.getElementById('m-top-map-hint');
 
-      // 仅在日期变更或 Marker 集合为空时重新绘制
-      if (currentDineDay !== dayNum || currentDineMarkers.length === 0) {{
+      // 仅展示当餐 5 个选项：当日期或餐别改变时重新绘制
+      if (currentDineDay !== dayNum || currentDineMeal !== targetMealKey || currentDineMarkers.length === 0) {{
         dynamicLayers.clearLayers();
         currentDineMarkers = [];
         currentDineDay = dayNum;
+        currentDineMeal = targetMealKey;
 
-        const meals = dayData.meals;
-        const mealConfigs = [
-          {{ key: 'breakfast', label: '早', color: '#f59e0b' }},
-          {{ key: 'lunch', label: '午', color: '#ef4444' }},
-          {{ key: 'dinner', label: '晚', color: '#a855f7' }}
-        ];
+        const list = dayData.meals[targetMealKey] || [];
+        const pts = [];
 
-        mealConfigs.forEach(mCfg => {{
-          const list = meals[mCfg.key] || [];
-          list.forEach((opt, idx) => {{
-            const lat = opt.lat;
-            const lng = opt.lng;
+        list.forEach((opt, idx) => {{
+          const lat = opt.lat;
+          const lng = opt.lng;
+          pts.push([lat, lng]);
 
-            const shortName = opt.restaurant.split('(')[0].trim();
-            const displayShort = shortName.length > 7 ? shortName.slice(0, 7) + '…' : shortName;
+          const shortName = opt.restaurant.split('(')[0].trim();
+          const displayShort = shortName.length > 7 ? shortName.slice(0, 7) + '…' : shortName;
 
-            const html = `<div class="custom-dine-pin meal-${{mCfg.key}}" id="dine-pin-${{dayNum}}-${{mCfg.key}}-${{idx}}">
-              <span class="dine-meal-tag" style="background:${{mCfg.color}}; color:#fff; font-size:8.5px; padding:1px 3px; border-radius:3px; font-weight:700;">${{mCfg.label}}${{idx+1}}</span>
-              <b>${{displayShort}}</b>
-            </div>`;
-            const icon = L.divIcon({{ className: 'dine-div-icon', html: html, iconSize: null, iconAnchor: [20, 12] }});
+          // 简洁清爽的当餐 Pin 标牌（仅展示店名与定位点）
+          const html = `<div class="custom-dine-pin meal-${{targetMealKey}}" id="dine-pin-${{dayNum}}-${{targetMealKey}}-${{idx}}">
+            <span class="dine-meal-tag" style="background:${{mCfg.color}}; color:#fff; font-size:8.5px; padding:1px 3px; border-radius:3px; font-weight:700;">${{mCfg.label}}${{idx+1}}</span>
+            <b>${{displayShort}}</b>
+          </div>`;
+          const icon = L.divIcon({{ className: 'dine-div-icon', html: html, iconSize: null, iconAnchor: [20, 12] }});
 
-            const mk = L.marker([lat, lng], {{ icon: icon, zIndexOffset: 10 }}).addTo(dynamicLayers);
-            
-            mk.bindPopup(`
-              <div style="font-size:12px; line-height:1.45; color:#0f172a; min-width:190px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                  <span style="background:${{mCfg.color}}; color:#fff; font-size:10px; padding:1px 5px; border-radius:3px; font-weight:700;">${{mCfg.label}}餐 · 选项${{idx+1}}</span>
-                  <span style="font-size:10px; color:#96382d; font-weight:700;">🏆 ${{opt.heritage_years}}</span>
-                </div>
-                <b style="color:#0f172a; font-size:13px;">${{opt.restaurant}}</b><br/>
-                💰 人均: <b>${{opt.price_per_person}}</b> ｜ 来源: ${{opt.source}}<br/>
-                🍲 <b>必点：</b>${{opt.must_orders.slice(0,3).join(' · ')}}<br/>
-                <div style="font-size:11px; color:#475569; margin:4px 0;">${{opt.highlight}}</div>
-                <a href="https://uri.amap.com/navigation?to=${{lng}},${{lat}}&mode=car" target="_blank" style="display:block; text-align:center; background:#2563eb; color:#fff; padding:5px 0; border-radius:4px; text-decoration:none; font-weight:700; font-size:11px; margin-top:4px;">🚗 高德一键导航</a>
+          const mk = L.marker([lat, lng], {{ icon: icon, zIndexOffset: 10 }}).addTo(dynamicLayers);
+          
+          mk.bindPopup(`
+            <div style="font-size:12px; line-height:1.45; color:#0f172a; min-width:190px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <span style="background:${{mCfg.color}}; color:#fff; font-size:10px; padding:1px 5px; border-radius:3px; font-weight:700;">${{mCfg.name}} · 选项${{idx+1}}</span>
+                <span style="font-size:10px; color:#96382d; font-weight:700;">🏆 ${{opt.heritage_years}}</span>
               </div>
-            `, {{ autoPan: false, offset: [0, -10] }});
+              <b style="color:#0f172a; font-size:13px;">${{opt.restaurant}}</b><br/>
+              💰 人均: <b>${{opt.price_per_person}}</b> ｜ 来源: ${{opt.source}}<br/>
+              🍲 <b>必点：</b>${{opt.must_orders.slice(0,3).join(' · ')}}<br/>
+              <div style="font-size:11px; color:#475569; margin:4px 0;">${{opt.highlight}}</div>
+              <a href="https://uri.amap.com/navigation?to=${{lng}},${{lat}}&mode=car" target="_blank" style="display:block; text-align:center; background:#2563eb; color:#fff; padding:5px 0; border-radius:4px; text-decoration:none; font-weight:700; font-size:11px; margin-top:4px;">🚗 高德一键导航</a>
+            </div>
+          `, {{ autoPan: false, offset: [0, -10] }});
 
-            mk.on('click', () => {{
-              switchMealOption(dayNum, mCfg.key, idx, null, true);
-              const optCard = document.getElementById(`opt-${{dayNum}}-${{mCfg.key}}-${{idx}}`);
-              if (optCard) {{
-                optCard.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
-              }}
-            }});
-
-            currentDineMarkers.push({{ dayNum, mealKey: mCfg.key, idx, mk, lat, lng, opt }});
+          mk.on('click', () => {{
+            switchMealOption(dayNum, targetMealKey, idx, null, true);
+            const optCard = document.getElementById(`opt-${{dayNum}}-${{targetMealKey}}-${{idx}}`);
+            if (optCard) {{
+              optCard.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+            }}
           }});
+
+          currentDineMarkers.push({{ dayNum, mealKey: targetMealKey, idx, mk, lat, lng, opt }});
         }});
       }}
 
@@ -2042,15 +2063,15 @@ def build_mobile_split_screen_html():
       currentDineMarkers.forEach(m => m.mk.setZIndexOffset(10));
 
       // 若指定了具体餐馆，执行高亮与飞至定位
-      if (targetMealKey && activeIdx >= 0) {{
-        const activeObj = currentDineMarkers.find(m => m.mealKey === targetMealKey && m.idx === activeIdx);
+      if (activeIdx >= 0) {{
+        const activeObj = currentDineMarkers.find(m => m.idx === activeIdx);
         if (activeObj) {{
           activeObj.mk.setZIndexOffset(9999);
           const pinEl = document.getElementById(`dine-pin-${{dayNum}}-${{targetMealKey}}-${{activeIdx}}`);
           if (pinEl) pinEl.classList.add('active');
 
           if (hint) {{
-            hint.innerText = `🍽️ Day ${{dayNum}} · 正在查看：${{activeObj.opt.restaurant}}`;
+            hint.innerText = `🍽️ Day ${{dayNum}} · ${{mCfg.name}} · 正在查看：${{activeObj.opt.restaurant}}`;
           }}
 
           if (flyToActive) {{
@@ -2065,13 +2086,13 @@ def build_mobile_split_screen_html():
         }}
       }}
 
-      // 默认全景显示
+      // 默认全景显示当餐 5 家餐馆
       if (currentDineMarkers.length > 0) {{
         const pts = currentDineMarkers.map(m => [m.lat, m.lng]);
         const bounds = L.latLngBounds(pts);
         mMap.fitBounds(bounds, {{ padding: [35, 35], maxZoom: 15, duration: 0.5 }});
         if (hint) {{
-          hint.innerText = `🍽️ Day ${{dayNum}} · ${{dayData.city.split('(')[0]}} 当天全部精选餐馆 (共15家)`;
+          hint.innerText = `🍽️ Day ${{dayNum}} · ${{dayData.city.split('(')[0]}} ${{mCfg.name}} (5选1精选)`;
         }}
       }}
     }}
@@ -2150,7 +2171,7 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
-    // 3. 观鸟专区
+    // 3. 观鸟专区 (满足需求2：去除重复名称，仅保留一个清晰地标)
     // ==========================================
     function showBirdingDayOnMap(dayNum) {{
       const b = mTripData.birding_guide.find(item => item.day === dayNum);
@@ -2158,14 +2179,16 @@ def build_mobile_split_screen_html():
 
       dynamicLayers.clearLayers();
       currentDineDay = null;
+      currentDineMeal = null;
 
       const hint = document.getElementById('m-top-map-hint');
       hint.innerText = `🦉 Day ${{dayNum}} · ${{b.city}} 观鸟点: ${{b.location}}`;
 
+      // 仅保留一个清晰美观的地标，不触发重复弹窗
       const html = `<div class="custom-bird-pin">🦉 <b>${{b.location}}</b></div>`;
       const icon = L.divIcon({{ className: 'bird-div-icon', html: html, iconSize: null, iconAnchor: [20, 12] }});
 
-      const mk = L.marker([b.lat, b.lng], {{ icon: icon }}).addTo(dynamicLayers);
+      L.marker([b.lat, b.lng], {{ icon: icon }}).addTo(dynamicLayers);
       
       L.circle([b.lat, b.lng], {{
         radius: 1200,
@@ -2175,12 +2198,6 @@ def build_mobile_split_screen_html():
         weight: 1.5,
         dashArray: '3, 3'
       }}).addTo(dynamicLayers);
-
-      mk.bindPopup(`
-        <div style="font-size:12px; font-weight:700; color:#059669; padding:2px;">
-          🦉 ${{b.location}}
-        </div>
-      `, {{ autoPan: false, offset: [0, -10] }}).openPopup();
 
       mMap.flyTo([b.lat, b.lng], 13, {{ duration: 0.6 }});
     }}
@@ -2208,6 +2225,7 @@ def build_mobile_split_screen_html():
 
       dynamicLayers.clearLayers();
       currentDineDay = null;
+      currentDineMeal = null;
 
       const hint = document.getElementById('m-top-map-hint');
       hint.innerText = `🏛️ Day ${{dayNum}} · 国保实景照片与行进路线`;
@@ -2505,18 +2523,22 @@ def build_mobile_split_screen_html():
 
       if (viewId === 'timeline') {{
         currentDineDay = null;
+        currentDineMeal = null;
         document.getElementById('m-top-map-hint').innerText = "🗺️ 行程路线 · 滚动卡片实时联动";
         setupRouteWithArrows();
         mMap.fitBounds(mPolyline.getBounds(), {{ padding: [15, 15] }});
         mFocusDay(targetDay, false);
       }} else if (viewId === 'dining') {{
         currentDineDay = null;
+        currentDineMeal = null;
         mFocusDineDay(targetDay, false, tripCtx.mealKey, 0);
       }} else if (viewId === 'birding') {{
         currentDineDay = null;
+        currentDineMeal = null;
         mFocusBirdDay(targetDay, false);
       }} else if (viewId === 'culture') {{
         currentDineDay = null;
+        currentDineMeal = null;
         mFocusHeritDay(targetDay, false);
       }} else if (viewId === 'tips') {{
         renderMChart();
@@ -2543,7 +2565,7 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
-    // 7. 页面加载初始化 (满足需求2：智能时间默认选中)
+    // 7. 页面加载初始化
     // ==========================================
     document.addEventListener('DOMContentLoaded', () => {{
       mTripData.birding_guide.forEach(b => {{
@@ -2768,7 +2790,7 @@ def main():
     content = build_mobile_split_screen_html()
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(content)
-    print(f"🎉 包含餐馆高亮定位、时间智能同步与曲线虚线指示的手机版路书已生成: {out_path}")
+    print(f"🎉 包含当餐5选1精简呈现与观鸟名称去重的手机版路书已生成: {out_path}")
 
 
 if __name__ == "__main__":
