@@ -86,7 +86,7 @@ def render_dining_html_5_options():
                 full_search = f"{clean_city} {clean_name}"
                 encoded_search = urllib.parse.quote(full_search)
                 dp_href = f"dianping://shopinfo?id={shop_id}" if shop_id else f"dianping://searchshoplist?keyword={encoded_search}"
-                xhs_href = f"https://www.xiaohongshu.com/discovery/item/{note_id}" if note_id else f"https://www.xiaohongshu.com/search_result?keyword={encoded_search}"
+                xhs_href = f"xhsdiscover://item/{note_id}" if note_id else f"xhsdiscover://search/result?keyword={encoded_search}"
 
                 # 药丸竖向列表排列
                 tab_btn = f"""
@@ -116,10 +116,10 @@ def render_dining_html_5_options():
                     <button onclick="event.stopPropagation(); focusDineMapMarker({day_num}, '{m_key}', {idx})" class="m-dine-locate-btn" style="flex:1;">
                       📍 在地图定位
                     </button>
-                    <a href="{dp_href}" target="_blank" rel="noopener noreferrer" onclick="openDianpingDirect(event, '{shop_id}', '{clean_name}', '{clean_city}')" title="大众点评" style="display:flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); box-shadow:0 2px 6px rgba(0,0,0,0.25); text-decoration:none; cursor:pointer; flex-shrink:0;">
+                    <a href="{dp_href}" onclick="openDianpingDirect(event, '{shop_id}', '{clean_name}', '{clean_city}')" title="大众点评" style="display:flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); box-shadow:0 2px 6px rgba(0,0,0,0.25); text-decoration:none; cursor:pointer; flex-shrink:0;">
                       <img src="{DP_ICON_URI}" style="width:24px; height:24px; border-radius:6px; display:block;" alt="大众点评" />
                     </a>
-                    <a href="{xhs_href}" target="_blank" rel="noopener noreferrer" onclick="openXiaohongshuDirect(event, '{note_id}', '{clean_name}', '{clean_city}')" title="小红书" style="display:flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); box-shadow:0 2px 6px rgba(0,0,0,0.25); text-decoration:none; cursor:pointer; flex-shrink:0;">
+                    <a href="{xhs_href}" onclick="openXiaohongshuDirect(event, '{note_id}', '{clean_name}', '{clean_city}')" title="小红书" style="display:flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); box-shadow:0 2px 6px rgba(0,0,0,0.25); text-decoration:none; cursor:pointer; flex-shrink:0;">
                       <img src="{XHS_ICON_URI}" style="width:24px; height:24px; border-radius:6px; display:block;" alt="小红书" />
                     </a>
                   </div>
@@ -1831,15 +1831,7 @@ def build_mobile_split_screen_html():
 
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       if (isMobile) {{
-        try {{
-          const ifr = document.createElement('iframe');
-          ifr.style.display = 'none';
-          ifr.src = appScheme;
-          document.body.appendChild(ifr);
-          setTimeout(() => {{ if (ifr.parentNode) document.body.removeChild(ifr); }}, 2000);
-        }} catch(e) {{
-          window.location.href = appScheme;
-        }}
+        window.location.href = appScheme;
       }} else {{
         window.open(webUrl, '_blank');
       }}
@@ -1858,15 +1850,8 @@ def build_mobile_split_screen_html():
       
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       if (isMobile) {{
-        try {{
-          const ifr = document.createElement('iframe');
-          ifr.style.display = 'none';
-          ifr.src = appScheme;
-          document.body.appendChild(ifr);
-          setTimeout(() => {{ if (ifr.parentNode) document.body.removeChild(ifr); }}, 2000);
-        }} catch(e) {{
-          window.location.href = appScheme;
-        }}
+        // 直接唤起小红书 / RedNote App 原生打卡笔记页面，跳过任何网页中转
+        window.location.href = appScheme;
       }} else {{
         window.open(webUrl, '_blank');
       }}
@@ -2228,17 +2213,17 @@ def build_mobile_split_screen_html():
           const mk = L.marker([lat, lng], {{ icon: icon, zIndexOffset: isSelected ? 9999 : 10 }}).addTo(dynamicLayers);
           
           const noteId = opt.note_id || '6a7d9b71000000002c001b44';
-          const xhsHref = `https://www.xiaohongshu.com/discovery/item/${{noteId}}`;
+          const xhsHref = `xhsdiscover://item/${{noteId}}`;
           
           // 定位点上方精简弹出：仅显示店名 + 两个官方精简图标按钮，避免遮挡地图
           mk.bindPopup(`
             <div class="m-dine-compact-popup">
               <span class="m-popup-title">${{fullName}}</span>
               <div class="m-popup-btn-group">
-                <a href="${{dpHref}}" target="_blank" rel="noopener noreferrer" onclick="openDianpingDirect(event, '${{shopId}}', '${{cleanName}}', '${{cleanCity}}')" class="m-popup-icon-btn" title="大众点评">
+                <a href="${{dpHref}}" onclick="openDianpingDirect(event, '${{shopId}}', '${{cleanName}}', '${{cleanCity}}')" class="m-popup-icon-btn" title="大众点评">
                   <img src="{DP_ICON_URI}" alt="大众点评" />
                 </a>
-                <a href="${{xhsHref}}" target="_blank" rel="noopener noreferrer" onclick="openXiaohongshuDirect(event, '${{noteId}}', '${{cleanName}}', '${{cleanCity}}')" class="m-popup-icon-btn" title="小红书">
+                <a href="${{xhsHref}}" onclick="openXiaohongshuDirect(event, '${{noteId}}', '${{cleanName}}', '${{cleanCity}}')" class="m-popup-icon-btn" title="小红书">
                   <img src="{XHS_ICON_URI}" alt="小红书" />
                 </a>
               </div>
