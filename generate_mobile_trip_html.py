@@ -116,10 +116,10 @@ def render_dining_html_5_options():
                     <button onclick="event.stopPropagation(); focusDineMapMarker({day_num}, '{m_key}', {idx})" class="m-dine-locate-btn" style="flex:1;">
                       📍 在地图定位
                     </button>
-                    <a href="{dp_href}" onclick="openDianpingDirect(event, '{shop_id}', '{clean_name}', '{clean_city}')" title="大众点评" style="display:flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); box-shadow:0 2px 6px rgba(0,0,0,0.25); text-decoration:none; cursor:pointer; flex-shrink:0;">
+                    <a href="{dp_href}" target="_blank" rel="noopener noreferrer" onclick="openDianpingDirect(event, '{shop_id}', '{clean_name}', '{clean_city}')" title="大众点评" style="display:flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); box-shadow:0 2px 6px rgba(0,0,0,0.25); text-decoration:none; cursor:pointer; flex-shrink:0;">
                       <img src="{DP_ICON_URI}" style="width:24px; height:24px; border-radius:6px; display:block;" alt="大众点评" />
                     </a>
-                    <a href="{xhs_href}" onclick="openXiaohongshuDirect(event, '{note_id}', '{clean_name}', '{clean_city}')" title="小红书" style="display:flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); box-shadow:0 2px 6px rgba(0,0,0,0.25); text-decoration:none; cursor:pointer; flex-shrink:0;">
+                    <a href="{xhs_href}" target="_blank" rel="noopener noreferrer" onclick="openXiaohongshuDirect(event, '{note_id}', '{clean_name}', '{clean_city}')" title="小红书" style="display:flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); box-shadow:0 2px 6px rgba(0,0,0,0.25); text-decoration:none; cursor:pointer; flex-shrink:0;">
                       <img src="{XHS_ICON_URI}" style="width:24px; height:24px; border-radius:6px; display:block;" alt="小红书" />
                     </a>
                   </div>
@@ -1799,52 +1799,47 @@ def build_mobile_split_screen_html():
         event.stopPropagation();
       }}
       
-      // 1. 若具备精准 shop_id，100% 唤起大众点评 App 直达商户详情页（图2），彻底跳过搜索列表！
-      if (shopId && shopId.length >= 6) {{
-        const appScheme = `dianping://shopinfo?id=${{shopId}}`;
-        const webUrl = `https://m.dianping.com/shop/${{shopId}}`;
-        
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        if (isMobile) {{
-          window.location.href = appScheme;
-          setTimeout(() => {{
-            window.open(webUrl, '_blank');
-          }}, 600);
-        }} else {{
-          window.open(webUrl, '_blank');
-        }}
-        return;
-      }}
-      
-      const cleanName = (shopName || '').replace(/\\([^)]*\\)/g, '').trim();
-      const cleanCity = (cityName || '').split('(')[0].split('/')[0].trim();
-      
-      const fullSearchTerm = `${{cleanCity}} ${{cleanName}}`;
-      const encoded = encodeURIComponent(fullSearchTerm);
+      let appScheme = '';
+      let webUrl = '';
 
-      // 新疆各目的地大众点评官方精确城市代码表 (经实测核验)
-      const cityMap = {{
-        '乌鲁木齐': 325,
-        '福海': 2278,
-        '布尔津': 2276,
-        '禾木': 338,
-        '喀纳斯': 338,
-        '富蕴': 2277,
-        '奇台': 2248,
-        '吉木萨尔': 2249,
-        '吐鲁番': 327,
-        '鄯善': 2231,
-        '柴窝堡': 325
-      }};
-      const cityId = cityMap[cleanCity] || 325;
-      
-      // 2. 兜底方案
-      const appScheme = `dianping://searchshoplist?keyword=${{encoded}}&cityid=${{cityId}}`;
-      const webUrl = `https://m.dianping.com/search/keyword/${{cityId}}/0_${{encoded}}`;
-      
+      if (shopId && shopId.length >= 6) {{
+        appScheme = `dianping://shopinfo?id=${{shopId}}`;
+        webUrl = `https://m.dianping.com/shop/${{shopId}}`;
+      }} else {{
+        const cleanName = (shopName || '').replace(/\\([^)]*\\)/g, '').trim();
+        const cleanCity = (cityName || '').split('(')[0].split('/')[0].trim();
+        const fullSearchTerm = `${{cleanCity}} ${{cleanName}}`;
+        const encoded = encodeURIComponent(fullSearchTerm);
+
+        const cityMap = {{
+          '乌鲁木齐': 325,
+          '福海': 2278,
+          '布尔津': 2276,
+          '禾木': 338,
+          '喀纳斯': 338,
+          '富蕴': 2277,
+          '奇台': 2248,
+          '吉木萨尔': 2249,
+          '吐鲁番': 327,
+          '鄯善': 2231,
+          '柴窝堡': 325
+        }};
+        const cityId = cityMap[cleanCity] || 325;
+        appScheme = `dianping://searchshoplist?keyword=${{encoded}}&cityid=${{cityId}}`;
+        webUrl = `https://m.dianping.com/search/keyword/${{cityId}}/0_${{encoded}}`;
+      }}
+
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       if (isMobile) {{
-        window.location.href = appScheme;
+        try {{
+          const ifr = document.createElement('iframe');
+          ifr.style.display = 'none';
+          ifr.src = appScheme;
+          document.body.appendChild(ifr);
+          setTimeout(() => {{ if (ifr.parentNode) document.body.removeChild(ifr); }}, 2000);
+        }} catch(e) {{
+          window.location.href = appScheme;
+        }}
       }} else {{
         window.open(webUrl, '_blank');
       }}
@@ -1858,18 +1853,20 @@ def build_mobile_split_screen_html():
         event.stopPropagation();
       }}
       const nid = noteId || '6a7d9b71000000002c001b44';
-      
-      // 1. 小红书 App 专属 Note 原生直达协议 (直接打开该店铺真实打卡笔记正文)
       const appScheme = `xhsdiscover://item/${{nid}}`;
-      // 2. 网页端具体笔记直达 (或 Universal Link)
       const webUrl = `https://www.xiaohongshu.com/discovery/item/${{nid}}`;
       
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       if (isMobile) {{
-        window.location.href = appScheme;
-        setTimeout(() => {{
-          window.location.href = webUrl;
-        }}, 500);
+        try {{
+          const ifr = document.createElement('iframe');
+          ifr.style.display = 'none';
+          ifr.src = appScheme;
+          document.body.appendChild(ifr);
+          setTimeout(() => {{ if (ifr.parentNode) document.body.removeChild(ifr); }}, 2000);
+        }} catch(e) {{
+          window.location.href = appScheme;
+        }}
       }} else {{
         window.open(webUrl, '_blank');
       }}
@@ -2238,10 +2235,10 @@ def build_mobile_split_screen_html():
             <div class="m-dine-compact-popup">
               <span class="m-popup-title">${{fullName}}</span>
               <div class="m-popup-btn-group">
-                <a href="${{dpHref}}" onclick="openDianpingDirect(event, '${{shopId}}', '${{cleanName}}', '${{cleanCity}}')" class="m-popup-icon-btn" title="大众点评">
+                <a href="${{dpHref}}" target="_blank" rel="noopener noreferrer" onclick="openDianpingDirect(event, '${{shopId}}', '${{cleanName}}', '${{cleanCity}}')" class="m-popup-icon-btn" title="大众点评">
                   <img src="{DP_ICON_URI}" alt="大众点评" />
                 </a>
-                <a href="${{xhsHref}}" onclick="openXiaohongshuDirect(event, '${{noteId}}', '${{cleanName}}', '${{cleanCity}}')" class="m-popup-icon-btn" title="小红书">
+                <a href="${{xhsHref}}" target="_blank" rel="noopener noreferrer" onclick="openXiaohongshuDirect(event, '${{noteId}}', '${{cleanName}}', '${{cleanCity}}')" class="m-popup-icon-btn" title="小红书">
                   <img src="{XHS_ICON_URI}" alt="小红书" />
                 </a>
               </div>
