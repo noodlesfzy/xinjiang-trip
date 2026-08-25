@@ -9560,20 +9560,21 @@
       const fullSearchTerm = `${cleanCity} ${cleanName}`;
       const encoded = encodeURIComponent(fullSearchTerm);
 
-      // 新疆各目的地城市代码表
+      // 新疆各目的地大众点评官方精确城市代码表 (经实测核验)
       const cityMap = {
-        '乌鲁木齐': 256,
-        '福海': 265,
-        '布尔津': 265,
-        '禾木': 265,
-        '喀纳斯': 265,
-        '富蕴': 265,
-        '奇台': 264,
-        '吐鲁番': 263,
-        '鄯善': 263,
-        '柴窝堡': 256
+        '乌鲁木齐': 325,
+        '福海': 2278,
+        '布尔津': 2276,
+        '禾木': 338,
+        '喀纳斯': 338,
+        '富蕴': 2277,
+        '奇台': 2248,
+        '吉木萨尔': 2249,
+        '吐鲁番': 327,
+        '鄯善': 2231,
+        '柴窝堡': 325
       };
-      const cityId = cityMap[cleanCity] || 256;
+      const cityId = cityMap[cleanCity] || 325;
       
       // 1. 大众点评 App 深度直达协议
       const appScheme = `dianping://searchshoplist?keyword=${encoded}&cityid=${cityId}`;
