@@ -3,13 +3,14 @@
 """
 generate_mobile_trip_html.py — 专为手机端打造的自驾全景路书 (trip_mobile.html)
 核心特性：
-1. 【三餐选项药丸竖向排列】：
+1. 【大众点评 App 深度链接直接跳转（修复 404 与唤起问题）】：
+   - 清洗店名（自动剔除括号后缀如“ (30年老店)”），提取纯正精准店名。
+   - 使用 `dianping://searchshoplist?keyword=` 深度协议直接唤起大众点评 App 内该店铺搜索与商户主页，不再跳转 404 网页。
+2. 【三餐选项药丸竖向排列】：
    - 早/午/晚各 5 个餐馆选项改为竖向列表排列，清晰展示完整店名与序号，触控体验更佳。
-2. 【单餐 5 选 1 严格隔离（绝不混杂显示）】：
+3. 【单餐 5 选 1 严格隔离（绝不混杂显示）】：
    - 选择或查看“早餐”时，地图仅展示早餐 5 家餐馆；
    - 切换到“午餐”或“晚餐”时，地图自动清空上一餐并仅呈现该餐的 5 家精选餐馆。
-3. 【地图详细信息换用大众点评按钮】：
-   - 去除高德导航按钮，换成鲜明的大众点评按钮（`🧡 大众点评APP查看`），点击直达大众点评该店铺。
 4. 【店名 100% 完整显示（不截断、不省略）】：
    - 无论是卡片选项还是地图 Marker，完整呈现餐馆全称。
 5. 【切换 1~5 号药丸：大红底色 + 金黄双圈 + 动态脉冲发光扩散】：
@@ -75,7 +76,8 @@ def render_dining_html_5_options():
                 active_card_cls = "style='display:block;'" if idx == 0 else "style='display:none;'"
 
                 full_name = opt["restaurant"]
-                encoded_name = urllib.parse.quote(full_name)
+                clean_name = re.sub(r'[\(（].*?[\)）]', '', full_name).strip()
+                encoded_clean = urllib.parse.quote(clean_name)
 
                 # 满足需求1：药丸改为竖向列表排列
                 tab_btn = f"""
@@ -105,7 +107,7 @@ def render_dining_html_5_options():
                     <button onclick="event.stopPropagation(); focusDineMapMarker({day_num}, '{m_key}', {idx})" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword={encoded_name}" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword={encoded_clean}" onclick="openDianpingDirect(event, '{clean_name}')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -206,7 +208,7 @@ def build_mobile_split_screen_html():
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>新疆14天自驾路书 (药丸竖排 + 单餐5选1隔离 + 大众点评直达)</title>
+  <title>新疆14天自驾路书 (大众点评App直达 + 药丸竖排 + 单餐5选1隔离)</title>
   <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -900,7 +902,7 @@ def build_mobile_split_screen_html():
     .m-map-info-btn.dine {{ background: rgba(245,158,11,0.25); border: 1px solid rgba(245,158,11,0.5); color: #fcd34d; }}
 
     /* ========================================================
-       2. 餐饮专区 (满足需求1：药丸竖排 + 需求2：单餐5选1严格隔离)
+       2. 餐饮专区 (药丸竖排 + 单餐5选1严格隔离 + 大众点评直达)
        ======================================================== */
     .m-dining-view {{
       display: none;
@@ -982,7 +984,7 @@ def build_mobile_split_screen_html():
     .meal-box-lunch .m-meal-sec-header {{ color: #ef4444; }}
     .meal-box-dinner .m-meal-sec-header {{ color: #c084fc; }}
 
-    /* 满足需求1：药丸竖向排列容器 */
+    /* 药丸竖向排列容器 */
     .m-dine-pills-bar {{
       display: flex;
       flex-direction: column;
@@ -1085,6 +1087,7 @@ def build_mobile_split_screen_html():
       justify-content: center;
       gap: 4px;
       box-shadow: 0 2px 6px rgba(255, 102, 0, 0.35);
+      cursor: pointer;
     }}
     .m-dine-dp-btn:active {{ background: #ea580c; }}
 
@@ -1726,6 +1729,31 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
+    // 0.1 大众点评 App / 网页深度跳转引擎
+    // ==========================================
+    function openDianpingDirect(event, shopName) {{
+      if (event) {{
+        event.stopPropagation();
+      }}
+      // 清洗掉括号中的说明文字（如 "(30年老店)"），提取纯正精准店名
+      const cleanName = (shopName || '').replace(/[\\(（].*?[\\)）]/g, '').trim();
+      const encoded = encodeURIComponent(cleanName);
+      
+      // 1. 大众点评 App 商户搜索 Scheme 深度链接
+      const appScheme = `dianping://searchshoplist?keyword=${{encoded}}`;
+      // 2. 网页端大众点评有效搜索链接
+      const webUrl = `https://www.dianping.com/search/keyword/0/0_${{encoded}}`;
+      
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobile) {{
+        // 直接触发 App 深度链接唤起
+        window.location.href = appScheme;
+      }} else {{
+        window.open(webUrl, '_blank');
+      }}
+    }}
+
+    // ==========================================
     // 1. 初始化顶部全局自适应小地图
     // ==========================================
     const mMap = L.map('m-map', {{
@@ -1946,7 +1974,7 @@ def build_mobile_split_screen_html():
                 target.mk.openPopup();
               }}
             }} else if (currentViewTab === 'dining') {{
-              // 满足需求2：单餐5选1严格隔离，仅展示当前餐别的5家
+              // 单餐5选1严格隔离，仅展示当前激活餐别的5家
               showDiningDayOnMap(dayNum, null, -1, false);
             }} else if (currentViewTab === 'birding') {{
               showBirdingDayOnMap(dayNum);
@@ -2016,11 +2044,11 @@ def build_mobile_split_screen_html():
     }}
 
     // ==========================================
-    // 2. 餐饮专区 (满足需求2：单餐5选1严格隔离 + 需求3：大众点评直达)
+    // 2. 餐饮专区 (单餐5选1严格隔离 + 大众点评深度直达)
     // ==========================================
     let currentDineDay = null;
     let currentDineMeal = null;
-    let currentDineMarkers = []; // {{ dayNum, mealKey, idx, mk, lat, lng, opt, fullName }}
+    let currentDineMarkers = []; // {{ dayNum, mealKey, idx, mk, lat, lng, opt, fullName, cleanName }}
 
     function showDiningDayOnMap(dayNum, targetMealKey = null, activeIdx = -1, flyToActive = false) {{
       const dayData = mTripData.dining_guide.find(d => d.day === dayNum);
@@ -2065,6 +2093,8 @@ def build_mobile_split_screen_html():
           pts.push([lat, lng]);
 
           const fullName = opt.restaurant;
+          const cleanName = fullName.replace(/[\\(（].*?[\\)）]/g, '').trim();
+          const encodedClean = encodeURIComponent(cleanName);
           const isSelected = (idx === activeIdx);
           const actCls = isSelected ? 'active' : '';
 
@@ -2077,9 +2107,8 @@ def build_mobile_split_screen_html():
 
           const mk = L.marker([lat, lng], {{ icon: icon, zIndexOffset: isSelected ? 9999 : 10 }}).addTo(dynamicLayers);
           
-          // 满足需求3：精简弹窗，去除高德导航，改为大众点评APP直达
+          // 满足需求3：精简弹窗，直接调用 openDianpingDirect 唤起大众点评 App
           const mustTwo = (opt.must_orders || []).slice(0, 2).join(' · ');
-          const encodedName = encodeURIComponent(fullName);
           mk.bindPopup(`
             <div style="font-size:11.5px; line-height:1.35; color:#0f172a; padding:2px; min-width:180px; max-width:240px;">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px;">
@@ -2089,7 +2118,7 @@ def build_mobile_split_screen_html():
               <div style="font-size:11px; color:#475569; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                 🍲 <b>招牌：</b>${{mustTwo}}
               </div>
-              <a href="https://m.dianping.com/search?keyword=${{encodedName}}" target="_blank" style="display:block; text-align:center; background:#ff6600; color:#fff; padding:5px 0; border-radius:5px; text-decoration:none; font-weight:700; font-size:11px; box-shadow:0 2px 6px rgba(255,102,0,0.35);">🧡 大众点评APP查看</a>
+              <a href="dianping://searchshoplist?keyword=${{encodedClean}}" onclick="openDianpingDirect(event, '${{cleanName}}')" style="display:block; text-align:center; background:#ff6600; color:#fff; padding:5px 0; border-radius:5px; text-decoration:none; font-weight:700; font-size:11px; box-shadow:0 2px 6px rgba(255,102,0,0.35); cursor:pointer;">🧡 大众点评APP查看</a>
             </div>
           `, {{ autoPan: false, offset: [0, -10] }});
 
@@ -2101,7 +2130,7 @@ def build_mobile_split_screen_html():
             }}
           }});
 
-          currentDineMarkers.push({{ dayNum, mealKey: targetMealKey, idx, mk, lat, lng, opt, fullName }});
+          currentDineMarkers.push({{ dayNum, mealKey: targetMealKey, idx, mk, lat, lng, opt, fullName, cleanName }});
         }});
       }}
 
@@ -2844,7 +2873,7 @@ def main():
     content = build_mobile_split_screen_html()
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(content)
-    print(f"🎉 包含药丸竖排、单餐5选1隔离与大众点评直达的手机版路书已生成: {out_path}")
+    print(f"🎉 包含大众点评App直达、药丸竖排与单餐5选1隔离的手机版路书已生成: {out_path}")
 
 
 if __name__ == "__main__":

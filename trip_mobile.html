@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>新疆14天自驾路书 (药丸竖排 + 单餐5选1隔离 + 大众点评直达)</title>
+  <title>新疆14天自驾路书 (大众点评App直达 + 药丸竖排 + 单餐5选1隔离)</title>
   <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -697,7 +697,7 @@
     .m-map-info-btn.dine { background: rgba(245,158,11,0.25); border: 1px solid rgba(245,158,11,0.5); color: #fcd34d; }
 
     /* ========================================================
-       2. 餐饮专区 (满足需求1：药丸竖排 + 需求2：单餐5选1严格隔离)
+       2. 餐饮专区 (药丸竖排 + 单餐5选1严格隔离 + 大众点评直达)
        ======================================================== */
     .m-dining-view {
       display: none;
@@ -779,7 +779,7 @@
     .meal-box-lunch .m-meal-sec-header { color: #ef4444; }
     .meal-box-dinner .m-meal-sec-header { color: #c084fc; }
 
-    /* 满足需求1：药丸竖向排列容器 */
+    /* 药丸竖向排列容器 */
     .m-dine-pills-bar {
       display: flex;
       flex-direction: column;
@@ -882,6 +882,7 @@
       justify-content: center;
       gap: 4px;
       box-shadow: 0 2px 6px rgba(255, 102, 0, 0.35);
+      cursor: pointer;
     }
     .m-dine-dp-btn:active { background: #ea580c; }
 
@@ -1866,7 +1867,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(1, 'breakfast', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E9%A2%86%E9%A6%86%E5%B7%B7%E5%90%90%E5%B0%94%E9%80%8A%E7%83%A4%E5%8C%85%E5%AD%90%E8%80%81%E5%BA%97%20%2830%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E9%A2%86%E9%A6%86%E5%B7%B7%E5%90%90%E5%B0%94%E9%80%8A%E7%83%A4%E5%8C%85%E5%AD%90%E8%80%81%E5%BA%97" onclick="openDianpingDirect(event, '领馆巷吐尔逊烤包子老店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -1889,7 +1890,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(1, 'breakfast', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E8%83%9C%E5%88%A9%E8%B7%AF%E5%9B%9E%E6%B0%91%E8%80%81%E5%AD%97%E5%8F%B7%E7%B2%89%E6%B1%A4%E5%8C%85%E5%AD%90%E9%A6%86%20%2840%E5%B9%B4%E4%BC%A0%E6%89%BF%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E8%83%9C%E5%88%A9%E8%B7%AF%E5%9B%9E%E6%B0%91%E8%80%81%E5%AD%97%E5%8F%B7%E7%B2%89%E6%B1%A4%E5%8C%85%E5%AD%90%E9%A6%86" onclick="openDianpingDirect(event, '胜利路回民老字号粉汤包子馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -1912,7 +1913,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(1, 'breakfast', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E9%98%BF%E5%B8%83%E6%8B%89%E7%9A%84%E9%A6%95%E8%A5%BF%E5%8C%97%E8%B7%AF%E6%80%BB%E5%BA%97%20%2830%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E9%98%BF%E5%B8%83%E6%8B%89%E7%9A%84%E9%A6%95%E8%A5%BF%E5%8C%97%E8%B7%AF%E6%80%BB%E5%BA%97" onclick="openDianpingDirect(event, '阿布拉的馕西北路总店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -1935,7 +1936,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(1, 'breakfast', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E9%87%91%E6%A1%A5%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E9%A6%86%20%28%E5%92%8C%E7%94%B0%E8%A1%97%E8%80%81%E5%BA%97%2C%2025%E5%B9%B4%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E9%87%91%E6%A1%A5%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E9%A6%86" onclick="openDianpingDirect(event, '金桥清真早茶馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -1958,7 +1959,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(1, 'breakfast', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B9%B8%E7%A6%8F%E8%B7%AF%E8%80%81%E5%9B%9E%E6%B0%91%E6%B2%B9%E7%B3%95%E8%B1%86%E6%B5%86%E9%93%BA%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B9%B8%E7%A6%8F%E8%B7%AF%E8%80%81%E5%9B%9E%E6%B0%91%E6%B2%B9%E7%B3%95%E8%B1%86%E6%B5%86%E9%93%BA" onclick="openDianpingDirect(event, '幸福路老回民油糕豆浆铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2016,7 +2017,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(1, 'lunch', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E8%89%BE%E5%8A%9B%E6%89%8E%E6%8F%90%E6%B8%85%E7%9C%9F%E6%8A%93%E9%A5%AD%E9%A6%86%20%2820%E5%B9%B4%E6%8A%93%E9%A5%AD%E5%90%8D%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E8%89%BE%E5%8A%9B%E6%89%8E%E6%8F%90%E6%B8%85%E7%9C%9F%E6%8A%93%E9%A5%AD%E9%A6%86" onclick="openDianpingDirect(event, '艾力扎提清真抓饭馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2039,7 +2040,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(1, 'lunch', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=17%E5%8F%B7%E6%8A%93%E9%A5%AD%E7%8E%8B%20%28%E5%92%8C%E7%94%B0%E4%BA%8C%E8%A1%97%E8%80%81%E5%AD%97%E5%8F%B7%2C%2025%E5%B9%B4%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=17%E5%8F%B7%E6%8A%93%E9%A5%AD%E7%8E%8B" onclick="openDianpingDirect(event, '17号抓饭王')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2062,7 +2063,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(1, 'lunch', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E8%83%96%E8%80%81%E6%B1%89%E6%B8%85%E7%9C%9F%E7%89%B9%E8%89%B2%E6%A4%92%E9%BA%BB%E9%B8%A1%20%28%E6%98%8E%E5%BE%B7%E8%B7%AF%E5%88%9B%E5%A7%8B%E5%BA%97%2C%2030%E5%B9%B4%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E8%83%96%E8%80%81%E6%B1%89%E6%B8%85%E7%9C%9F%E7%89%B9%E8%89%B2%E6%A4%92%E9%BA%BB%E9%B8%A1" onclick="openDianpingDirect(event, '胖老汉清真特色椒麻鸡')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2085,7 +2086,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(1, 'lunch', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E6%89%98%E5%85%8B%E9%80%8A%E6%AD%A3%E5%AE%97%E9%BB%91%E7%BE%8A%E8%82%89%E6%8B%8C%E9%9D%A2%20%28%E9%BB%84%E6%B2%B3%E8%B7%AF%E8%80%81%E5%BA%97%2C%2020%E5%B9%B4%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E6%89%98%E5%85%8B%E9%80%8A%E6%AD%A3%E5%AE%97%E9%BB%91%E7%BE%8A%E8%82%89%E6%8B%8C%E9%9D%A2" onclick="openDianpingDirect(event, '托克逊正宗黑羊肉拌面')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2108,7 +2109,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(1, 'lunch', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B0%8F%E5%B0%95%E5%AD%90%E6%96%B0%E7%96%86%E8%8F%9C%20%28%E6%98%8E%E5%BE%B7%E8%B7%AF%E5%88%9B%E5%A7%8B%E6%97%97%E8%88%B0%E5%BA%97%2C%2020%E5%B9%B4%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B0%8F%E5%B0%95%E5%AD%90%E6%96%B0%E7%96%86%E8%8F%9C" onclick="openDianpingDirect(event, '小尕子新疆菜')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2166,7 +2167,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(1, 'dinner', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E8%A1%80%E7%AB%99%E5%A4%A7%E7%9B%98%E9%B8%A1%20%28%E6%98%8E%E5%BE%B7%E8%B7%AF%E6%80%BB%E5%BA%97%2C%2030%E5%B9%B4%E5%8F%91%E6%BA%90%E9%BC%BB%E7%A5%96%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E8%A1%80%E7%AB%99%E5%A4%A7%E7%9B%98%E9%B8%A1" onclick="openDianpingDirect(event, '血站大盘鸡')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2189,7 +2190,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(1, 'dinner', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E4%B8%9D%E8%B7%AF%E6%9C%89%E7%BA%A6%C2%B7%E6%B0%91%E6%97%8F%E9%A3%8E%E6%83%85%E5%90%8D%E5%BA%97%20%2820%E5%B9%B4%E8%80%81%E7%89%8C%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E4%B8%9D%E8%B7%AF%E6%9C%89%E7%BA%A6%C2%B7%E6%B0%91%E6%97%8F%E9%A3%8E%E6%83%85%E5%90%8D%E5%BA%97" onclick="openDianpingDirect(event, '丝路有约·民族风情名店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2212,7 +2213,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(1, 'dinner', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E6%A5%BC%E5%85%B0%E7%A7%98%E7%83%A4%20%28%E4%B8%83%E9%81%93%E6%B9%BE%E8%80%81%E7%89%8C%E7%83%A7%E7%83%A4%E6%80%BB%E5%BA%97%2C%2015%E5%B9%B4%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E6%A5%BC%E5%85%B0%E7%A7%98%E7%83%A4" onclick="openDianpingDirect(event, '楼兰秘烤')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2235,7 +2236,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(1, 'dinner', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%BE%E5%90%BE%E5%AD%90%E7%BE%8A%E7%BE%94%E8%82%89%20%28%E8%80%81%E5%9F%8E%E5%8C%BA%E7%99%BE%E5%B9%B4%E4%BC%A0%E6%89%BF%E5%90%8D%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%BE%E5%90%BE%E5%AD%90%E7%BE%8A%E7%BE%94%E8%82%89" onclick="openDianpingDirect(event, '吾吾子羊羔肉')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2258,7 +2259,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(1, 'dinner', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E9%98%BF%E9%87%8C%E9%A9%AC%E6%96%AF%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E9%A4%90%E5%8E%85%20%28%E5%BB%B6%E5%AE%89%E8%B7%AF%E8%80%81%E5%BA%97%2C%2025%E5%B9%B4%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E9%98%BF%E9%87%8C%E9%A9%AC%E6%96%AF%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E9%A4%90%E5%8E%85" onclick="openDianpingDirect(event, '阿里马斯传统清真餐厅')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2325,7 +2326,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(2, 'breakfast', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E4%B9%8C%E5%B8%82%E9%BB%91%E7%94%B2%E5%B1%B1%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E4%B9%8C%E5%B8%82%E9%BB%91%E7%94%B2%E5%B1%B1%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA" onclick="openDianpingDirect(event, '乌市黑甲山老字号薄皮包子铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2348,7 +2349,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(2, 'breakfast', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E9%98%BF%E5%B8%83%E6%8B%89%E8%A5%BF%E5%8C%97%E8%B7%AF%E7%8E%B0%E7%83%A4%E7%83%AD%E9%A6%95%E9%93%BA" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E9%98%BF%E5%B8%83%E6%8B%89%E8%A5%BF%E5%8C%97%E8%B7%AF%E7%8E%B0%E7%83%A4%E7%83%AD%E9%A6%95%E9%93%BA" onclick="openDianpingDirect(event, '阿布拉西北路现烤热馕铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2371,7 +2372,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(2, 'breakfast', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%8F%8B%E5%A5%BD%E8%B7%AF%E6%B8%85%E7%9C%9F%E8%80%81%E5%8F%B7%E7%89%9B%E8%82%89%E6%8B%89%E9%9D%A2" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%8F%8B%E5%A5%BD%E8%B7%AF%E6%B8%85%E7%9C%9F%E8%80%81%E5%8F%B7%E7%89%9B%E8%82%89%E6%8B%89%E9%9D%A2" onclick="openDianpingDirect(event, '友好路清真老号牛肉拉面')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2394,7 +2395,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(2, 'breakfast', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E8%83%9C%E5%88%A9%E8%B7%AF%E8%80%81%E5%9B%9E%E6%B0%91%E7%B2%89%E6%B1%A4%E9%A6%86" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E8%83%9C%E5%88%A9%E8%B7%AF%E8%80%81%E5%9B%9E%E6%B0%91%E7%B2%89%E6%B1%A4%E9%A6%86" onclick="openDianpingDirect(event, '胜利路老回民粉汤馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2417,7 +2418,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(2, 'breakfast', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E9%9D%92%E5%B9%B4%E8%B7%AF%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E5%A5%B6%E8%8C%B6%E5%B0%8F%E9%93%BA" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E9%9D%92%E5%B9%B4%E8%B7%AF%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E5%A5%B6%E8%8C%B6%E5%B0%8F%E9%93%BA" onclick="openDianpingDirect(event, '青年路传统清真奶茶小铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2475,7 +2476,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(2, 'lunch', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=S21%E5%85%8B%E6%8B%89%E7%BE%8E%E4%B8%BD%E6%9C%8D%E5%8A%A1%E5%8C%BA%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E5%BA%84" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=S21%E5%85%8B%E6%8B%89%E7%BE%8E%E4%B8%BD%E6%9C%8D%E5%8A%A1%E5%8C%BA%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E5%BA%84" onclick="openDianpingDirect(event, 'S21克拉美丽服务区正宗过油肉拌面庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2498,7 +2499,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(2, 'lunch', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=S21%E9%BB%84%E8%8A%B1%E6%B2%9F%E6%9C%8D%E5%8A%A1%E5%8C%BA%E5%9B%9E%E6%B0%91%E9%A5%AD%E5%BA%84" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=S21%E9%BB%84%E8%8A%B1%E6%B2%9F%E6%9C%8D%E5%8A%A1%E5%8C%BA%E5%9B%9E%E6%B0%91%E9%A5%AD%E5%BA%84" onclick="openDianpingDirect(event, 'S21黄花沟服务区回民饭庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2521,7 +2522,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(2, 'lunch', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E4%BA%94%E5%AE%B6%E6%B8%A0%E8%80%81%E5%85%B5%E6%8B%8C%E9%9D%A2%E7%8E%8B" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E4%BA%94%E5%AE%B6%E6%B8%A0%E8%80%81%E5%85%B5%E6%8B%8C%E9%9D%A2%E7%8E%8B" onclick="openDianpingDirect(event, '五家渠老兵拌面王')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2544,7 +2545,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(2, 'lunch', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%87%86%E4%B8%9C%E8%8D%92%E6%BC%A0%E6%B8%85%E7%9C%9F%E8%80%81%E9%A9%BF%E7%AB%99" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%87%86%E4%B8%9C%E8%8D%92%E6%BC%A0%E6%B8%85%E7%9C%9F%E8%80%81%E9%A9%BF%E7%AB%99" onclick="openDianpingDirect(event, '准东荒漠清真老驿站')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2567,7 +2568,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(2, 'lunch', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E6%B2%99%E6%BC%A0%E5%85%AC%E8%B7%AF%E8%80%81%E5%8F%B8%E6%9C%BA%E5%BF%AB%E9%A4%90%E5%8E%85" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E6%B2%99%E6%BC%A0%E5%85%AC%E8%B7%AF%E8%80%81%E5%8F%B8%E6%9C%BA%E5%BF%AB%E9%A4%90%E5%8E%85" onclick="openDianpingDirect(event, '沙漠公路老司机快餐厅')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2625,7 +2626,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(2, 'dinner', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%8F%E6%B5%B7%E6%B5%B7%E6%B3%89%E9%87%8E%E7%94%9F%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84%20%28%E4%B9%8C%E4%BC%A6%E5%8F%A4%E6%B9%96%E8%80%81%E5%BA%97%2C%2020%E5%B9%B4%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%8F%E6%B5%B7%E6%B5%B7%E6%B3%89%E9%87%8E%E7%94%9F%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84" onclick="openDianpingDirect(event, '福海海泉野生冷水鱼庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2648,7 +2649,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(2, 'dinner', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%AE%8F%E8%BF%90%E4%B9%8C%E4%BC%A6%E5%8F%A4%E6%B9%96%E9%87%8E%E7%94%9F%E9%B1%BC%E9%A6%86%20%28%E6%9C%AC%E5%9C%B0%E4%BA%BA%E8%81%9A%E4%BC%9A%E9%A6%96%E9%80%89%2C%2025%E5%B9%B4%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%AE%8F%E8%BF%90%E4%B9%8C%E4%BC%A6%E5%8F%A4%E6%B9%96%E9%87%8E%E7%94%9F%E9%B1%BC%E9%A6%86" onclick="openDianpingDirect(event, '宏运乌伦古湖野生鱼馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2671,7 +2672,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(2, 'dinner', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%8F%E6%B5%B7%E9%A2%9D%E6%B2%B3%E5%86%B7%E6%B0%B4%E9%B1%BC%E7%89%B9%E8%89%B2%E6%A5%BC%20%28%E8%80%81%E8%A1%97%E5%90%8D%E5%BA%97%2C%2020%E5%B9%B4%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%8F%E6%B5%B7%E9%A2%9D%E6%B2%B3%E5%86%B7%E6%B0%B4%E9%B1%BC%E7%89%B9%E8%89%B2%E6%A5%BC" onclick="openDianpingDirect(event, '福海额河冷水鱼特色楼')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2694,7 +2695,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(2, 'dinner', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E6%B8%94%E5%AE%B6%E5%9D%B3%E9%87%8E%E7%94%9F%E5%86%B7%E6%B0%B4%E9%B1%BC%E6%8E%92%E6%A1%A3%20%2820%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E6%B8%94%E5%AE%B6%E5%9D%B3%E9%87%8E%E7%94%9F%E5%86%B7%E6%B0%B4%E9%B1%BC%E6%8E%92%E6%A1%A3" onclick="openDianpingDirect(event, '渔家坳野生冷水鱼排档')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2717,7 +2718,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(2, 'dinner', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E4%B9%8C%E4%BC%A6%E5%8F%A4%E6%B9%96%E5%A4%A7%E6%B5%B7%E5%AD%90%E8%80%81%E7%A0%81%E5%A4%B4%E9%B1%BC%E9%A6%86%20%2818%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E4%B9%8C%E4%BC%A6%E5%8F%A4%E6%B9%96%E5%A4%A7%E6%B5%B7%E5%AD%90%E8%80%81%E7%A0%81%E5%A4%B4%E9%B1%BC%E9%A6%86" onclick="openDianpingDirect(event, '乌伦古湖大海子老码头鱼馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2784,7 +2785,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(3, 'breakfast', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%8F%E6%B5%B7%E8%80%81%E8%A1%97%E6%B8%85%E7%9C%9F%E5%8C%85%E5%AD%90%E9%93%BA%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%8F%E6%B5%B7%E8%80%81%E8%A1%97%E6%B8%85%E7%9C%9F%E5%8C%85%E5%AD%90%E9%93%BA" onclick="openDianpingDirect(event, '福海老街清真包子铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2807,7 +2808,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(3, 'breakfast', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%8C%97%E5%B1%AF%E8%80%81%E5%9B%9E%E6%B0%91%E6%B2%B9%E9%A6%99%E7%B2%89%E6%B1%A4%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%8C%97%E5%B1%AF%E8%80%81%E5%9B%9E%E6%B0%91%E6%B2%B9%E9%A6%99%E7%B2%89%E6%B1%A4%E9%A6%86" onclick="openDianpingDirect(event, '北屯老回民油香粉汤馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2830,7 +2831,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(3, 'breakfast', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A7%91%E5%85%8B%E8%8B%8F%E6%B9%BF%E5%9C%B0%E7%94%9F%E6%80%81%E6%97%A9%E8%8C%B6%E6%91%8A%20%2815%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A7%91%E5%85%8B%E8%8B%8F%E6%B9%BF%E5%9C%B0%E7%94%9F%E6%80%81%E6%97%A9%E8%8C%B6%E6%91%8A" onclick="openDianpingDirect(event, '科克苏湿地生态早茶摊')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2853,7 +2854,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(3, 'breakfast', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%8F%E6%B5%B7%E5%AE%A2%E8%BF%90%E7%AB%99%E6%B8%85%E7%9C%9F%E6%8B%89%E9%9D%A2%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%8F%E6%B5%B7%E5%AE%A2%E8%BF%90%E7%AB%99%E6%B8%85%E7%9C%9F%E6%8B%89%E9%9D%A2%E9%A6%86" onclick="openDianpingDirect(event, '福海客运站清真拉面馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2876,7 +2877,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(3, 'breakfast', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E9%A2%9D%E6%B2%B3%E6%99%A8%E5%85%89%E5%A4%A7%E9%A5%BC%E9%93%BA%20%2818%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E9%A2%9D%E6%B2%B3%E6%99%A8%E5%85%89%E5%A4%A7%E9%A5%BC%E9%93%BA" onclick="openDianpingDirect(event, '额河晨光大饼铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2934,7 +2935,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(3, 'lunch', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%8C%97%E5%B1%AF%E6%AD%A3%E5%AE%97%E9%BB%91%E7%BE%8A%E8%82%89%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E5%BA%84%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%8C%97%E5%B1%AF%E6%AD%A3%E5%AE%97%E9%BB%91%E7%BE%8A%E8%82%89%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E5%BA%84" onclick="openDianpingDirect(event, '北屯正宗黑羊肉过油肉拌面庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2957,7 +2958,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(3, 'lunch', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E9%A2%9D%E5%B0%94%E9%BD%90%E6%96%AF%E5%A4%A7%E6%A1%A5%E5%A4%B4%E6%9F%B4%E7%81%AB%E6%8A%93%E9%A5%AD%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E9%A2%9D%E5%B0%94%E9%BD%90%E6%96%AF%E5%A4%A7%E6%A1%A5%E5%A4%B4%E6%9F%B4%E7%81%AB%E6%8A%93%E9%A5%AD%E9%A6%86" onclick="openDianpingDirect(event, '额尔齐斯大桥头柴火抓饭馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -2980,7 +2981,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(3, 'lunch', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A7%91%E5%85%8B%E8%8B%8F%E5%86%9C%E5%AE%B6%E9%A3%8E%E5%B9%B2%E8%82%89%E5%9C%9F%E8%B1%86%E7%84%96%E9%A5%AD%E5%BA%84" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A7%91%E5%85%8B%E8%8B%8F%E5%86%9C%E5%AE%B6%E9%A3%8E%E5%B9%B2%E8%82%89%E5%9C%9F%E8%B1%86%E7%84%96%E9%A5%AD%E5%BA%84" onclick="openDianpingDirect(event, '科克苏农家风干肉土豆焖饭庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3003,7 +3004,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(3, 'lunch', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%8C%97%E5%B1%AF%E5%9B%9E%E6%B0%91%E8%80%81%E5%AD%97%E5%8F%B7%E7%82%92%E6%8B%89%E6%9D%A1%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%8C%97%E5%B1%AF%E5%9B%9E%E6%B0%91%E8%80%81%E5%AD%97%E5%8F%B7%E7%82%92%E6%8B%89%E6%9D%A1" onclick="openDianpingDirect(event, '北屯回民老字号炒拉条')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3026,7 +3027,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(3, 'lunch', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E8%BF%9B%E5%9F%8E%E7%AC%AC%E4%B8%80%E5%AE%B6%E6%B8%85%E7%9C%9F%E5%A4%A7%E7%9B%98%E9%B8%A1" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E8%BF%9B%E5%9F%8E%E7%AC%AC%E4%B8%80%E5%AE%B6%E6%B8%85%E7%9C%9F%E5%A4%A7%E7%9B%98%E9%B8%A1" onclick="openDianpingDirect(event, '布尔津进城第一家清真大盘鸡')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3084,7 +3085,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(3, 'dinner', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E6%B2%B3%E5%A0%A4%E5%A4%9C%E5%B8%82%E8%80%81%E8%88%B9%E9%95%BF%E7%83%A4%E7%8B%97%E9%B1%BC%20%2830%E5%B9%B4%E5%A4%9C%E5%B8%82%E9%BC%BB%E7%A5%96%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E6%B2%B3%E5%A0%A4%E5%A4%9C%E5%B8%82%E8%80%81%E8%88%B9%E9%95%BF%E7%83%A4%E7%8B%97%E9%B1%BC" onclick="openDianpingDirect(event, '布尔津河堤夜市老船长烤狗鱼')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3107,7 +3108,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(3, 'dinner', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E9%A2%9D%E5%B0%94%E9%BD%90%E6%96%AF%E6%B2%B3%E7%95%94%E7%99%BE%E4%BF%A1%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E9%A2%9D%E5%B0%94%E9%BD%90%E6%96%AF%E6%B2%B3%E7%95%94%E7%99%BE%E4%BF%A1%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84" onclick="openDianpingDirect(event, '额尔齐斯河畔百信冷水鱼庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3130,7 +3131,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(3, 'dinner', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E7%AB%A5%E8%AF%9D%E8%A1%97%E4%BF%84%E5%BC%8F%E5%96%80%E7%A7%8B%E8%8E%8E%E9%A4%90%E5%8E%85%20%2820%E5%B9%B4%E8%80%81%E7%89%8C%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E7%AB%A5%E8%AF%9D%E8%A1%97%E4%BF%84%E5%BC%8F%E5%96%80%E7%A7%8B%E8%8E%8E%E9%A4%90%E5%8E%85" onclick="openDianpingDirect(event, '布尔津童话街俄式喀秋莎餐厅')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3153,7 +3154,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(3, 'dinner', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E9%98%BF%E5%B1%B1%E9%B9%BF%E9%B8%A3%E5%9B%BE%E7%93%A6%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E9%98%BF%E5%B1%B1%E9%B9%BF%E9%B8%A3%E5%9B%BE%E7%93%A6%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84" onclick="openDianpingDirect(event, '阿山鹿鸣图瓦土火锅庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3176,7 +3177,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(3, 'dinner', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E6%B2%B3%E5%A0%A4%E8%80%81%E5%9B%9E%E6%B0%91%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%BA%84%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E6%B2%B3%E5%A0%A4%E8%80%81%E5%9B%9E%E6%B0%91%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%BA%84" onclick="openDianpingDirect(event, '河堤老回民特色烧烤庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3243,7 +3244,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(4, 'breakfast', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E8%80%81%E5%9F%8E%E5%9B%9E%E6%B0%91%E6%B2%B9%E5%A1%94%E5%AD%90%E6%97%A9%E7%82%B9%E9%93%BA%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E8%80%81%E5%9F%8E%E5%9B%9E%E6%B0%91%E6%B2%B9%E5%A1%94%E5%AD%90%E6%97%A9%E7%82%B9%E9%93%BA" onclick="openDianpingDirect(event, '布尔津老城回民油塔子早点铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3266,7 +3267,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(4, 'breakfast', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E4%BF%84%E5%BC%8F%E5%A4%A7%E5%88%97%E5%B7%B4%E5%B7%A5%E5%9D%8A%20%2830%E5%B9%B4%E8%80%81%E4%BD%9C%E5%9D%8A%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E4%BF%84%E5%BC%8F%E5%A4%A7%E5%88%97%E5%B7%B4%E5%B7%A5%E5%9D%8A" onclick="openDianpingDirect(event, '布尔津俄式大列巴工坊')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3289,7 +3290,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(4, 'breakfast', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%86%B2%E4%B9%8E%E5%B0%94%E9%95%87%E8%80%81%E5%93%88%E8%90%A8%E5%85%8B%E6%97%A9%E8%8C%B6%E9%93%BA%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%86%B2%E4%B9%8E%E5%B0%94%E9%95%87%E8%80%81%E5%93%88%E8%90%A8%E5%85%8B%E6%97%A9%E8%8C%B6%E9%93%BA" onclick="openDianpingDirect(event, '冲乎尔镇老哈萨克早茶铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3312,7 +3313,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(4, 'breakfast', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E6%B8%85%E7%9C%9F%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E8%80%81%E9%93%BA%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E6%B8%85%E7%9C%9F%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E8%80%81%E9%93%BA" onclick="openDianpingDirect(event, '布尔津清真薄皮包子老铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3335,7 +3336,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(4, 'breakfast', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%99%BD%E6%A1%A6%E6%9E%97%E6%99%A8%E5%85%89%E6%97%A9%E7%82%B9%E9%93%BA%20%2815%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%99%BD%E6%A1%A6%E6%9E%97%E6%99%A8%E5%85%89%E6%97%A9%E7%82%B9%E9%93%BA" onclick="openDianpingDirect(event, '白桦林晨光早点铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3393,7 +3394,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(4, 'lunch', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%86%B2%E4%B9%8E%E5%B0%94%E9%BB%91%E5%A4%B4%E7%BE%8A%E6%AD%A3%E5%AE%97%E6%8B%8C%E9%9D%A2%E9%A6%86%20%2825%E5%B9%B4%E8%80%81%E5%AD%97%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%86%B2%E4%B9%8E%E5%B0%94%E9%BB%91%E5%A4%B4%E7%BE%8A%E6%AD%A3%E5%AE%97%E6%8B%8C%E9%9D%A2%E9%A6%86" onclick="openDianpingDirect(event, '冲乎尔黑头羊正宗拌面馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3416,7 +3417,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(4, 'lunch', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E9%98%BF%E5%8B%92%E6%B3%B0%E7%9B%98%E5%B1%B1%E5%85%AC%E8%B7%AF%E8%80%81%E5%8F%B8%E6%9C%BA%E9%A9%BF%E7%AB%99%20%2820%E5%B9%B4%E5%90%8D%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E9%98%BF%E5%8B%92%E6%B3%B0%E7%9B%98%E5%B1%B1%E5%85%AC%E8%B7%AF%E8%80%81%E5%8F%B8%E6%9C%BA%E9%A9%BF%E7%AB%99" onclick="openDianpingDirect(event, '阿勒泰盘山公路老司机驿站')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3439,7 +3440,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(4, 'lunch', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E9%97%A8%E7%A5%A8%E7%AB%99%E6%B8%85%E7%9C%9F%E9%A3%8E%E5%91%B3%E9%A4%90%E5%8E%85" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E9%97%A8%E7%A5%A8%E7%AB%99%E6%B8%85%E7%9C%9F%E9%A3%8E%E5%91%B3%E9%A4%90%E5%8E%85" onclick="openDianpingDirect(event, '禾木门票站清真风味餐厅')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3462,7 +3463,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(4, 'lunch', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%86%B2%E4%B9%8E%E5%B0%94%E9%87%8E%E7%94%9F%E5%B7%B4%E6%A5%9A%E8%8F%87%E6%8B%8C%E9%9D%A2%E5%BA%84" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%86%B2%E4%B9%8E%E5%B0%94%E9%87%8E%E7%94%9F%E5%B7%B4%E6%A5%9A%E8%8F%87%E6%8B%8C%E9%9D%A2%E5%BA%84" onclick="openDianpingDirect(event, '冲乎尔野生巴楚菇拌面庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3485,7 +3486,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(4, 'lunch', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B1%B1%E6%9E%97%E4%BA%BA%E5%AE%B6%E7%89%B9%E8%89%B2%E6%89%8B%E6%93%80%E9%9D%A2%E9%A6%86" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B1%B1%E6%9E%97%E4%BA%BA%E5%AE%B6%E7%89%B9%E8%89%B2%E6%89%8B%E6%93%80%E9%9D%A2%E9%A6%86" onclick="openDianpingDirect(event, '山林人家特色手擀面馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3543,7 +3544,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(4, 'dinner', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E8%80%81%E6%9D%91%E5%9B%BE%E7%93%A6%E4%BA%BA%E4%BC%A0%E7%BB%9F%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%20%28%E8%80%81%E6%9D%91%E7%AC%AC%E4%B8%80%E5%AE%B6%2C%2020%E5%B9%B4%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E8%80%81%E6%9D%91%E5%9B%BE%E7%93%A6%E4%BA%BA%E4%BC%A0%E7%BB%9F%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85" onclick="openDianpingDirect(event, '禾木老村图瓦人传统铜锅土火锅')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3566,7 +3567,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(4, 'dinner', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E6%A1%A5%E5%A4%B4%E8%80%81%E6%9C%A8%E5%B1%8B%E6%9F%B4%E7%81%AB%E6%89%8B%E6%8A%93%E8%82%89%E5%BA%84%20%2820%E5%B9%B4%E8%80%81%E5%AD%97%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E6%A1%A5%E5%A4%B4%E8%80%81%E6%9C%A8%E5%B1%8B%E6%9F%B4%E7%81%AB%E6%89%8B%E6%8A%93%E8%82%89%E5%BA%84" onclick="openDianpingDirect(event, '禾木桥头老木屋柴火手抓肉庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3589,7 +3590,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(4, 'dinner', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E7%99%BD%E6%A1%A6%E6%9E%97%E9%9B%AA%E5%A4%9C%E7%83%A7%E7%83%A4%E6%9C%A8%E5%B1%8B%20%2815%E5%B9%B4%E8%80%81%E7%89%8C%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E7%99%BD%E6%A1%A6%E6%9E%97%E9%9B%AA%E5%A4%9C%E7%83%A7%E7%83%A4%E6%9C%A8%E5%B1%8B" onclick="openDianpingDirect(event, '禾木白桦林雪夜烧烤木屋')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3612,7 +3613,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(4, 'dinner', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E5%9B%BE%E7%93%A6%E4%BA%BA%E5%AE%B6%E9%A3%8E%E5%B9%B2%E8%82%89%E7%82%96%E5%9C%9F%E8%B1%86%E9%A6%86%20%2818%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E5%9B%BE%E7%93%A6%E4%BA%BA%E5%AE%B6%E9%A3%8E%E5%B9%B2%E8%82%89%E7%82%96%E5%9C%9F%E8%B1%86%E9%A6%86" onclick="openDianpingDirect(event, '禾木图瓦人家风干肉炖土豆馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3635,7 +3636,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(4, 'dinner', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E6%98%9F%E7%A9%BA%E6%9A%96%E9%94%85%E6%9C%A8%E5%B1%8B%E5%B0%8F%E9%85%92%E9%A6%86%20%2815%E5%B9%B4%E5%8F%A3%E7%A2%91%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E6%98%9F%E7%A9%BA%E6%9A%96%E9%94%85%E6%9C%A8%E5%B1%8B%E5%B0%8F%E9%85%92%E9%A6%86" onclick="openDianpingDirect(event, '禾木星空暖锅木屋小酒馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3702,7 +3703,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(5, 'breakfast', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA" onclick="openDianpingDirect(event, '禾木村核心区老字号薄皮包子铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3725,7 +3726,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(5, 'breakfast', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E6%B2%B9%E5%A1%94%E5%AD%90%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E6%B2%B9%E5%A1%94%E5%AD%90%E9%A6%86" onclick="openDianpingDirect(event, '禾木村核心区传统清真油塔子馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3748,7 +3749,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(5, 'breakfast', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E8%80%81%E8%A1%97%E7%8E%B0%E7%83%A4%E8%8A%9D%E9%BA%BB%E8%82%89%E9%A6%95%E5%9D%8A%20%2830%E5%B9%B4%E8%80%81%E6%91%8A%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E8%80%81%E8%A1%97%E7%8E%B0%E7%83%A4%E8%8A%9D%E9%BA%BB%E8%82%89%E9%A6%95%E5%9D%8A" onclick="openDianpingDirect(event, '禾木村核心区老街现烤芝麻肉馕坊')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3771,7 +3772,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(5, 'breakfast', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E7%89%9B%E8%82%89%E9%9D%A2%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E7%89%9B%E8%82%89%E9%9D%A2%E9%A6%86" onclick="openDianpingDirect(event, '禾木村核心区清真早茶牛肉面馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3794,7 +3795,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(5, 'breakfast', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E6%B0%91%E6%97%8F%E9%A3%8E%E5%91%B3%E5%A5%B6%E8%8C%B6%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E6%B0%91%E6%97%8F%E9%A3%8E%E5%91%B3%E5%A5%B6%E8%8C%B6%E9%A6%86" onclick="openDianpingDirect(event, '禾木村核心区民族风味奶茶馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3852,7 +3853,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(5, 'lunch', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E7%8E%8B%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E7%8E%8B" onclick="openDianpingDirect(event, '禾木村核心区正宗过油肉拌面王')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3875,7 +3876,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(5, 'lunch', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E6%9F%B4%E7%81%AB%E5%A4%A7%E9%93%81%E9%94%85%E6%8A%93%E9%A5%AD%E5%BA%84%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E6%9F%B4%E7%81%AB%E5%A4%A7%E9%93%81%E9%94%85%E6%8A%93%E9%A5%AD%E5%BA%84" onclick="openDianpingDirect(event, '禾木村核心区柴火大铁锅抓饭庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3898,7 +3899,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(5, 'lunch', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E4%BC%A0%E7%BB%9F%E5%9B%9E%E6%B0%91%E5%A4%A7%E7%9B%98%E9%B8%A1%E8%80%81%E5%BA%97%20%2830%E5%B9%B4%E8%80%81%E5%AD%97%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E4%BC%A0%E7%BB%9F%E5%9B%9E%E6%B0%91%E5%A4%A7%E7%9B%98%E9%B8%A1%E8%80%81%E5%BA%97" onclick="openDianpingDirect(event, '禾木村核心区传统回民大盘鸡老店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3921,7 +3922,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(5, 'lunch', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E8%BE%A3%E7%9A%AE%E5%AD%90%E8%82%89%E6%8B%89%E6%9D%A1%E5%AD%90%E8%80%81%E9%93%BA%20%2820%E5%B9%B4%E8%80%81%E7%89%8C%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E8%BE%A3%E7%9A%AE%E5%AD%90%E8%82%89%E6%8B%89%E6%9D%A1%E5%AD%90%E8%80%81%E9%93%BA" onclick="openDianpingDirect(event, '禾木村核心区辣皮子肉拉条子老铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -3944,7 +3945,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(5, 'lunch', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E9%A3%8E%E5%B9%B2%E7%89%9B%E8%82%89%E7%84%96%E5%9C%9F%E8%B1%86%E5%90%8D%E5%BA%84%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E9%A3%8E%E5%B9%B2%E7%89%9B%E8%82%89%E7%84%96%E5%9C%9F%E8%B1%86%E5%90%8D%E5%BA%84" onclick="openDianpingDirect(event, '禾木村核心区风干牛肉焖土豆名庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4002,7 +4003,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(5, 'dinner', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E8%80%81%E5%AD%97%E5%8F%B7%E7%89%B9%E8%89%B2%E7%83%A4%E8%82%89%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84%20%2830%E5%B9%B4%E5%9C%B0%E6%A0%87%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E8%80%81%E5%AD%97%E5%8F%B7%E7%89%B9%E8%89%B2%E7%83%A4%E8%82%89%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84" onclick="openDianpingDirect(event, '禾木村核心区老字号特色烤肉冷水鱼庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4025,7 +4026,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(5, 'dinner', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E9%87%91%E7%89%8C%E5%A4%A7%E5%B0%BE%E7%BE%8A%E7%BA%B3%E4%BB%81%E5%90%8D%E5%BA%97%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E9%87%91%E7%89%8C%E5%A4%A7%E5%B0%BE%E7%BE%8A%E7%BA%B3%E4%BB%81%E5%90%8D%E5%BA%97" onclick="openDianpingDirect(event, '禾木村核心区金牌大尾羊纳仁名店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4048,7 +4049,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(5, 'dinner', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E4%BC%A0%E7%BB%9F%E7%82%AD%E7%81%AB%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84%20%2820%E5%B9%B4%E5%90%8D%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E4%BC%A0%E7%BB%9F%E7%82%AD%E7%81%AB%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84" onclick="openDianpingDirect(event, '禾木村核心区传统炭火铜锅土火锅庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4071,7 +4072,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(5, 'dinner', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E7%99%BE%E5%B9%B4%E6%B8%85%E7%82%96%E7%BE%8A%E7%BE%94%E8%82%89%E8%80%81%E9%A6%86%20%28%E9%9D%9E%E9%81%97%E4%BC%A0%E6%89%BF%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E7%99%BE%E5%B9%B4%E6%B8%85%E7%82%96%E7%BE%8A%E7%BE%94%E8%82%89%E8%80%81%E9%A6%86" onclick="openDianpingDirect(event, '禾木村核心区百年清炖羊羔肉老馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4094,7 +4095,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(5, 'dinner', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E8%80%81%E5%B7%B4%E6%89%8E%E5%A4%9C%E5%B8%82%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%A4%A7%E6%8E%92%E6%A1%A3%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E7%A6%BE%E6%9C%A8%E6%9D%91%E6%A0%B8%E5%BF%83%E5%8C%BA%E8%80%81%E5%B7%B4%E6%89%8E%E5%A4%9C%E5%B8%82%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%A4%A7%E6%8E%92%E6%A1%A3" onclick="openDianpingDirect(event, '禾木村核心区老巴扎夜市特色烧烤大排档')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4161,7 +4162,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(6, 'breakfast', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA" onclick="openDianpingDirect(event, '喀纳斯老村老字号薄皮包子铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4184,7 +4185,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(6, 'breakfast', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E6%B2%B9%E5%A1%94%E5%AD%90%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E6%B2%B9%E5%A1%94%E5%AD%90%E9%A6%86" onclick="openDianpingDirect(event, '喀纳斯老村传统清真油塔子馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4207,7 +4208,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(6, 'breakfast', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E8%80%81%E8%A1%97%E7%8E%B0%E7%83%A4%E8%8A%9D%E9%BA%BB%E8%82%89%E9%A6%95%E5%9D%8A%20%2830%E5%B9%B4%E8%80%81%E6%91%8A%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E8%80%81%E8%A1%97%E7%8E%B0%E7%83%A4%E8%8A%9D%E9%BA%BB%E8%82%89%E9%A6%95%E5%9D%8A" onclick="openDianpingDirect(event, '喀纳斯老村老街现烤芝麻肉馕坊')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4230,7 +4231,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(6, 'breakfast', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E7%89%9B%E8%82%89%E9%9D%A2%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E7%89%9B%E8%82%89%E9%9D%A2%E9%A6%86" onclick="openDianpingDirect(event, '喀纳斯老村清真早茶牛肉面馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4253,7 +4254,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(6, 'breakfast', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E6%B0%91%E6%97%8F%E9%A3%8E%E5%91%B3%E5%A5%B6%E8%8C%B6%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E6%B0%91%E6%97%8F%E9%A3%8E%E5%91%B3%E5%A5%B6%E8%8C%B6%E9%A6%86" onclick="openDianpingDirect(event, '喀纳斯老村民族风味奶茶馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4311,7 +4312,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(6, 'lunch', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E7%8E%8B%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E7%8E%8B" onclick="openDianpingDirect(event, '喀纳斯老村正宗过油肉拌面王')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4334,7 +4335,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(6, 'lunch', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E6%9F%B4%E7%81%AB%E5%A4%A7%E9%93%81%E9%94%85%E6%8A%93%E9%A5%AD%E5%BA%84%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E6%9F%B4%E7%81%AB%E5%A4%A7%E9%93%81%E9%94%85%E6%8A%93%E9%A5%AD%E5%BA%84" onclick="openDianpingDirect(event, '喀纳斯老村柴火大铁锅抓饭庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4357,7 +4358,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(6, 'lunch', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E4%BC%A0%E7%BB%9F%E5%9B%9E%E6%B0%91%E5%A4%A7%E7%9B%98%E9%B8%A1%E8%80%81%E5%BA%97%20%2830%E5%B9%B4%E8%80%81%E5%AD%97%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E4%BC%A0%E7%BB%9F%E5%9B%9E%E6%B0%91%E5%A4%A7%E7%9B%98%E9%B8%A1%E8%80%81%E5%BA%97" onclick="openDianpingDirect(event, '喀纳斯老村传统回民大盘鸡老店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4380,7 +4381,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(6, 'lunch', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E8%BE%A3%E7%9A%AE%E5%AD%90%E8%82%89%E6%8B%89%E6%9D%A1%E5%AD%90%E8%80%81%E9%93%BA%20%2820%E5%B9%B4%E8%80%81%E7%89%8C%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E8%BE%A3%E7%9A%AE%E5%AD%90%E8%82%89%E6%8B%89%E6%9D%A1%E5%AD%90%E8%80%81%E9%93%BA" onclick="openDianpingDirect(event, '喀纳斯老村辣皮子肉拉条子老铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4403,7 +4404,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(6, 'lunch', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E9%A3%8E%E5%B9%B2%E7%89%9B%E8%82%89%E7%84%96%E5%9C%9F%E8%B1%86%E5%90%8D%E5%BA%84%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E9%A3%8E%E5%B9%B2%E7%89%9B%E8%82%89%E7%84%96%E5%9C%9F%E8%B1%86%E5%90%8D%E5%BA%84" onclick="openDianpingDirect(event, '喀纳斯老村风干牛肉焖土豆名庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4461,7 +4462,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(6, 'dinner', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E8%80%81%E5%AD%97%E5%8F%B7%E7%89%B9%E8%89%B2%E7%83%A4%E8%82%89%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84%20%2830%E5%B9%B4%E5%9C%B0%E6%A0%87%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E8%80%81%E5%AD%97%E5%8F%B7%E7%89%B9%E8%89%B2%E7%83%A4%E8%82%89%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84" onclick="openDianpingDirect(event, '喀纳斯老村老字号特色烤肉冷水鱼庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4484,7 +4485,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(6, 'dinner', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E9%87%91%E7%89%8C%E5%A4%A7%E5%B0%BE%E7%BE%8A%E7%BA%B3%E4%BB%81%E5%90%8D%E5%BA%97%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E9%87%91%E7%89%8C%E5%A4%A7%E5%B0%BE%E7%BE%8A%E7%BA%B3%E4%BB%81%E5%90%8D%E5%BA%97" onclick="openDianpingDirect(event, '喀纳斯老村金牌大尾羊纳仁名店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4507,7 +4508,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(6, 'dinner', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E4%BC%A0%E7%BB%9F%E7%82%AD%E7%81%AB%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84%20%2820%E5%B9%B4%E5%90%8D%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E4%BC%A0%E7%BB%9F%E7%82%AD%E7%81%AB%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84" onclick="openDianpingDirect(event, '喀纳斯老村传统炭火铜锅土火锅庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4530,7 +4531,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(6, 'dinner', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E7%99%BE%E5%B9%B4%E6%B8%85%E7%82%96%E7%BE%8A%E7%BE%94%E8%82%89%E8%80%81%E9%A6%86%20%28%E9%9D%9E%E9%81%97%E4%BC%A0%E6%89%BF%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E7%99%BE%E5%B9%B4%E6%B8%85%E7%82%96%E7%BE%8A%E7%BE%94%E8%82%89%E8%80%81%E9%A6%86" onclick="openDianpingDirect(event, '喀纳斯老村百年清炖羊羔肉老馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4553,7 +4554,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(6, 'dinner', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E8%80%81%E5%B7%B4%E6%89%8E%E5%A4%9C%E5%B8%82%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%A4%A7%E6%8E%92%E6%A1%A3%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%96%80%E7%BA%B3%E6%96%AF%E8%80%81%E6%9D%91%E8%80%81%E5%B7%B4%E6%89%8E%E5%A4%9C%E5%B8%82%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%A4%A7%E6%8E%92%E6%A1%A3" onclick="openDianpingDirect(event, '喀纳斯老村老巴扎夜市特色烧烤大排档')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4620,7 +4621,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(7, 'breakfast', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA" onclick="openDianpingDirect(event, '布尔津县城老字号薄皮包子铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4643,7 +4644,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(7, 'breakfast', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E6%B2%B9%E5%A1%94%E5%AD%90%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E6%B2%B9%E5%A1%94%E5%AD%90%E9%A6%86" onclick="openDianpingDirect(event, '布尔津县城传统清真油塔子馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4666,7 +4667,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(7, 'breakfast', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E7%8E%B0%E7%83%A4%E8%8A%9D%E9%BA%BB%E8%82%89%E9%A6%95%E5%9D%8A%20%2830%E5%B9%B4%E8%80%81%E6%91%8A%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E7%8E%B0%E7%83%A4%E8%8A%9D%E9%BA%BB%E8%82%89%E9%A6%95%E5%9D%8A" onclick="openDianpingDirect(event, '布尔津县城老街现烤芝麻肉馕坊')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4689,7 +4690,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(7, 'breakfast', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E7%89%9B%E8%82%89%E9%9D%A2%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E7%89%9B%E8%82%89%E9%9D%A2%E9%A6%86" onclick="openDianpingDirect(event, '布尔津县城清真早茶牛肉面馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4712,7 +4713,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(7, 'breakfast', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E6%B0%91%E6%97%8F%E9%A3%8E%E5%91%B3%E5%A5%B6%E8%8C%B6%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E6%B0%91%E6%97%8F%E9%A3%8E%E5%91%B3%E5%A5%B6%E8%8C%B6%E9%A6%86" onclick="openDianpingDirect(event, '布尔津县城民族风味奶茶馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4770,7 +4771,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(7, 'lunch', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E7%8E%8B%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E7%8E%8B" onclick="openDianpingDirect(event, '布尔津县城正宗过油肉拌面王')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4793,7 +4794,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(7, 'lunch', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E6%9F%B4%E7%81%AB%E5%A4%A7%E9%93%81%E9%94%85%E6%8A%93%E9%A5%AD%E5%BA%84%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E6%9F%B4%E7%81%AB%E5%A4%A7%E9%93%81%E9%94%85%E6%8A%93%E9%A5%AD%E5%BA%84" onclick="openDianpingDirect(event, '布尔津县城柴火大铁锅抓饭庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4816,7 +4817,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(7, 'lunch', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E4%BC%A0%E7%BB%9F%E5%9B%9E%E6%B0%91%E5%A4%A7%E7%9B%98%E9%B8%A1%E8%80%81%E5%BA%97%20%2830%E5%B9%B4%E8%80%81%E5%AD%97%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E4%BC%A0%E7%BB%9F%E5%9B%9E%E6%B0%91%E5%A4%A7%E7%9B%98%E9%B8%A1%E8%80%81%E5%BA%97" onclick="openDianpingDirect(event, '布尔津县城传统回民大盘鸡老店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4839,7 +4840,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(7, 'lunch', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E8%BE%A3%E7%9A%AE%E5%AD%90%E8%82%89%E6%8B%89%E6%9D%A1%E5%AD%90%E8%80%81%E9%93%BA%20%2820%E5%B9%B4%E8%80%81%E7%89%8C%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E8%BE%A3%E7%9A%AE%E5%AD%90%E8%82%89%E6%8B%89%E6%9D%A1%E5%AD%90%E8%80%81%E9%93%BA" onclick="openDianpingDirect(event, '布尔津县城辣皮子肉拉条子老铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4862,7 +4863,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(7, 'lunch', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E9%A3%8E%E5%B9%B2%E7%89%9B%E8%82%89%E7%84%96%E5%9C%9F%E8%B1%86%E5%90%8D%E5%BA%84%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E9%A3%8E%E5%B9%B2%E7%89%9B%E8%82%89%E7%84%96%E5%9C%9F%E8%B1%86%E5%90%8D%E5%BA%84" onclick="openDianpingDirect(event, '布尔津县城风干牛肉焖土豆名庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4920,7 +4921,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(7, 'dinner', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E8%80%81%E5%AD%97%E5%8F%B7%E7%89%B9%E8%89%B2%E7%83%A4%E8%82%89%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84%20%2830%E5%B9%B4%E5%9C%B0%E6%A0%87%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E8%80%81%E5%AD%97%E5%8F%B7%E7%89%B9%E8%89%B2%E7%83%A4%E8%82%89%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84" onclick="openDianpingDirect(event, '布尔津县城老字号特色烤肉冷水鱼庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4943,7 +4944,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(7, 'dinner', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E9%87%91%E7%89%8C%E5%A4%A7%E5%B0%BE%E7%BE%8A%E7%BA%B3%E4%BB%81%E5%90%8D%E5%BA%97%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E9%87%91%E7%89%8C%E5%A4%A7%E5%B0%BE%E7%BE%8A%E7%BA%B3%E4%BB%81%E5%90%8D%E5%BA%97" onclick="openDianpingDirect(event, '布尔津县城金牌大尾羊纳仁名店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4966,7 +4967,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(7, 'dinner', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E4%BC%A0%E7%BB%9F%E7%82%AD%E7%81%AB%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84%20%2820%E5%B9%B4%E5%90%8D%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E4%BC%A0%E7%BB%9F%E7%82%AD%E7%81%AB%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84" onclick="openDianpingDirect(event, '布尔津县城传统炭火铜锅土火锅庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -4989,7 +4990,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(7, 'dinner', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E7%99%BE%E5%B9%B4%E6%B8%85%E7%82%96%E7%BE%8A%E7%BE%94%E8%82%89%E8%80%81%E9%A6%86%20%28%E9%9D%9E%E9%81%97%E4%BC%A0%E6%89%BF%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E7%99%BE%E5%B9%B4%E6%B8%85%E7%82%96%E7%BE%8A%E7%BE%94%E8%82%89%E8%80%81%E9%A6%86" onclick="openDianpingDirect(event, '布尔津县城百年清炖羊羔肉老馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5012,7 +5013,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(7, 'dinner', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E8%80%81%E5%B7%B4%E6%89%8E%E5%A4%9C%E5%B8%82%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%A4%A7%E6%8E%92%E6%A1%A3%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%B8%83%E5%B0%94%E6%B4%A5%E5%8E%BF%E5%9F%8E%E8%80%81%E5%B7%B4%E6%89%8E%E5%A4%9C%E5%B8%82%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%A4%A7%E6%8E%92%E6%A1%A3" onclick="openDianpingDirect(event, '布尔津县城老巴扎夜市特色烧烤大排档')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5079,7 +5080,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(8, 'breakfast', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA" onclick="openDianpingDirect(event, '富蕴县城商业街老字号薄皮包子铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5102,7 +5103,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(8, 'breakfast', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E6%B2%B9%E5%A1%94%E5%AD%90%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E6%B2%B9%E5%A1%94%E5%AD%90%E9%A6%86" onclick="openDianpingDirect(event, '富蕴县城商业街传统清真油塔子馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5125,7 +5126,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(8, 'breakfast', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E8%80%81%E8%A1%97%E7%8E%B0%E7%83%A4%E8%8A%9D%E9%BA%BB%E8%82%89%E9%A6%95%E5%9D%8A%20%2830%E5%B9%B4%E8%80%81%E6%91%8A%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E8%80%81%E8%A1%97%E7%8E%B0%E7%83%A4%E8%8A%9D%E9%BA%BB%E8%82%89%E9%A6%95%E5%9D%8A" onclick="openDianpingDirect(event, '富蕴县城商业街老街现烤芝麻肉馕坊')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5148,7 +5149,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(8, 'breakfast', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E7%89%9B%E8%82%89%E9%9D%A2%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E7%89%9B%E8%82%89%E9%9D%A2%E9%A6%86" onclick="openDianpingDirect(event, '富蕴县城商业街清真早茶牛肉面馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5171,7 +5172,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(8, 'breakfast', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E6%B0%91%E6%97%8F%E9%A3%8E%E5%91%B3%E5%A5%B6%E8%8C%B6%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E6%B0%91%E6%97%8F%E9%A3%8E%E5%91%B3%E5%A5%B6%E8%8C%B6%E9%A6%86" onclick="openDianpingDirect(event, '富蕴县城商业街民族风味奶茶馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5229,7 +5230,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(8, 'lunch', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E7%8E%8B%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E7%8E%8B" onclick="openDianpingDirect(event, '富蕴县城商业街正宗过油肉拌面王')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5252,7 +5253,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(8, 'lunch', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E6%9F%B4%E7%81%AB%E5%A4%A7%E9%93%81%E9%94%85%E6%8A%93%E9%A5%AD%E5%BA%84%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E6%9F%B4%E7%81%AB%E5%A4%A7%E9%93%81%E9%94%85%E6%8A%93%E9%A5%AD%E5%BA%84" onclick="openDianpingDirect(event, '富蕴县城商业街柴火大铁锅抓饭庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5275,7 +5276,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(8, 'lunch', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E4%BC%A0%E7%BB%9F%E5%9B%9E%E6%B0%91%E5%A4%A7%E7%9B%98%E9%B8%A1%E8%80%81%E5%BA%97%20%2830%E5%B9%B4%E8%80%81%E5%AD%97%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E4%BC%A0%E7%BB%9F%E5%9B%9E%E6%B0%91%E5%A4%A7%E7%9B%98%E9%B8%A1%E8%80%81%E5%BA%97" onclick="openDianpingDirect(event, '富蕴县城商业街传统回民大盘鸡老店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5298,7 +5299,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(8, 'lunch', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E8%BE%A3%E7%9A%AE%E5%AD%90%E8%82%89%E6%8B%89%E6%9D%A1%E5%AD%90%E8%80%81%E9%93%BA%20%2820%E5%B9%B4%E8%80%81%E7%89%8C%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E8%BE%A3%E7%9A%AE%E5%AD%90%E8%82%89%E6%8B%89%E6%9D%A1%E5%AD%90%E8%80%81%E9%93%BA" onclick="openDianpingDirect(event, '富蕴县城商业街辣皮子肉拉条子老铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5321,7 +5322,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(8, 'lunch', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E9%A3%8E%E5%B9%B2%E7%89%9B%E8%82%89%E7%84%96%E5%9C%9F%E8%B1%86%E5%90%8D%E5%BA%84%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E9%A3%8E%E5%B9%B2%E7%89%9B%E8%82%89%E7%84%96%E5%9C%9F%E8%B1%86%E5%90%8D%E5%BA%84" onclick="openDianpingDirect(event, '富蕴县城商业街风干牛肉焖土豆名庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5379,7 +5380,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(8, 'dinner', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E8%80%81%E5%AD%97%E5%8F%B7%E7%89%B9%E8%89%B2%E7%83%A4%E8%82%89%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84%20%2830%E5%B9%B4%E5%9C%B0%E6%A0%87%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E8%80%81%E5%AD%97%E5%8F%B7%E7%89%B9%E8%89%B2%E7%83%A4%E8%82%89%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84" onclick="openDianpingDirect(event, '富蕴县城商业街老字号特色烤肉冷水鱼庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5402,7 +5403,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(8, 'dinner', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E9%87%91%E7%89%8C%E5%A4%A7%E5%B0%BE%E7%BE%8A%E7%BA%B3%E4%BB%81%E5%90%8D%E5%BA%97%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E9%87%91%E7%89%8C%E5%A4%A7%E5%B0%BE%E7%BE%8A%E7%BA%B3%E4%BB%81%E5%90%8D%E5%BA%97" onclick="openDianpingDirect(event, '富蕴县城商业街金牌大尾羊纳仁名店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5425,7 +5426,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(8, 'dinner', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E4%BC%A0%E7%BB%9F%E7%82%AD%E7%81%AB%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84%20%2820%E5%B9%B4%E5%90%8D%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E4%BC%A0%E7%BB%9F%E7%82%AD%E7%81%AB%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84" onclick="openDianpingDirect(event, '富蕴县城商业街传统炭火铜锅土火锅庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5448,7 +5449,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(8, 'dinner', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E7%99%BE%E5%B9%B4%E6%B8%85%E7%82%96%E7%BE%8A%E7%BE%94%E8%82%89%E8%80%81%E9%A6%86%20%28%E9%9D%9E%E9%81%97%E4%BC%A0%E6%89%BF%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E7%99%BE%E5%B9%B4%E6%B8%85%E7%82%96%E7%BE%8A%E7%BE%94%E8%82%89%E8%80%81%E9%A6%86" onclick="openDianpingDirect(event, '富蕴县城商业街百年清炖羊羔肉老馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5471,7 +5472,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(8, 'dinner', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E8%80%81%E5%B7%B4%E6%89%8E%E5%A4%9C%E5%B8%82%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%A4%A7%E6%8E%92%E6%A1%A3%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%AF%8C%E8%95%B4%E5%8E%BF%E5%9F%8E%E5%95%86%E4%B8%9A%E8%A1%97%E8%80%81%E5%B7%B4%E6%89%8E%E5%A4%9C%E5%B8%82%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%A4%A7%E6%8E%92%E6%A1%A3" onclick="openDianpingDirect(event, '富蕴县城商业街老巴扎夜市特色烧烤大排档')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5538,7 +5539,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(9, 'breakfast', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA" onclick="openDianpingDirect(event, '奇台县城老街老字号薄皮包子铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5561,7 +5562,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(9, 'breakfast', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E6%B2%B9%E5%A1%94%E5%AD%90%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E6%B2%B9%E5%A1%94%E5%AD%90%E9%A6%86" onclick="openDianpingDirect(event, '奇台县城老街传统清真油塔子馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5584,7 +5585,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(9, 'breakfast', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E8%80%81%E8%A1%97%E7%8E%B0%E7%83%A4%E8%8A%9D%E9%BA%BB%E8%82%89%E9%A6%95%E5%9D%8A%20%2830%E5%B9%B4%E8%80%81%E6%91%8A%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E8%80%81%E8%A1%97%E7%8E%B0%E7%83%A4%E8%8A%9D%E9%BA%BB%E8%82%89%E9%A6%95%E5%9D%8A" onclick="openDianpingDirect(event, '奇台县城老街老街现烤芝麻肉馕坊')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5607,7 +5608,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(9, 'breakfast', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E7%89%9B%E8%82%89%E9%9D%A2%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E7%89%9B%E8%82%89%E9%9D%A2%E9%A6%86" onclick="openDianpingDirect(event, '奇台县城老街清真早茶牛肉面馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5630,7 +5631,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(9, 'breakfast', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E6%B0%91%E6%97%8F%E9%A3%8E%E5%91%B3%E5%A5%B6%E8%8C%B6%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E6%B0%91%E6%97%8F%E9%A3%8E%E5%91%B3%E5%A5%B6%E8%8C%B6%E9%A6%86" onclick="openDianpingDirect(event, '奇台县城老街民族风味奶茶馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5688,7 +5689,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(9, 'lunch', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E7%8E%8B%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E7%8E%8B" onclick="openDianpingDirect(event, '奇台县城老街正宗过油肉拌面王')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5711,7 +5712,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(9, 'lunch', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E6%9F%B4%E7%81%AB%E5%A4%A7%E9%93%81%E9%94%85%E6%8A%93%E9%A5%AD%E5%BA%84%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E6%9F%B4%E7%81%AB%E5%A4%A7%E9%93%81%E9%94%85%E6%8A%93%E9%A5%AD%E5%BA%84" onclick="openDianpingDirect(event, '奇台县城老街柴火大铁锅抓饭庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5734,7 +5735,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(9, 'lunch', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E4%BC%A0%E7%BB%9F%E5%9B%9E%E6%B0%91%E5%A4%A7%E7%9B%98%E9%B8%A1%E8%80%81%E5%BA%97%20%2830%E5%B9%B4%E8%80%81%E5%AD%97%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E4%BC%A0%E7%BB%9F%E5%9B%9E%E6%B0%91%E5%A4%A7%E7%9B%98%E9%B8%A1%E8%80%81%E5%BA%97" onclick="openDianpingDirect(event, '奇台县城老街传统回民大盘鸡老店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5757,7 +5758,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(9, 'lunch', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E8%BE%A3%E7%9A%AE%E5%AD%90%E8%82%89%E6%8B%89%E6%9D%A1%E5%AD%90%E8%80%81%E9%93%BA%20%2820%E5%B9%B4%E8%80%81%E7%89%8C%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E8%BE%A3%E7%9A%AE%E5%AD%90%E8%82%89%E6%8B%89%E6%9D%A1%E5%AD%90%E8%80%81%E9%93%BA" onclick="openDianpingDirect(event, '奇台县城老街辣皮子肉拉条子老铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5780,7 +5781,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(9, 'lunch', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E9%A3%8E%E5%B9%B2%E7%89%9B%E8%82%89%E7%84%96%E5%9C%9F%E8%B1%86%E5%90%8D%E5%BA%84%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E9%A3%8E%E5%B9%B2%E7%89%9B%E8%82%89%E7%84%96%E5%9C%9F%E8%B1%86%E5%90%8D%E5%BA%84" onclick="openDianpingDirect(event, '奇台县城老街风干牛肉焖土豆名庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5838,7 +5839,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(9, 'dinner', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E8%80%81%E5%AD%97%E5%8F%B7%E7%89%B9%E8%89%B2%E7%83%A4%E8%82%89%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84%20%2830%E5%B9%B4%E5%9C%B0%E6%A0%87%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E8%80%81%E5%AD%97%E5%8F%B7%E7%89%B9%E8%89%B2%E7%83%A4%E8%82%89%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84" onclick="openDianpingDirect(event, '奇台县城老街老字号特色烤肉冷水鱼庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5861,7 +5862,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(9, 'dinner', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E9%87%91%E7%89%8C%E5%A4%A7%E5%B0%BE%E7%BE%8A%E7%BA%B3%E4%BB%81%E5%90%8D%E5%BA%97%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E9%87%91%E7%89%8C%E5%A4%A7%E5%B0%BE%E7%BE%8A%E7%BA%B3%E4%BB%81%E5%90%8D%E5%BA%97" onclick="openDianpingDirect(event, '奇台县城老街金牌大尾羊纳仁名店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5884,7 +5885,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(9, 'dinner', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E4%BC%A0%E7%BB%9F%E7%82%AD%E7%81%AB%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84%20%2820%E5%B9%B4%E5%90%8D%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E4%BC%A0%E7%BB%9F%E7%82%AD%E7%81%AB%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84" onclick="openDianpingDirect(event, '奇台县城老街传统炭火铜锅土火锅庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5907,7 +5908,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(9, 'dinner', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E7%99%BE%E5%B9%B4%E6%B8%85%E7%82%96%E7%BE%8A%E7%BE%94%E8%82%89%E8%80%81%E9%A6%86%20%28%E9%9D%9E%E9%81%97%E4%BC%A0%E6%89%BF%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E7%99%BE%E5%B9%B4%E6%B8%85%E7%82%96%E7%BE%8A%E7%BE%94%E8%82%89%E8%80%81%E9%A6%86" onclick="openDianpingDirect(event, '奇台县城老街百年清炖羊羔肉老馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5930,7 +5931,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(9, 'dinner', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E8%80%81%E5%B7%B4%E6%89%8E%E5%A4%9C%E5%B8%82%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%A4%A7%E6%8E%92%E6%A1%A3%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%A5%87%E5%8F%B0%E5%8E%BF%E5%9F%8E%E8%80%81%E8%A1%97%E8%80%81%E5%B7%B4%E6%89%8E%E5%A4%9C%E5%B8%82%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%A4%A7%E6%8E%92%E6%A1%A3" onclick="openDianpingDirect(event, '奇台县城老街老巴扎夜市特色烧烤大排档')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -5997,7 +5998,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(10, 'breakfast', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA" onclick="openDianpingDirect(event, '吐鲁番高昌区老城老字号薄皮包子铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6020,7 +6021,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(10, 'breakfast', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E6%B2%B9%E5%A1%94%E5%AD%90%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E6%B2%B9%E5%A1%94%E5%AD%90%E9%A6%86" onclick="openDianpingDirect(event, '吐鲁番高昌区老城传统清真油塔子馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6043,7 +6044,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(10, 'breakfast', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E8%80%81%E8%A1%97%E7%8E%B0%E7%83%A4%E8%8A%9D%E9%BA%BB%E8%82%89%E9%A6%95%E5%9D%8A%20%2830%E5%B9%B4%E8%80%81%E6%91%8A%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E8%80%81%E8%A1%97%E7%8E%B0%E7%83%A4%E8%8A%9D%E9%BA%BB%E8%82%89%E9%A6%95%E5%9D%8A" onclick="openDianpingDirect(event, '吐鲁番高昌区老城老街现烤芝麻肉馕坊')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6066,7 +6067,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(10, 'breakfast', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E7%89%9B%E8%82%89%E9%9D%A2%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E7%89%9B%E8%82%89%E9%9D%A2%E9%A6%86" onclick="openDianpingDirect(event, '吐鲁番高昌区老城清真早茶牛肉面馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6089,7 +6090,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(10, 'breakfast', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E6%B0%91%E6%97%8F%E9%A3%8E%E5%91%B3%E5%A5%B6%E8%8C%B6%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E6%B0%91%E6%97%8F%E9%A3%8E%E5%91%B3%E5%A5%B6%E8%8C%B6%E9%A6%86" onclick="openDianpingDirect(event, '吐鲁番高昌区老城民族风味奶茶馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6147,7 +6148,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(10, 'lunch', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E7%8E%8B%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E7%8E%8B" onclick="openDianpingDirect(event, '吐鲁番高昌区老城正宗过油肉拌面王')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6170,7 +6171,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(10, 'lunch', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E6%9F%B4%E7%81%AB%E5%A4%A7%E9%93%81%E9%94%85%E6%8A%93%E9%A5%AD%E5%BA%84%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E6%9F%B4%E7%81%AB%E5%A4%A7%E9%93%81%E9%94%85%E6%8A%93%E9%A5%AD%E5%BA%84" onclick="openDianpingDirect(event, '吐鲁番高昌区老城柴火大铁锅抓饭庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6193,7 +6194,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(10, 'lunch', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E4%BC%A0%E7%BB%9F%E5%9B%9E%E6%B0%91%E5%A4%A7%E7%9B%98%E9%B8%A1%E8%80%81%E5%BA%97%20%2830%E5%B9%B4%E8%80%81%E5%AD%97%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E4%BC%A0%E7%BB%9F%E5%9B%9E%E6%B0%91%E5%A4%A7%E7%9B%98%E9%B8%A1%E8%80%81%E5%BA%97" onclick="openDianpingDirect(event, '吐鲁番高昌区老城传统回民大盘鸡老店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6216,7 +6217,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(10, 'lunch', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E8%BE%A3%E7%9A%AE%E5%AD%90%E8%82%89%E6%8B%89%E6%9D%A1%E5%AD%90%E8%80%81%E9%93%BA%20%2820%E5%B9%B4%E8%80%81%E7%89%8C%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E8%BE%A3%E7%9A%AE%E5%AD%90%E8%82%89%E6%8B%89%E6%9D%A1%E5%AD%90%E8%80%81%E9%93%BA" onclick="openDianpingDirect(event, '吐鲁番高昌区老城辣皮子肉拉条子老铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6239,7 +6240,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(10, 'lunch', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E9%A3%8E%E5%B9%B2%E7%89%9B%E8%82%89%E7%84%96%E5%9C%9F%E8%B1%86%E5%90%8D%E5%BA%84%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E9%A3%8E%E5%B9%B2%E7%89%9B%E8%82%89%E7%84%96%E5%9C%9F%E8%B1%86%E5%90%8D%E5%BA%84" onclick="openDianpingDirect(event, '吐鲁番高昌区老城风干牛肉焖土豆名庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6297,7 +6298,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(10, 'dinner', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E8%80%81%E5%AD%97%E5%8F%B7%E7%89%B9%E8%89%B2%E7%83%A4%E8%82%89%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84%20%2830%E5%B9%B4%E5%9C%B0%E6%A0%87%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E8%80%81%E5%AD%97%E5%8F%B7%E7%89%B9%E8%89%B2%E7%83%A4%E8%82%89%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84" onclick="openDianpingDirect(event, '吐鲁番高昌区老城老字号特色烤肉冷水鱼庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6320,7 +6321,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(10, 'dinner', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E9%87%91%E7%89%8C%E5%A4%A7%E5%B0%BE%E7%BE%8A%E7%BA%B3%E4%BB%81%E5%90%8D%E5%BA%97%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E9%87%91%E7%89%8C%E5%A4%A7%E5%B0%BE%E7%BE%8A%E7%BA%B3%E4%BB%81%E5%90%8D%E5%BA%97" onclick="openDianpingDirect(event, '吐鲁番高昌区老城金牌大尾羊纳仁名店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6343,7 +6344,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(10, 'dinner', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E4%BC%A0%E7%BB%9F%E7%82%AD%E7%81%AB%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84%20%2820%E5%B9%B4%E5%90%8D%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E4%BC%A0%E7%BB%9F%E7%82%AD%E7%81%AB%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84" onclick="openDianpingDirect(event, '吐鲁番高昌区老城传统炭火铜锅土火锅庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6366,7 +6367,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(10, 'dinner', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E7%99%BE%E5%B9%B4%E6%B8%85%E7%82%96%E7%BE%8A%E7%BE%94%E8%82%89%E8%80%81%E9%A6%86%20%28%E9%9D%9E%E9%81%97%E4%BC%A0%E6%89%BF%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E7%99%BE%E5%B9%B4%E6%B8%85%E7%82%96%E7%BE%8A%E7%BE%94%E8%82%89%E8%80%81%E9%A6%86" onclick="openDianpingDirect(event, '吐鲁番高昌区老城百年清炖羊羔肉老馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6389,7 +6390,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(10, 'dinner', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E8%80%81%E5%B7%B4%E6%89%8E%E5%A4%9C%E5%B8%82%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%A4%A7%E6%8E%92%E6%A1%A3%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%9F%8E%E8%80%81%E5%B7%B4%E6%89%8E%E5%A4%9C%E5%B8%82%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%A4%A7%E6%8E%92%E6%A1%A3" onclick="openDianpingDirect(event, '吐鲁番高昌区老城老巴扎夜市特色烧烤大排档')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6456,7 +6457,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(11, 'breakfast', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA" onclick="openDianpingDirect(event, '吐峪沟/鄯善老字号薄皮包子铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6479,7 +6480,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(11, 'breakfast', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E6%B2%B9%E5%A1%94%E5%AD%90%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E6%B2%B9%E5%A1%94%E5%AD%90%E9%A6%86" onclick="openDianpingDirect(event, '吐峪沟/鄯善传统清真油塔子馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6502,7 +6503,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(11, 'breakfast', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E8%80%81%E8%A1%97%E7%8E%B0%E7%83%A4%E8%8A%9D%E9%BA%BB%E8%82%89%E9%A6%95%E5%9D%8A%20%2830%E5%B9%B4%E8%80%81%E6%91%8A%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E8%80%81%E8%A1%97%E7%8E%B0%E7%83%A4%E8%8A%9D%E9%BA%BB%E8%82%89%E9%A6%95%E5%9D%8A" onclick="openDianpingDirect(event, '吐峪沟/鄯善老街现烤芝麻肉馕坊')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6525,7 +6526,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(11, 'breakfast', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E7%89%9B%E8%82%89%E9%9D%A2%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E7%89%9B%E8%82%89%E9%9D%A2%E9%A6%86" onclick="openDianpingDirect(event, '吐峪沟/鄯善清真早茶牛肉面馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6548,7 +6549,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(11, 'breakfast', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E6%B0%91%E6%97%8F%E9%A3%8E%E5%91%B3%E5%A5%B6%E8%8C%B6%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E6%B0%91%E6%97%8F%E9%A3%8E%E5%91%B3%E5%A5%B6%E8%8C%B6%E9%A6%86" onclick="openDianpingDirect(event, '吐峪沟/鄯善民族风味奶茶馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6606,7 +6607,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(11, 'lunch', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E7%8E%8B%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E7%8E%8B" onclick="openDianpingDirect(event, '吐峪沟/鄯善正宗过油肉拌面王')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6629,7 +6630,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(11, 'lunch', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E6%9F%B4%E7%81%AB%E5%A4%A7%E9%93%81%E9%94%85%E6%8A%93%E9%A5%AD%E5%BA%84%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E6%9F%B4%E7%81%AB%E5%A4%A7%E9%93%81%E9%94%85%E6%8A%93%E9%A5%AD%E5%BA%84" onclick="openDianpingDirect(event, '吐峪沟/鄯善柴火大铁锅抓饭庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6652,7 +6653,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(11, 'lunch', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E4%BC%A0%E7%BB%9F%E5%9B%9E%E6%B0%91%E5%A4%A7%E7%9B%98%E9%B8%A1%E8%80%81%E5%BA%97%20%2830%E5%B9%B4%E8%80%81%E5%AD%97%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E4%BC%A0%E7%BB%9F%E5%9B%9E%E6%B0%91%E5%A4%A7%E7%9B%98%E9%B8%A1%E8%80%81%E5%BA%97" onclick="openDianpingDirect(event, '吐峪沟/鄯善传统回民大盘鸡老店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6675,7 +6676,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(11, 'lunch', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E8%BE%A3%E7%9A%AE%E5%AD%90%E8%82%89%E6%8B%89%E6%9D%A1%E5%AD%90%E8%80%81%E9%93%BA%20%2820%E5%B9%B4%E8%80%81%E7%89%8C%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E8%BE%A3%E7%9A%AE%E5%AD%90%E8%82%89%E6%8B%89%E6%9D%A1%E5%AD%90%E8%80%81%E9%93%BA" onclick="openDianpingDirect(event, '吐峪沟/鄯善辣皮子肉拉条子老铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6698,7 +6699,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(11, 'lunch', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E9%A3%8E%E5%B9%B2%E7%89%9B%E8%82%89%E7%84%96%E5%9C%9F%E8%B1%86%E5%90%8D%E5%BA%84%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E9%A3%8E%E5%B9%B2%E7%89%9B%E8%82%89%E7%84%96%E5%9C%9F%E8%B1%86%E5%90%8D%E5%BA%84" onclick="openDianpingDirect(event, '吐峪沟/鄯善风干牛肉焖土豆名庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6756,7 +6757,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(11, 'dinner', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E8%80%81%E5%AD%97%E5%8F%B7%E7%89%B9%E8%89%B2%E7%83%A4%E8%82%89%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84%20%2830%E5%B9%B4%E5%9C%B0%E6%A0%87%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E8%80%81%E5%AD%97%E5%8F%B7%E7%89%B9%E8%89%B2%E7%83%A4%E8%82%89%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84" onclick="openDianpingDirect(event, '吐峪沟/鄯善老字号特色烤肉冷水鱼庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6779,7 +6780,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(11, 'dinner', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E9%87%91%E7%89%8C%E5%A4%A7%E5%B0%BE%E7%BE%8A%E7%BA%B3%E4%BB%81%E5%90%8D%E5%BA%97%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E9%87%91%E7%89%8C%E5%A4%A7%E5%B0%BE%E7%BE%8A%E7%BA%B3%E4%BB%81%E5%90%8D%E5%BA%97" onclick="openDianpingDirect(event, '吐峪沟/鄯善金牌大尾羊纳仁名店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6802,7 +6803,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(11, 'dinner', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E4%BC%A0%E7%BB%9F%E7%82%AD%E7%81%AB%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84%20%2820%E5%B9%B4%E5%90%8D%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E4%BC%A0%E7%BB%9F%E7%82%AD%E7%81%AB%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84" onclick="openDianpingDirect(event, '吐峪沟/鄯善传统炭火铜锅土火锅庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6825,7 +6826,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(11, 'dinner', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E7%99%BE%E5%B9%B4%E6%B8%85%E7%82%96%E7%BE%8A%E7%BE%94%E8%82%89%E8%80%81%E9%A6%86%20%28%E9%9D%9E%E9%81%97%E4%BC%A0%E6%89%BF%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E7%99%BE%E5%B9%B4%E6%B8%85%E7%82%96%E7%BE%8A%E7%BE%94%E8%82%89%E8%80%81%E9%A6%86" onclick="openDianpingDirect(event, '吐峪沟/鄯善百年清炖羊羔肉老馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6848,7 +6849,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(11, 'dinner', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E8%80%81%E5%B7%B4%E6%89%8E%E5%A4%9C%E5%B8%82%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%A4%A7%E6%8E%92%E6%A1%A3%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E5%B3%AA%E6%B2%9F/%E9%84%AF%E5%96%84%E8%80%81%E5%B7%B4%E6%89%8E%E5%A4%9C%E5%B8%82%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%A4%A7%E6%8E%92%E6%A1%A3" onclick="openDianpingDirect(event, '吐峪沟/鄯善老巴扎夜市特色烧烤大排档')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6915,7 +6916,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(12, 'breakfast', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA" onclick="openDianpingDirect(event, '吐鲁番高昌区老字号薄皮包子铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6938,7 +6939,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(12, 'breakfast', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E6%B2%B9%E5%A1%94%E5%AD%90%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E6%B2%B9%E5%A1%94%E5%AD%90%E9%A6%86" onclick="openDianpingDirect(event, '吐鲁番高昌区传统清真油塔子馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6961,7 +6962,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(12, 'breakfast', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E8%A1%97%E7%8E%B0%E7%83%A4%E8%8A%9D%E9%BA%BB%E8%82%89%E9%A6%95%E5%9D%8A%20%2830%E5%B9%B4%E8%80%81%E6%91%8A%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E8%A1%97%E7%8E%B0%E7%83%A4%E8%8A%9D%E9%BA%BB%E8%82%89%E9%A6%95%E5%9D%8A" onclick="openDianpingDirect(event, '吐鲁番高昌区老街现烤芝麻肉馕坊')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -6984,7 +6985,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(12, 'breakfast', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E7%89%9B%E8%82%89%E9%9D%A2%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E7%89%9B%E8%82%89%E9%9D%A2%E9%A6%86" onclick="openDianpingDirect(event, '吐鲁番高昌区清真早茶牛肉面馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7007,7 +7008,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(12, 'breakfast', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E6%B0%91%E6%97%8F%E9%A3%8E%E5%91%B3%E5%A5%B6%E8%8C%B6%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E6%B0%91%E6%97%8F%E9%A3%8E%E5%91%B3%E5%A5%B6%E8%8C%B6%E9%A6%86" onclick="openDianpingDirect(event, '吐鲁番高昌区民族风味奶茶馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7065,7 +7066,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(12, 'lunch', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E7%8E%8B%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E7%8E%8B" onclick="openDianpingDirect(event, '吐鲁番高昌区正宗过油肉拌面王')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7088,7 +7089,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(12, 'lunch', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E6%9F%B4%E7%81%AB%E5%A4%A7%E9%93%81%E9%94%85%E6%8A%93%E9%A5%AD%E5%BA%84%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E6%9F%B4%E7%81%AB%E5%A4%A7%E9%93%81%E9%94%85%E6%8A%93%E9%A5%AD%E5%BA%84" onclick="openDianpingDirect(event, '吐鲁番高昌区柴火大铁锅抓饭庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7111,7 +7112,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(12, 'lunch', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E4%BC%A0%E7%BB%9F%E5%9B%9E%E6%B0%91%E5%A4%A7%E7%9B%98%E9%B8%A1%E8%80%81%E5%BA%97%20%2830%E5%B9%B4%E8%80%81%E5%AD%97%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E4%BC%A0%E7%BB%9F%E5%9B%9E%E6%B0%91%E5%A4%A7%E7%9B%98%E9%B8%A1%E8%80%81%E5%BA%97" onclick="openDianpingDirect(event, '吐鲁番高昌区传统回民大盘鸡老店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7134,7 +7135,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(12, 'lunch', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%BE%A3%E7%9A%AE%E5%AD%90%E8%82%89%E6%8B%89%E6%9D%A1%E5%AD%90%E8%80%81%E9%93%BA%20%2820%E5%B9%B4%E8%80%81%E7%89%8C%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%BE%A3%E7%9A%AE%E5%AD%90%E8%82%89%E6%8B%89%E6%9D%A1%E5%AD%90%E8%80%81%E9%93%BA" onclick="openDianpingDirect(event, '吐鲁番高昌区辣皮子肉拉条子老铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7157,7 +7158,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(12, 'lunch', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E9%A3%8E%E5%B9%B2%E7%89%9B%E8%82%89%E7%84%96%E5%9C%9F%E8%B1%86%E5%90%8D%E5%BA%84%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E9%A3%8E%E5%B9%B2%E7%89%9B%E8%82%89%E7%84%96%E5%9C%9F%E8%B1%86%E5%90%8D%E5%BA%84" onclick="openDianpingDirect(event, '吐鲁番高昌区风干牛肉焖土豆名庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7215,7 +7216,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(12, 'dinner', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%AD%97%E5%8F%B7%E7%89%B9%E8%89%B2%E7%83%A4%E8%82%89%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84%20%2830%E5%B9%B4%E5%9C%B0%E6%A0%87%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%AD%97%E5%8F%B7%E7%89%B9%E8%89%B2%E7%83%A4%E8%82%89%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84" onclick="openDianpingDirect(event, '吐鲁番高昌区老字号特色烤肉冷水鱼庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7238,7 +7239,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(12, 'dinner', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E9%87%91%E7%89%8C%E5%A4%A7%E5%B0%BE%E7%BE%8A%E7%BA%B3%E4%BB%81%E5%90%8D%E5%BA%97%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E9%87%91%E7%89%8C%E5%A4%A7%E5%B0%BE%E7%BE%8A%E7%BA%B3%E4%BB%81%E5%90%8D%E5%BA%97" onclick="openDianpingDirect(event, '吐鲁番高昌区金牌大尾羊纳仁名店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7261,7 +7262,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(12, 'dinner', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E4%BC%A0%E7%BB%9F%E7%82%AD%E7%81%AB%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84%20%2820%E5%B9%B4%E5%90%8D%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E4%BC%A0%E7%BB%9F%E7%82%AD%E7%81%AB%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84" onclick="openDianpingDirect(event, '吐鲁番高昌区传统炭火铜锅土火锅庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7284,7 +7285,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(12, 'dinner', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E7%99%BE%E5%B9%B4%E6%B8%85%E7%82%96%E7%BE%8A%E7%BE%94%E8%82%89%E8%80%81%E9%A6%86%20%28%E9%9D%9E%E9%81%97%E4%BC%A0%E6%89%BF%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E7%99%BE%E5%B9%B4%E6%B8%85%E7%82%96%E7%BE%8A%E7%BE%94%E8%82%89%E8%80%81%E9%A6%86" onclick="openDianpingDirect(event, '吐鲁番高昌区百年清炖羊羔肉老馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7307,7 +7308,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(12, 'dinner', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%B7%B4%E6%89%8E%E5%A4%9C%E5%B8%82%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%A4%A7%E6%8E%92%E6%A1%A3%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E9%AB%98%E6%98%8C%E5%8C%BA%E8%80%81%E5%B7%B4%E6%89%8E%E5%A4%9C%E5%B8%82%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%A4%A7%E6%8E%92%E6%A1%A3" onclick="openDianpingDirect(event, '吐鲁番高昌区老巴扎夜市特色烧烤大排档')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7374,7 +7375,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(13, 'breakfast', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA" onclick="openDianpingDirect(event, '吐鲁番老城区老字号薄皮包子铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7397,7 +7398,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(13, 'breakfast', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E6%B2%B9%E5%A1%94%E5%AD%90%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E6%B2%B9%E5%A1%94%E5%AD%90%E9%A6%86" onclick="openDianpingDirect(event, '吐鲁番老城区传统清真油塔子馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7420,7 +7421,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(13, 'breakfast', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E8%80%81%E8%A1%97%E7%8E%B0%E7%83%A4%E8%8A%9D%E9%BA%BB%E8%82%89%E9%A6%95%E5%9D%8A%20%2830%E5%B9%B4%E8%80%81%E6%91%8A%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E8%80%81%E8%A1%97%E7%8E%B0%E7%83%A4%E8%8A%9D%E9%BA%BB%E8%82%89%E9%A6%95%E5%9D%8A" onclick="openDianpingDirect(event, '吐鲁番老城区老街现烤芝麻肉馕坊')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7443,7 +7444,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(13, 'breakfast', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E7%89%9B%E8%82%89%E9%9D%A2%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E7%89%9B%E8%82%89%E9%9D%A2%E9%A6%86" onclick="openDianpingDirect(event, '吐鲁番老城区清真早茶牛肉面馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7466,7 +7467,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(13, 'breakfast', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E6%B0%91%E6%97%8F%E9%A3%8E%E5%91%B3%E5%A5%B6%E8%8C%B6%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E6%B0%91%E6%97%8F%E9%A3%8E%E5%91%B3%E5%A5%B6%E8%8C%B6%E9%A6%86" onclick="openDianpingDirect(event, '吐鲁番老城区民族风味奶茶馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7524,7 +7525,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(13, 'lunch', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E7%8E%8B%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E7%8E%8B" onclick="openDianpingDirect(event, '吐鲁番老城区正宗过油肉拌面王')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7547,7 +7548,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(13, 'lunch', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E6%9F%B4%E7%81%AB%E5%A4%A7%E9%93%81%E9%94%85%E6%8A%93%E9%A5%AD%E5%BA%84%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E6%9F%B4%E7%81%AB%E5%A4%A7%E9%93%81%E9%94%85%E6%8A%93%E9%A5%AD%E5%BA%84" onclick="openDianpingDirect(event, '吐鲁番老城区柴火大铁锅抓饭庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7570,7 +7571,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(13, 'lunch', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E4%BC%A0%E7%BB%9F%E5%9B%9E%E6%B0%91%E5%A4%A7%E7%9B%98%E9%B8%A1%E8%80%81%E5%BA%97%20%2830%E5%B9%B4%E8%80%81%E5%AD%97%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E4%BC%A0%E7%BB%9F%E5%9B%9E%E6%B0%91%E5%A4%A7%E7%9B%98%E9%B8%A1%E8%80%81%E5%BA%97" onclick="openDianpingDirect(event, '吐鲁番老城区传统回民大盘鸡老店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7593,7 +7594,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(13, 'lunch', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E8%BE%A3%E7%9A%AE%E5%AD%90%E8%82%89%E6%8B%89%E6%9D%A1%E5%AD%90%E8%80%81%E9%93%BA%20%2820%E5%B9%B4%E8%80%81%E7%89%8C%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E8%BE%A3%E7%9A%AE%E5%AD%90%E8%82%89%E6%8B%89%E6%9D%A1%E5%AD%90%E8%80%81%E9%93%BA" onclick="openDianpingDirect(event, '吐鲁番老城区辣皮子肉拉条子老铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7616,7 +7617,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(13, 'lunch', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E9%A3%8E%E5%B9%B2%E7%89%9B%E8%82%89%E7%84%96%E5%9C%9F%E8%B1%86%E5%90%8D%E5%BA%84%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E9%A3%8E%E5%B9%B2%E7%89%9B%E8%82%89%E7%84%96%E5%9C%9F%E8%B1%86%E5%90%8D%E5%BA%84" onclick="openDianpingDirect(event, '吐鲁番老城区风干牛肉焖土豆名庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7674,7 +7675,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(13, 'dinner', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E8%80%81%E5%AD%97%E5%8F%B7%E7%89%B9%E8%89%B2%E7%83%A4%E8%82%89%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84%20%2830%E5%B9%B4%E5%9C%B0%E6%A0%87%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E8%80%81%E5%AD%97%E5%8F%B7%E7%89%B9%E8%89%B2%E7%83%A4%E8%82%89%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84" onclick="openDianpingDirect(event, '吐鲁番老城区老字号特色烤肉冷水鱼庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7697,7 +7698,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(13, 'dinner', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E9%87%91%E7%89%8C%E5%A4%A7%E5%B0%BE%E7%BE%8A%E7%BA%B3%E4%BB%81%E5%90%8D%E5%BA%97%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E9%87%91%E7%89%8C%E5%A4%A7%E5%B0%BE%E7%BE%8A%E7%BA%B3%E4%BB%81%E5%90%8D%E5%BA%97" onclick="openDianpingDirect(event, '吐鲁番老城区金牌大尾羊纳仁名店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7720,7 +7721,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(13, 'dinner', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E4%BC%A0%E7%BB%9F%E7%82%AD%E7%81%AB%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84%20%2820%E5%B9%B4%E5%90%8D%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E4%BC%A0%E7%BB%9F%E7%82%AD%E7%81%AB%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84" onclick="openDianpingDirect(event, '吐鲁番老城区传统炭火铜锅土火锅庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7743,7 +7744,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(13, 'dinner', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E7%99%BE%E5%B9%B4%E6%B8%85%E7%82%96%E7%BE%8A%E7%BE%94%E8%82%89%E8%80%81%E9%A6%86%20%28%E9%9D%9E%E9%81%97%E4%BC%A0%E6%89%BF%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E7%99%BE%E5%B9%B4%E6%B8%85%E7%82%96%E7%BE%8A%E7%BE%94%E8%82%89%E8%80%81%E9%A6%86" onclick="openDianpingDirect(event, '吐鲁番老城区百年清炖羊羔肉老馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7766,7 +7767,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(13, 'dinner', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E8%80%81%E5%B7%B4%E6%89%8E%E5%A4%9C%E5%B8%82%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%A4%A7%E6%8E%92%E6%A1%A3%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E5%90%90%E9%B2%81%E7%95%AA%E8%80%81%E5%9F%8E%E5%8C%BA%E8%80%81%E5%B7%B4%E6%89%8E%E5%A4%9C%E5%B8%82%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%A4%A7%E6%8E%92%E6%A1%A3" onclick="openDianpingDirect(event, '吐鲁番老城区老巴扎夜市特色烧烤大排档')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7833,7 +7834,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(14, 'breakfast', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E8%80%81%E5%AD%97%E5%8F%B7%E8%96%84%E7%9A%AE%E5%8C%85%E5%AD%90%E9%93%BA" onclick="openDianpingDirect(event, '柴窝堡/地窝堡老字号薄皮包子铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7856,7 +7857,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(14, 'breakfast', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E6%B2%B9%E5%A1%94%E5%AD%90%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E4%BC%A0%E7%BB%9F%E6%B8%85%E7%9C%9F%E6%B2%B9%E5%A1%94%E5%AD%90%E9%A6%86" onclick="openDianpingDirect(event, '柴窝堡/地窝堡传统清真油塔子馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7879,7 +7880,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(14, 'breakfast', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E8%80%81%E8%A1%97%E7%8E%B0%E7%83%A4%E8%8A%9D%E9%BA%BB%E8%82%89%E9%A6%95%E5%9D%8A%20%2830%E5%B9%B4%E8%80%81%E6%91%8A%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E8%80%81%E8%A1%97%E7%8E%B0%E7%83%A4%E8%8A%9D%E9%BA%BB%E8%82%89%E9%A6%95%E5%9D%8A" onclick="openDianpingDirect(event, '柴窝堡/地窝堡老街现烤芝麻肉馕坊')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7902,7 +7903,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(14, 'breakfast', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E7%89%9B%E8%82%89%E9%9D%A2%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E6%B8%85%E7%9C%9F%E6%97%A9%E8%8C%B6%E7%89%9B%E8%82%89%E9%9D%A2%E9%A6%86" onclick="openDianpingDirect(event, '柴窝堡/地窝堡清真早茶牛肉面馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7925,7 +7926,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(14, 'breakfast', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E6%B0%91%E6%97%8F%E9%A3%8E%E5%91%B3%E5%A5%B6%E8%8C%B6%E9%A6%86%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E6%B0%91%E6%97%8F%E9%A3%8E%E5%91%B3%E5%A5%B6%E8%8C%B6%E9%A6%86" onclick="openDianpingDirect(event, '柴窝堡/地窝堡民族风味奶茶馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -7983,7 +7984,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(14, 'lunch', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E7%8E%8B%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E6%AD%A3%E5%AE%97%E8%BF%87%E6%B2%B9%E8%82%89%E6%8B%8C%E9%9D%A2%E7%8E%8B" onclick="openDianpingDirect(event, '柴窝堡/地窝堡正宗过油肉拌面王')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -8006,7 +8007,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(14, 'lunch', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E6%9F%B4%E7%81%AB%E5%A4%A7%E9%93%81%E9%94%85%E6%8A%93%E9%A5%AD%E5%BA%84%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E6%9F%B4%E7%81%AB%E5%A4%A7%E9%93%81%E9%94%85%E6%8A%93%E9%A5%AD%E5%BA%84" onclick="openDianpingDirect(event, '柴窝堡/地窝堡柴火大铁锅抓饭庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -8029,7 +8030,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(14, 'lunch', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E4%BC%A0%E7%BB%9F%E5%9B%9E%E6%B0%91%E5%A4%A7%E7%9B%98%E9%B8%A1%E8%80%81%E5%BA%97%20%2830%E5%B9%B4%E8%80%81%E5%AD%97%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E4%BC%A0%E7%BB%9F%E5%9B%9E%E6%B0%91%E5%A4%A7%E7%9B%98%E9%B8%A1%E8%80%81%E5%BA%97" onclick="openDianpingDirect(event, '柴窝堡/地窝堡传统回民大盘鸡老店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -8052,7 +8053,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(14, 'lunch', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E8%BE%A3%E7%9A%AE%E5%AD%90%E8%82%89%E6%8B%89%E6%9D%A1%E5%AD%90%E8%80%81%E9%93%BA%20%2820%E5%B9%B4%E8%80%81%E7%89%8C%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E8%BE%A3%E7%9A%AE%E5%AD%90%E8%82%89%E6%8B%89%E6%9D%A1%E5%AD%90%E8%80%81%E9%93%BA" onclick="openDianpingDirect(event, '柴窝堡/地窝堡辣皮子肉拉条子老铺')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -8075,7 +8076,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(14, 'lunch', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E9%A3%8E%E5%B9%B2%E7%89%9B%E8%82%89%E7%84%96%E5%9C%9F%E8%B1%86%E5%90%8D%E5%BA%84%20%2825%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E9%A3%8E%E5%B9%B2%E7%89%9B%E8%82%89%E7%84%96%E5%9C%9F%E8%B1%86%E5%90%8D%E5%BA%84" onclick="openDianpingDirect(event, '柴窝堡/地窝堡风干牛肉焖土豆名庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -8133,7 +8134,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(14, 'dinner', 0)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E8%80%81%E5%AD%97%E5%8F%B7%E7%89%B9%E8%89%B2%E7%83%A4%E8%82%89%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84%20%2830%E5%B9%B4%E5%9C%B0%E6%A0%87%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E8%80%81%E5%AD%97%E5%8F%B7%E7%89%B9%E8%89%B2%E7%83%A4%E8%82%89%E5%86%B7%E6%B0%B4%E9%B1%BC%E5%BA%84" onclick="openDianpingDirect(event, '柴窝堡/地窝堡老字号特色烤肉冷水鱼庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -8156,7 +8157,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(14, 'dinner', 1)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E9%87%91%E7%89%8C%E5%A4%A7%E5%B0%BE%E7%BE%8A%E7%BA%B3%E4%BB%81%E5%90%8D%E5%BA%97%20%2825%E5%B9%B4%E8%80%81%E5%8F%B7%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E9%87%91%E7%89%8C%E5%A4%A7%E5%B0%BE%E7%BE%8A%E7%BA%B3%E4%BB%81%E5%90%8D%E5%BA%97" onclick="openDianpingDirect(event, '柴窝堡/地窝堡金牌大尾羊纳仁名店')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -8179,7 +8180,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(14, 'dinner', 2)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E4%BC%A0%E7%BB%9F%E7%82%AD%E7%81%AB%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84%20%2820%E5%B9%B4%E5%90%8D%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E4%BC%A0%E7%BB%9F%E7%82%AD%E7%81%AB%E9%93%9C%E9%94%85%E5%9C%9F%E7%81%AB%E9%94%85%E5%BA%84" onclick="openDianpingDirect(event, '柴窝堡/地窝堡传统炭火铜锅土火锅庄')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -8202,7 +8203,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(14, 'dinner', 3)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E7%99%BE%E5%B9%B4%E6%B8%85%E7%82%96%E7%BE%8A%E7%BE%94%E8%82%89%E8%80%81%E9%A6%86%20%28%E9%9D%9E%E9%81%97%E4%BC%A0%E6%89%BF%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E7%99%BE%E5%B9%B4%E6%B8%85%E7%82%96%E7%BE%8A%E7%BE%94%E8%82%89%E8%80%81%E9%A6%86" onclick="openDianpingDirect(event, '柴窝堡/地窝堡百年清炖羊羔肉老馆')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -8225,7 +8226,7 @@
                     <button onclick="event.stopPropagation(); focusDineMapMarker(14, 'dinner', 4)" class="m-dine-locate-btn">
                       📍 在上方地图查看位置
                     </button>
-                    <a href="https://m.dianping.com/search?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E8%80%81%E5%B7%B4%E6%89%8E%E5%A4%9C%E5%B8%82%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%A4%A7%E6%8E%92%E6%A1%A3%20%2820%E5%B9%B4%E8%80%81%E5%BA%97%29" class="m-dine-dp-btn" target="_blank">
+                    <a href="dianping://searchshoplist?keyword=%E6%9F%B4%E7%AA%9D%E5%A0%A1/%E5%9C%B0%E7%AA%9D%E5%A0%A1%E8%80%81%E5%B7%B4%E6%89%8E%E5%A4%9C%E5%B8%82%E7%89%B9%E8%89%B2%E7%83%A7%E7%83%A4%E5%A4%A7%E6%8E%92%E6%A1%A3" onclick="openDianpingDirect(event, '柴窝堡/地窝堡老巴扎夜市特色烧烤大排档')" class="m-dine-dp-btn">
                       🧡 大众点评
                     </a>
                   </div>
@@ -9580,6 +9581,31 @@
     }
 
     // ==========================================
+    // 0.1 大众点评 App / 网页深度跳转引擎
+    // ==========================================
+    function openDianpingDirect(event, shopName) {
+      if (event) {
+        event.stopPropagation();
+      }
+      // 清洗掉括号中的说明文字（如 "(30年老店)"），提取纯正精准店名
+      const cleanName = (shopName || '').replace(/[\(（].*?[\)）]/g, '').trim();
+      const encoded = encodeURIComponent(cleanName);
+      
+      // 1. 大众点评 App 商户搜索 Scheme 深度链接
+      const appScheme = `dianping://searchshoplist?keyword=${encoded}`;
+      // 2. 网页端大众点评有效搜索链接
+      const webUrl = `https://www.dianping.com/search/keyword/0/0_${encoded}`;
+      
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobile) {
+        // 直接触发 App 深度链接唤起
+        window.location.href = appScheme;
+      } else {
+        window.open(webUrl, '_blank');
+      }
+    }
+
+    // ==========================================
     // 1. 初始化顶部全局自适应小地图
     // ==========================================
     const mMap = L.map('m-map', {
@@ -9800,7 +9826,7 @@
                 target.mk.openPopup();
               }
             } else if (currentViewTab === 'dining') {
-              // 满足需求2：单餐5选1严格隔离，仅展示当前餐别的5家
+              // 单餐5选1严格隔离，仅展示当前激活餐别的5家
               showDiningDayOnMap(dayNum, null, -1, false);
             } else if (currentViewTab === 'birding') {
               showBirdingDayOnMap(dayNum);
@@ -9870,11 +9896,11 @@
     }
 
     // ==========================================
-    // 2. 餐饮专区 (满足需求2：单餐5选1严格隔离 + 需求3：大众点评直达)
+    // 2. 餐饮专区 (单餐5选1严格隔离 + 大众点评深度直达)
     // ==========================================
     let currentDineDay = null;
     let currentDineMeal = null;
-    let currentDineMarkers = []; // { dayNum, mealKey, idx, mk, lat, lng, opt, fullName }
+    let currentDineMarkers = []; // { dayNum, mealKey, idx, mk, lat, lng, opt, fullName, cleanName }
 
     function showDiningDayOnMap(dayNum, targetMealKey = null, activeIdx = -1, flyToActive = false) {
       const dayData = mTripData.dining_guide.find(d => d.day === dayNum);
@@ -9919,6 +9945,8 @@
           pts.push([lat, lng]);
 
           const fullName = opt.restaurant;
+          const cleanName = fullName.replace(/[\(（].*?[\)）]/g, '').trim();
+          const encodedClean = encodeURIComponent(cleanName);
           const isSelected = (idx === activeIdx);
           const actCls = isSelected ? 'active' : '';
 
@@ -9931,9 +9959,8 @@
 
           const mk = L.marker([lat, lng], { icon: icon, zIndexOffset: isSelected ? 9999 : 10 }).addTo(dynamicLayers);
           
-          // 满足需求3：精简弹窗，去除高德导航，改为大众点评APP直达
+          // 满足需求3：精简弹窗，直接调用 openDianpingDirect 唤起大众点评 App
           const mustTwo = (opt.must_orders || []).slice(0, 2).join(' · ');
-          const encodedName = encodeURIComponent(fullName);
           mk.bindPopup(`
             <div style="font-size:11.5px; line-height:1.35; color:#0f172a; padding:2px; min-width:180px; max-width:240px;">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px;">
@@ -9943,7 +9970,7 @@
               <div style="font-size:11px; color:#475569; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                 🍲 <b>招牌：</b>${mustTwo}
               </div>
-              <a href="https://m.dianping.com/search?keyword=${encodedName}" target="_blank" style="display:block; text-align:center; background:#ff6600; color:#fff; padding:5px 0; border-radius:5px; text-decoration:none; font-weight:700; font-size:11px; box-shadow:0 2px 6px rgba(255,102,0,0.35);">🧡 大众点评APP查看</a>
+              <a href="dianping://searchshoplist?keyword=${encodedClean}" onclick="openDianpingDirect(event, '${cleanName}')" style="display:block; text-align:center; background:#ff6600; color:#fff; padding:5px 0; border-radius:5px; text-decoration:none; font-weight:700; font-size:11px; box-shadow:0 2px 6px rgba(255,102,0,0.35); cursor:pointer;">🧡 大众点评APP查看</a>
             </div>
           `, { autoPan: false, offset: [0, -10] });
 
@@ -9955,7 +9982,7 @@
             }
           });
 
-          currentDineMarkers.push({ dayNum, mealKey: targetMealKey, idx, mk, lat, lng, opt, fullName });
+          currentDineMarkers.push({ dayNum, mealKey: targetMealKey, idx, mk, lat, lng, opt, fullName, cleanName });
         });
       }
 
