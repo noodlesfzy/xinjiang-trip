@@ -221,19 +221,43 @@ def build_mobile_split_screen_html():
     initial_rail_html = "".join([f'<div class="m-rail-pill {"active" if d["day"]==1 else ""}" id="rail-pill-{d["day"]}" onclick="quickJumpDay({d["day"]}, this)">D{d["day"]}</div>' for d in TRIP_DATA["days"]])
     json_dump = json.dumps(TRIP_DATA, ensure_ascii=False)
 
+    vendor_dir = "/Users/Noodles/Documents/AG_Project/vendor"
+    leaflet_css = ""
+    leaflet_js = ""
+    decorator_js = ""
+    chart_js = ""
+    if os.path.exists(os.path.join(vendor_dir, "leaflet.css")):
+        with open(os.path.join(vendor_dir, "leaflet.css"), "r", encoding="utf-8") as f:
+            leaflet_css = f.read()
+    if os.path.exists(os.path.join(vendor_dir, "leaflet.js")):
+        with open(os.path.join(vendor_dir, "leaflet.js"), "r", encoding="utf-8") as f:
+            leaflet_js = f.read()
+    if os.path.exists(os.path.join(vendor_dir, "leaflet.polylineDecorator.js")):
+        with open(os.path.join(vendor_dir, "leaflet.polylineDecorator.js"), "r", encoding="utf-8") as f:
+            decorator_js = f.read()
+    if os.path.exists(os.path.join(vendor_dir, "chart.js")):
+        with open(os.path.join(vendor_dir, "chart.js"), "r", encoding="utf-8") as f:
+            chart_js = f.read()
+
     html = f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>新疆14天自驾路书 (大众点评100%真实名店直达 + 药丸竖排 + 单餐5选1隔离)</title>
-  <!-- Leaflet CSS & JS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <!-- Leaflet PolylineDecorator -->
-  <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.min.js"></script>
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <style>
+    {leaflet_css}
+  </style>
+  <script>
+    {leaflet_js}
+  </script>
+  <script>
+    {decorator_js}
+  </script>
+  <script>
+    {chart_js}
+  </script>
 
   <style>
     :root {{
@@ -2984,15 +3008,15 @@ def build_mobile_split_screen_html():
         attributionControl: false
       }}).setView([45.5, 87.5], 6);
 
-      transitLayer = L.tileLayer('https://webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={{x}}&y={{y}}&z={{z}}', {{
+      transitLayer = L.tileLayer('https://wprd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={{x}}&y={{y}}&z={{z}}', {{
         subdomains: ['1', '2', '3', '4'],
-        minZoom: 4,
+        minZoom: 3,
         maxZoom: 18
       }}).addTo(dedicatedMap);
 
-      standardLayer = L.tileLayer('https://webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={{x}}&y={{y}}&z={{z}}', {{
+      standardLayer = L.tileLayer('https://wprd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={{x}}&y={{y}}&z={{z}}', {{
         subdomains: ['1', '2', '3', '4'],
-        minZoom: 4,
+        minZoom: 3,
         maxZoom: 18
       }});
 

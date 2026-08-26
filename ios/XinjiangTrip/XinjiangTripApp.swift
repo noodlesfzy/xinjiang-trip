@@ -45,8 +45,8 @@ struct HybridTripWebView: UIViewRepresentable {
         
         context.coordinator.webView = webView
         
-        // 启动加载：在线优先检测与加载
-        context.coordinator.loadWithNetworkPriority()
+        // 核心：优先加载 App 内置本地最新 HTML (零延迟、零网络依赖、保证 Xcode 每次编译即时生效)
+        context.coordinator.loadLocalFirst()
         
         return webView
     }
@@ -59,63 +59,46 @@ struct HybridTripWebView: UIViewRepresentable {
     
     class Coordinator: NSObject, WKNavigationDelegate {
         weak var webView: WKWebView?
-        private var hasLoadedSuccessfully = false
-        private var isLoadingRemote = false
         
         @objc func handleRefresh(_ sender: UIRefreshControl) {
-            loadWithNetworkPriority()
+            loadRemoteWithCacheBuster()
         }
         
-        func loadWithNetworkPriority() {
+        func loadLocalFirst() {
             guard let webView = self.webView else { return }
-            
-            // 1. 发起带 3.5 秒超时的在线优先请求
-            if let remoteURL = URL(string: HybridTripWebView.remoteURLString) {
-                self.isLoadingRemote = true
-                var request = URLRequest(url: remoteURL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 3.5)
-                request.addValue("XinjiangTrip-iOS-Hybrid", forHTTPHeaderField: "User-Agent")
-                webView.load(request)
-            } else {
-                loadLocalFallback()
-            }
-        }
-        
-        func loadLocalFallback() {
-            guard let webView = self.webView else { return }
-            self.isLoadingRemote = false
-            
             if let htmlPath = Bundle.main.path(forResource: "index", ofType: "html") {
                 let fileURL = URL(fileURLWithPath: htmlPath)
                 let bundleDir = Bundle.main.bundleURL
                 webView.loadFileURL(fileURL, allowingReadAccessTo: bundleDir)
-                print("📦 网络不佳或无信号，已无缝切换至本地离线路书资源")
-            }
-            
-            webView.scrollView.refreshControl?.endRefreshing()
-        }
-        
-        // MARK: - WKNavigationDelegate
-        
-        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            self.hasLoadedSuccessfully = true
-            webView.scrollView.refreshControl?.endRefreshing()
-            if self.isLoadingRemote {
-                print("🌐 成功加载在线最新路书资源")
+                print("📦 已加载 App 内置最新离线路书")
             }
         }
         
-        func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-            print("⚠️ 页面加载失败: \(error.localizedDescription)")
-            if !self.hasLoadedSuccessfully || self.isLoadingRemote {
-                loadLocalFallback()
+        func loadRemoteWithCacheBuster() {
+            guard let webView = self.webView else { return }
+            let cacheBuster = Int(Date().timeIntervalSince1970)
+            if let remoteURL = URL(string: "\(HybridTripWebView.remoteURLString)?t=\(cacheBuster)") {
+                var request = URLRequest(url: remoteURL, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 5.0)
+                request.addValue("XinjiangTrip-iOS-Hybrid", forHTTPHeaderField: "User-Agent")
+                webView.load(request)
             } else {
                 webView.scrollView.refreshControl?.endRefreshing()
             }
         }
         
+        // MARK: - WKNavigationDelegate
+        
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            webView.scrollView.refreshControl?.endRefreshing()
+        }
+        
+        func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+            webView.scrollView.refreshControl?.endRefreshing()
+        }
+        
         func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-            print("⚠️ 网络不可用或超时: \(error.localizedDescription)，立即降级读取本地离线包")
-            loadLocalFallback()
+            loadLocalFirst()
+            webView.scrollView.refreshControl?.endRefreshing()
         }
         
         func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
