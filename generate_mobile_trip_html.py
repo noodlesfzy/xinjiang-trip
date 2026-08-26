@@ -247,8 +247,10 @@ def build_mobile_split_screen_html():
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", sans-serif;
       -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      touch-action: manipulation;
     }}
     html, body {{
       height: 100%;
@@ -256,6 +258,13 @@ def build_mobile_split_screen_html():
       overflow: hidden;
       background-color: var(--bg);
       color: var(--text);
+      -webkit-user-select: none;
+      user-select: none;
+      overscroll-behavior-y: none;
+    }}
+    .m-day-morning, .m-day-afternoon, .m-day-evening, .m-herit-notes-body, .m-dining-hl, .m-tips-view p {{
+      -webkit-user-select: text;
+      user-select: text;
     }}
 
     .m-app-shell {{
@@ -268,11 +277,16 @@ def build_mobile_split_screen_html():
       overflow: hidden;
     }}
 
-    /* Compact Top Header */
+    /* Compact Top Header (适配 iOS 状态栏/灵动岛全屏沉浸) */
     .m-header {{
       flex: 0 0 auto;
-      background: linear-gradient(135deg, #1b2438 0%, #0d1322 100%);
-      padding: 9px 12px 7px;
+      background: linear-gradient(180deg, rgba(27, 36, 56, 0.96) 0%, rgba(13, 19, 34, 0.96) 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding-top: max(10px, env(safe-area-inset-top));
+      padding-bottom: 9px;
+      padding-left: max(12px, env(safe-area-inset-left));
+      padding-right: max(12px, env(safe-area-inset-right));
       border-bottom: 1px solid var(--card-border);
       display: flex;
       justify-content: space-between;
@@ -285,11 +299,13 @@ def build_mobile_split_screen_html():
       color: #fff;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
+      letter-spacing: -0.2px;
     }}
     .m-title-box p {{
       font-size: 10px;
       color: #cbd5e1;
+      margin-top: 1px;
     }}
     .m-header-badges {{
       display: flex;
@@ -297,37 +313,38 @@ def build_mobile_split_screen_html():
     }}
     .m-mini-badge {{
       font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: rgba(150, 56, 45, 0.25);
+      font-weight: 600;
+      padding: 3px 7px;
+      border-radius: 6px;
+      background: rgba(150, 56, 45, 0.28);
       color: #fca5a5;
-      border: 1px solid rgba(150, 56, 45, 0.4);
+      border: 1px solid rgba(150, 56, 45, 0.45);
     }}
 
     /* ========================================================
-       TOP PINNED MAP ZONE
+       TOP PINNED MAP ZONE (黄金 38% 比例 + 丝滑回弹)
        ======================================================== */
     .m-map-pinned-zone {{
-      flex: 0 0 35vh;
-      min-height: 180px;
-      max-height: 48vh;
+      flex: 0 0 38vh;
+      min-height: 200px;
+      max-height: 52vh;
       width: 100%;
       background: #0f172a;
       position: relative;
       border-bottom: 2px solid var(--card-border);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.55);
       z-index: 50;
-      transition: flex-basis 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: flex-basis 0.35s cubic-bezier(0.32, 0.72, 0, 1);
     }}
     .m-map-pinned-zone.mode-compact {{
-      flex-basis: 18vh !important;
-      min-height: 120px !important;
-      max-height: 22vh !important;
+      flex-basis: 20vh !important;
+      min-height: 140px !important;
+      max-height: 24vh !important;
     }}
     .m-map-pinned-zone.mode-expanded {{
-      flex-basis: 68vh !important;
-      min-height: 55vh !important;
-      max-height: 82vh !important;
+      flex-basis: 72vh !important;
+      min-height: 60vh !important;
+      max-height: 85vh !important;
     }}
     .m-map-pinned-zone.mode-hidden {{
       display: none !important;
@@ -337,42 +354,48 @@ def build_mobile_split_screen_html():
 
     .m-map-pill {{
       position: absolute;
-      bottom: 8px;
-      right: 8px;
+      bottom: 10px;
+      right: 10px;
       z-index: 500;
-      background: rgba(15, 23, 42, 0.9);
-      backdrop-filter: blur(8px);
-      border: 1px solid var(--card-border);
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       color: #f1f5f9;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 700;
-      padding: 4px 9px;
-      border-radius: 14px;
+      padding: 6px 12px;
+      min-height: 32px;
+      border-radius: 16px;
       display: flex;
       align-items: center;
-      gap: 4px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.6);
+      gap: 5px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
       cursor: pointer;
+      transition: transform 0.15s ease, background-color 0.15s ease;
     }}
-    .m-map-pill:active {{ transform: scale(0.95); background: #96382d; }}
+    .m-map-pill:active {{ transform: scale(0.92); background: #96382d; }}
 
     .m-map-hint {{
       position: absolute;
-      top: 6px;
-      left: 8px;
+      top: 8px;
+      left: 10px;
       z-index: 500;
-      background: rgba(13, 19, 34, 0.88);
-      backdrop-filter: blur(6px);
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-size: 10.5px;
+      background: rgba(13, 19, 34, 0.90);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
       color: #f8fafc;
-      border-left: 2.5px solid #f87171;
+      border-left: 3px solid #f87171;
       pointer-events: none;
       max-width: 84%;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
     }}
 
     /* Custom Map Markers */
@@ -670,20 +693,21 @@ def build_mobile_split_screen_html():
 
     .m-quick-nav-rail {{
       position: absolute;
-      left: 5px;
-      top: 8px;
-      bottom: calc(56px + env(safe-area-inset-bottom));
-      width: 32px;
+      left: 6px;
+      top: 10px;
+      bottom: calc(64px + env(safe-area-inset-bottom));
+      width: 36px;
       z-index: 700;
       display: flex;
       flex-direction: column;
-      gap: 2px;
-      padding: 4px 2px;
-      background: rgba(15, 23, 42, 0.88);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+      gap: 3px;
+      padding: 6px 2px;
+      background: rgba(15, 23, 42, 0.90);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.55);
       overflow-y: auto;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
@@ -691,21 +715,21 @@ def build_mobile_split_screen_html():
     .m-quick-nav-rail::-webkit-scrollbar {{ display: none; }}
 
     .m-rail-pill {{
-      flex: 0 0 20px;
-      height: 20px;
-      width: 26px;
+      flex: 0 0 24px;
+      height: 24px;
+      width: 30px;
       margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 9.5px;
+      font-size: 10.5px;
       font-weight: 700;
       color: #94a3b8;
-      border-radius: 10px;
+      border-radius: 12px;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s cubic-bezier(0.32, 0.72, 0, 1);
     }}
-    .m-rail-pill:active {{ transform: scale(0.92); }}
+    .m-rail-pill:active {{ transform: scale(0.88); }}
 
     /* 不同模式下的快捷按钮高亮主题 */
     .m-rail-pill.active {{
@@ -744,7 +768,7 @@ def build_mobile_split_screen_html():
     .m-birding-view,
     .m-culture-view,
     .m-tips-view {{
-      padding: 10px 10px calc(65px + env(safe-area-inset-bottom)) 42px;
+      padding: 10px 10px calc(72px + env(safe-area-inset-bottom)) 46px;
     }}
 
     .m-metrics-strip {{
@@ -1556,17 +1580,18 @@ def build_mobile_split_screen_html():
     }}
     .m-sub-card h3 {{ font-size: 14px; color: #f87171; margin-bottom: 8px; }}
 
-    /* Bottom App Dock */
+    /* Bottom App Dock (iOS 原生高斯模糊 + 44pt 触控靶心) */
     .m-bottom-dock {{
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      height: calc(52px + env(safe-area-inset-bottom));
-      padding-bottom: env(safe-area-inset-bottom);
-      background: rgba(13, 19, 34, 0.96);
-      backdrop-filter: blur(16px);
-      border-top: 1px solid var(--card-border);
+      height: calc(56px + env(safe-area-inset-bottom));
+      padding-bottom: max(10px, env(safe-area-inset-bottom));
+      background: rgba(13, 19, 34, 0.94);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
       display: flex;
       justify-content: space-around;
       align-items: center;
@@ -1578,15 +1603,27 @@ def build_mobile_split_screen_html():
       align-items: center;
       justify-content: center;
       color: var(--text-muted);
-      font-size: 10px;
+      font-size: 10.5px;
+      font-weight: 500;
       cursor: pointer;
       width: 16.6%;
       height: 100%;
+      transition: transform 0.15s ease, color 0.15s ease;
     }}
-    .m-dock-item .m-dock-icon {{ font-size: 16px; margin-bottom: 1px; }}
+    .m-dock-item:active {{
+      transform: scale(0.90);
+    }}
+    .m-dock-item .m-dock-icon {{
+      font-size: 18px;
+      margin-bottom: 2px;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }}
     .m-dock-item.active {{
       color: #f87171;
       font-weight: 700;
+    }}
+    .m-dock-item.active .m-dock-icon {{
+      transform: scale(1.15);
     }}
   </style>
 </head>
