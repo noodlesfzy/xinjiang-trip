@@ -1944,7 +1944,7 @@ def build_mobile_split_screen_html():
       z-index: 200 !important;
     }}
 
-                                    /* Bottom App Dock (1:1 Apple App Store 绝对物理屏幕居中与弹性胶囊) */
+                                        /* Bottom App Dock (1:1 Apple 绝对物理屏幕居中与通透半透明胶囊) */
     .m-bottom-dock {{
       position: fixed;
       bottom: max(12px, env(safe-area-inset-bottom) + 4px);
@@ -1954,8 +1954,8 @@ def build_mobile_split_screen_html():
       max-width: 420px;
       height: 58px;
       background: var(--liquid-dock-bg);
-      backdrop-filter: blur(40px) saturate(220%) contrast(105%);
-      -webkit-backdrop-filter: blur(40px) saturate(220%) contrast(105%);
+      backdrop-filter: blur(28px) saturate(200%);
+      -webkit-backdrop-filter: blur(28px) saturate(200%);
       border: 0.5px solid var(--liquid-dock-border);
       border-radius: 29px;
       box-shadow: var(--liquid-dock-shadow);
@@ -1972,10 +1972,8 @@ def build_mobile_split_screen_html():
       will-change: transform;
     }}
 
-    /* 按压时 Dock 栏整体受力动态伸缩形变 (Dock Elastic Squish) */
     .m-bottom-dock.dock-pressed {{
       transform: translateX(-50%) scale(0.965) translateY(2px) !important;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65), inset 0 1px 2px rgba(255, 255, 255, 0.45) !important;
     }}
 
     /* 独立流体滑块气泡 (Morphing Liquid Glass Bubble) */
@@ -1988,7 +1986,7 @@ def build_mobile_split_screen_html():
       background: var(--liquid-bubble-bg);
       border: 0.5px solid var(--liquid-bubble-border);
       border-radius: 24px;
-      box-shadow: var(--liquid-bubble-glow), inset 0 1px 1.5px rgba(255, 255, 255, 0.4);
+      box-shadow: var(--liquid-bubble-glow);
       pointer-events: none;
       z-index: 1;
       transform: translateX(4px);
@@ -1997,22 +1995,20 @@ def build_mobile_split_screen_html():
       will-change: transform, width, filter;
     }}
 
-    /* 按压受力时的光晕增强 */
     .m-liquid-bubble-indicator.pressed {{
-      filter: brightness(1.35) saturate(160%) drop-shadow(0 0 16px rgba(41, 151, 255, 0.75));
+      filter: brightness(1.3) saturate(140%);
     }}
 
-    /* 手指拖拽滑动时的流体实时跟踪 */
     .m-liquid-bubble-indicator.dragging {{
       transition: none !important;
-      filter: brightness(1.28) saturate(140%) drop-shadow(0 0 14px rgba(41, 151, 255, 0.65));
+      filter: brightness(1.25) saturate(130%);
     }}
 
     .m-bubble-sheen {{
       position: absolute;
       inset: 0;
       border-radius: 24px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 60%);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, transparent 60%);
       pointer-events: none;
     }}
 
@@ -2289,8 +2285,8 @@ def build_mobile_split_screen_html():
 
   <script>
     const mTripData = {json_dump};
-                    // ==========================================
-    // 0.3 1:1 Apple App Store Liquid Glass 物理压力感应与流体滑动引擎
+                        // ==========================================
+    // 0.3 1:1 Apple App Store 绝对几何居中滑块引擎 (采用 offsetLeft 免疫一切缩放形变)
     // ==========================================
     let currentActiveTabId = 'timeline';
 
@@ -2307,11 +2303,7 @@ def build_mobile_split_screen_html():
       }}
 
       indicator.style.width = `${{targetWidth}}px`;
-      indicator.style.transform = `translateX(${{targetLeftTransform(targetX)}}px) scale(${{scaleX}}, ${{scaleY}})`;
-    }}
-
-    function targetLeftTransform(x) {{
-      return Math.round(x * 10) / 10;
+      indicator.style.transform = `translateX(${{targetX}}px) scale(${{scaleX}}, ${{scaleY}})`;
     }}
 
     function updateLiquidDockSlider(targetTabOrIndex, animated = true, scaleX = 1, scaleY = 1) {{
@@ -2331,16 +2323,9 @@ def build_mobile_split_screen_html():
       }}
       if (!targetItem) targetItem = items[0];
 
-      const dockRect = dock.getBoundingClientRect();
-      const itemRect = targetItem.getBoundingClientRect();
-      
-      let targetLeft = 4;
-      let targetWidth = (dockRect.width > 0 ? (dockRect.width - 8) / items.length : 55);
-      
-      if (dockRect.width > 0 && itemRect.width > 0) {{
-        targetLeft = itemRect.left - dockRect.left;
-        targetWidth = itemRect.width;
-      }}
+      // 使用真实 DOM 几何 offsetLeft 与 offsetWidth，100% 免疫任何屏幕缩放与 CSS transform 形变
+      const targetLeft = targetItem.offsetLeft;
+      const targetWidth = targetItem.offsetWidth;
 
       setBubblePosition(targetLeft, targetWidth, scaleX, scaleY, animated);
 
@@ -2390,7 +2375,7 @@ def build_mobile_split_screen_html():
         dock.classList.add('dock-pressed');
         indicator.classList.add('pressed');
 
-        // 计算当前触摸位置对应的 Tab 并进行水滴受压微形变
+        // 计算当前触摸位置对应的 Tab 并进行水滴微压扁
         const dockRect = dock.getBoundingClientRect();
         const touchXInDock = touch.clientX - dockRect.left;
         const itemWidth = (dockRect.width - 8) / items.length;
@@ -2398,9 +2383,7 @@ def build_mobile_split_screen_html():
         
         const touchedItem = items[touchedIndex];
         if (touchedItem) {{
-          const itemRect = touchedItem.getBoundingClientRect();
-          const targetLeft = itemRect.left - dockRect.left;
-          setBubblePosition(targetLeft, itemRect.width, 1.12, 0.88, true);
+          setBubblePosition(touchedItem.offsetLeft, touchedItem.offsetWidth, 1.10, 0.90, true);
         }}
       }}, {{ passive: true }});
 
@@ -2413,12 +2396,12 @@ def build_mobile_split_screen_html():
         const dragVelocity = touch.clientX - lastX;
         lastX = touch.clientX;
         
-        // 实时跟随触摸位置与流体拉伸 (Fluid Drag Velocity Stretch)
-        const stretchX = Math.min(1.25, Math.max(0.85, 1 + Math.abs(dragVelocity) * 0.018));
-        const squashY = Math.max(0.80, 1 - Math.abs(dragVelocity) * 0.012);
+        // 实时跟随触摸位置与流体拉伸
+        const stretchX = Math.min(1.22, Math.max(0.88, 1 + Math.abs(dragVelocity) * 0.015));
+        const squashY = Math.max(0.82, 1 - Math.abs(dragVelocity) * 0.010);
 
-        const itemWidth = (dockRect.width - 8) / items.length;
-        const targetX = Math.max(4, Math.min(dockRect.width - itemWidth - 4, touchXInDock - itemWidth / 2));
+        const itemWidth = (dock.offsetWidth - 8) / items.length;
+        const targetX = Math.max(4, Math.min(dock.offsetWidth - itemWidth - 4, touchXInDock - itemWidth / 2));
         
         setBubblePosition(targetX, itemWidth, stretchX, squashY, false);
         
@@ -2570,9 +2553,26 @@ def build_mobile_split_screen_html():
       }}
     }}
 
-                    // ==========================================
-    // 1. 初始化顶部全局自适应小地图 (AutoNavi 100% 极速稳定切片引擎)
+                        // ==========================================
+    // 1. 初始化顶部全局自适应小地图 (无 Referrer 限制的高可用切片引擎)
     // ==========================================
+    
+    // 覆盖 Leaflet 的 createTile 原型方法，注入 referrerpolicy="no-referrer"
+    if (window.L && L.TileLayer) {{
+      L.TileLayer.prototype.createTile = function(coords, done) {{
+        var tile = document.createElement('img');
+        L.DomEvent.on(tile, 'load', L.Util.bind(this._tileOnLoad, this, done, tile));
+        L.DomEvent.on(tile, 'error', L.Util.bind(this._tileOnError, this, done, tile));
+        
+        tile.referrerPolicy = 'no-referrer';
+        tile.crossOrigin = 'anonymous';
+        tile.alt = '';
+        tile.setAttribute('role', 'presentation');
+        tile.src = this.getTileUrl(coords);
+        return tile;
+      }};
+    }}
+
     const mMap = L.map('m-map', {{
       zoomControl: false,
       attributionControl: false,
@@ -2581,15 +2581,25 @@ def build_mobile_split_screen_html():
     }}).setView([45.5, 87.5], 6);
 
     function createRobustTileLayer(mapInstance, primaryStyle = 7) {{
-      const tileUrl = 'https://wprd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}';
+      const tileUrl = 'https://webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}';
       const tileLayer = L.tileLayer(tileUrl, {{
         subdomains: '1234',
         minZoom: 3,
         maxZoom: 18
       }});
 
-      tileLayer.on('tileerror', function(err) {{
-        console.warn("瓦片重试中...");
+      let switched = false;
+      tileLayer.on('tileerror', function() {{
+        if (!switched) {{
+          switched = true;
+          console.warn("瓦片自动切换备用线路...");
+          const backupLayer = L.tileLayer('https://wprd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}', {{
+            subdomains: '1234',
+            minZoom: 3,
+            maxZoom: 18
+          }});
+          backupLayer.addTo(mapInstance);
+        }}
       }});
 
       tileLayer.addTo(mapInstance);
