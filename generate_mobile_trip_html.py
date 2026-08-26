@@ -1944,7 +1944,7 @@ def build_mobile_split_screen_html():
       z-index: 200 !important;
     }}
 
-                                            /* Bottom App Dock (1:1 绝对物理居中半透明胶囊) */
+                                                /* Bottom App Dock (1:1 绝对物理居中半透明胶囊) */
     .m-bottom-dock {{
       position: fixed;
       bottom: max(12px, env(safe-area-inset-bottom) + 4px);
@@ -1994,17 +1994,16 @@ def build_mobile_split_screen_html():
       z-index: 1;
       transform: translateX(4px);
       transform-origin: center center;
-      transition: transform 0.38s cubic-bezier(0.25, 1, 0.35, 1.15), width 0.3s ease, filter 0.25s ease, opacity 0.25s ease;
+      transition: transform 0.38s cubic-bezier(0.25, 1, 0.35, 1.15), width 0.3s ease, filter 0.25s ease;
       will-change: transform, width, filter;
     }}
 
-    /* 水滴受按压时：大幅放大透镜、提升通透度与散射光影 */
+    /* 按压时光感增强（绝不在 CSS 里使用 transform 避免覆盖位移坐标） */
     .m-liquid-bubble-indicator.pressed {{
-      transform: scale(1.22, 1.16) !important;
-      filter: var(--droplet-caustic) brightness(1.25) !important;
+      filter: var(--droplet-caustic) brightness(1.25);
       box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.98), 
-                  inset 0 -2px 3px rgba(56, 189, 248, 0.5),
-                  0 8px 28px rgba(56, 189, 248, 0.5) !important;
+                  inset 0 -2px 3px rgba(56, 189, 248, 0.4),
+                  0 8px 24px rgba(56, 189, 248, 0.45);
     }}
 
     /* 手指拖拽滑动时的流体水滴拉伸 */
@@ -2013,13 +2012,12 @@ def build_mobile_split_screen_html():
       filter: var(--droplet-caustic) brightness(1.18);
     }}
 
-    /* 水滴顶部高光反射弧线与虹彩透镜膜 (Specular Arc & Iridescent Caustic Film) */
+    /* 水滴顶部高光反射弧线 (纯粹纯白高光反射，无彩虹) */
     .m-bubble-sheen {{
       position: absolute;
       inset: 0;
       border-radius: 25px;
-      background: radial-gradient(100% 50% at 50% 0%, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 75%),
-                  linear-gradient(135deg, rgba(56, 189, 248, 0.3) 0%, transparent 40%, rgba(244, 114, 182, 0.25) 100%);
+      background: radial-gradient(100% 50% at 50% 0%, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 75%);
       pointer-events: none;
     }}
 
@@ -2296,8 +2294,8 @@ def build_mobile_split_screen_html():
 
   <script>
     const mTripData = {json_dump};
-                        // ==========================================
-    // 0.3 1:1 Apple App Store 绝对几何居中滑块引擎 (采用 offsetLeft 免疫一切缩放形变)
+                            // ==========================================
+    // 0.3 1:1 Apple App Store 绝对几何居中滑块引擎
     // ==========================================
     let currentActiveTabId = 'timeline';
 
@@ -2386,15 +2384,15 @@ def build_mobile_split_screen_html():
         dock.classList.add('dock-pressed');
         indicator.classList.add('pressed');
 
-        // 计算当前触摸位置对应的 Tab 并进行水滴微压扁
+        // 计算当前触摸位置对应的 Tab，直接在此图标上产生水滴放大透镜效果 (scale 1.22, 1.15)
         const dockRect = dock.getBoundingClientRect();
         const touchXInDock = touch.clientX - dockRect.left;
-        const itemWidth = (dockRect.width - 8) / items.length;
+        const itemWidth = (dock.offsetWidth - 8) / items.length;
         const touchedIndex = Math.max(0, Math.min(items.length - 1, Math.floor((touchXInDock - 4) / itemWidth)));
         
         const touchedItem = items[touchedIndex];
         if (touchedItem) {{
-          setBubblePosition(touchedItem.offsetLeft, touchedItem.offsetWidth, 1.10, 0.90, true);
+          setBubblePosition(touchedItem.offsetLeft, touchedItem.offsetWidth, 1.22, 1.15, true);
         }}
       }}, {{ passive: true }});
 
@@ -2407,9 +2405,9 @@ def build_mobile_split_screen_html():
         const dragVelocity = touch.clientX - lastX;
         lastX = touch.clientX;
         
-        // 实时跟随触摸位置与流体拉伸
-        const stretchX = Math.min(1.22, Math.max(0.88, 1 + Math.abs(dragVelocity) * 0.015));
-        const squashY = Math.max(0.82, 1 - Math.abs(dragVelocity) * 0.010);
+        // 实时跟随触摸位置与水滴拉伸
+        const stretchX = Math.min(1.28, Math.max(0.92, 1.15 + Math.abs(dragVelocity) * 0.015));
+        const squashY = Math.max(0.88, 1.10 - Math.abs(dragVelocity) * 0.010);
 
         const itemWidth = (dock.offsetWidth - 8) / items.length;
         const targetX = Math.max(4, Math.min(dock.offsetWidth - itemWidth - 4, touchXInDock - itemWidth / 2));
@@ -2432,7 +2430,7 @@ def build_mobile_split_screen_html():
         indicator.classList.remove('pressed');
         
         const dockRect = dock.getBoundingClientRect();
-        const itemWidth = (dockRect.width - 8) / items.length;
+        const itemWidth = (dock.offsetWidth - 8) / items.length;
         const finalIndex = Math.max(0, Math.min(items.length - 1, Math.floor((lastX - dockRect.left - 4) / itemWidth)));
         
         const selectedItem = items[finalIndex] || items[0];
@@ -2564,7 +2562,7 @@ def build_mobile_split_screen_html():
       }}
     }}
 
-                            // ==========================================
+                                // ==========================================
     // 1. 初始化顶部全局自适应小地图 (标准高可用直连切片引擎)
     // ==========================================
     const mMap = L.map('m-map', {{
@@ -2580,6 +2578,16 @@ def build_mobile_split_screen_html():
         subdomains: '1234',
         minZoom: 3,
         maxZoom: 18
+      }});
+
+      tileLayer.on('tileerror', function() {{
+        const backupUrl = 'https://wprd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}';
+        const backupLayer = L.tileLayer(backupUrl, {{
+          subdomains: '1234',
+          minZoom: 3,
+          maxZoom: 18
+        }});
+        backupLayer.addTo(mapInstance);
       }});
 
       tileLayer.addTo(mapInstance);
