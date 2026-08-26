@@ -1936,27 +1936,66 @@ def build_mobile_split_screen_html():
       transition: opacity 0.3s ease;
     }}
 
-            /* Bottom App Dock (Apple Official Liquid Glass Tab Bar - App Store / Files Style) */
+                /* Bottom App Dock (1:1 Apple App Store Liquid Glass Morphing & Sliding Dock) */
     .m-bottom-dock {{
       position: absolute;
       bottom: max(12px, env(safe-area-inset-bottom) + 4px);
-      left: 16px;
-      right: 16px;
-      height: 56px;
+      left: 14px;
+      right: 14px;
+      height: 58px;
       background: var(--liquid-dock-bg);
-      backdrop-filter: blur(40px) saturate(210%);
-      -webkit-backdrop-filter: blur(40px) saturate(210%);
+      backdrop-filter: blur(40px) saturate(220%) contrast(105%);
+      -webkit-backdrop-filter: blur(40px) saturate(220%) contrast(105%);
       border: 0.5px solid var(--liquid-dock-border);
-      border-radius: 28px;
+      border-radius: 29px;
       box-shadow: var(--liquid-dock-shadow);
       display: flex;
-      justify-content: space-around;
+      justify-content: space-between;
       align-items: center;
-      padding: 3px 6px;
+      padding: 4px;
       z-index: 1000;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      position: relative;
     }}
+
+    /* 流体滑动气泡指示器 (Fluid Morphing Liquid Bubble Slider) */
+    .m-liquid-bubble-indicator {{
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      left: 0;
+      width: 16%;
+      background: var(--liquid-bubble-bg);
+      border: 0.5px solid var(--liquid-bubble-border);
+      border-radius: 24px;
+      box-shadow: var(--liquid-bubble-glow), inset 0 1px 1.5px rgba(255, 255, 255, 0.4);
+      pointer-events: none;
+      z-index: 1;
+      transform: translateX(4px);
+      transition: transform 0.42s cubic-bezier(0.25, 1, 0.35, 1.15), width 0.32s ease, filter 0.25s ease;
+      will-change: transform, width, left;
+    }}
+
+    /* 手指在 Dock 上触摸滑动时的流体实时跟踪与液体拉伸变形效果 */
+    .m-liquid-bubble-indicator.dragging {{
+      transition: none !important;
+      filter: brightness(1.25) drop-shadow(0 0 14px rgba(41, 151, 255, 0.65));
+      transform-origin: center center;
+    }}
+
+    .m-bubble-sheen {{
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, transparent 60%);
+      pointer-events: none;
+    }}
+
     .m-dock-item {{
       position: relative;
+      z-index: 2;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1965,10 +2004,11 @@ def build_mobile_split_screen_html():
       font-size: 10px;
       font-weight: 500;
       cursor: pointer;
-      width: 16%;
-      height: 44px;
-      border-radius: 18px;
-      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      flex: 1;
+      height: 100%;
+      border-radius: 24px;
+      transition: color 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      background: transparent;
     }}
     .m-dock-item:active {{
       transform: scale(0.92);
@@ -1976,19 +2016,14 @@ def build_mobile_split_screen_html():
     .m-dock-item .m-dock-icon {{
       font-size: 18px;
       margin-bottom: 2px;
-      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     }}
     .m-dock-item.active {{
-      color: #007aff;
-      background: var(--liquid-bubble-bg);
-      border: 0.5px solid var(--liquid-bubble-border);
-      box-shadow: var(--liquid-bubble-glow), inset 0 1px 1.5px rgba(255, 255, 255, 0.3);
-    }}
-    [data-theme="dark"] .m-dock-item.active {{
-      color: #2997ff;
+      color: var(--primary-vibrant);
+      font-weight: 700;
     }}
     .m-dock-item.active .m-dock-icon {{
-      transform: scale(1.08) translateY(-1px);
+      transform: scale(1.18) translateY(-2px);
     }}
   </style>
 </head>
@@ -2194,38 +2229,138 @@ def build_mobile_split_screen_html():
       </div>
     </div>
 
-    <!-- 底部 6 位 Dock 导航栏 -->
-    <div class="m-bottom-dock">
-      <div class="m-dock-item active" onclick="mSwitch('timeline', this)">
+        <!-- 底部 6 位 Liquid Glass 悬浮流体气泡 Dock 栏 (1:1 Apple App Store 原生交互) -->
+    <div class="m-bottom-dock" id="m-bottom-dock">
+      <div class="m-liquid-bubble-indicator" id="m-liquid-bubble-indicator">
+        <div class="m-bubble-sheen"></div>
+      </div>
+      <div class="m-dock-item active" data-tab-id="timeline" onclick="mSwitch('timeline', this)">
         <div class="m-dock-icon">📅</div>
-        <span>行程</span>
+        <span class="m-dock-label">行程</span>
       </div>
-      <div class="m-dock-item" onclick="mSwitch('map', this)">
+      <div class="m-dock-item" data-tab-id="map" onclick="mSwitch('map', this)">
         <div class="m-dock-icon">🗺️</div>
-        <span>大地图</span>
+        <span class="m-dock-label">大地图</span>
       </div>
-      <div class="m-dock-item" onclick="mSwitch('dining', this)">
+      <div class="m-dock-item" data-tab-id="dining" onclick="mSwitch('dining', this)">
         <div class="m-dock-icon">🍽️</div>
-        <span>餐饮</span>
+        <span class="m-dock-label">餐饮</span>
       </div>
-      <div class="m-dock-item" onclick="mSwitch('birding', this)">
+      <div class="m-dock-item" data-tab-id="birding" onclick="mSwitch('birding', this)">
         <div class="m-dock-icon">🦉</div>
-        <span>观鸟</span>
+        <span class="m-dock-label">观鸟</span>
       </div>
-      <div class="m-dock-item" onclick="mSwitch('culture', this)">
+      <div class="m-dock-item" data-tab-id="culture" onclick="mSwitch('culture', this)">
         <div class="m-dock-icon">🏛️</div>
-        <span>国保</span>
+        <span class="m-dock-label">国保</span>
       </div>
-      <div class="m-dock-item" onclick="mSwitch('more', this)">
+      <div class="m-dock-item" data-tab-id="more" onclick="mSwitch('more', this)">
         <div class="m-dock-icon">⚙️</div>
-        <span>其他</span>
+        <span class="m-dock-label">其他</span>
       </div>
     </div>
+  </div>
 
   </div>
 
   <script>
     const mTripData = {json_dump};
+    // ==========================================
+    // 0.3 初始化 1:1 Apple App Store Liquid Glass 触摸滑动流体引擎
+    // ==========================================
+    function initLiquidDockGestures() {{
+      const dock = document.getElementById('m-bottom-dock');
+      const indicator = document.getElementById('m-liquid-bubble-indicator');
+      if (!dock || !indicator) return;
+      const items = Array.from(dock.querySelectorAll('.m-dock-item'));
+      if (items.length === 0) return;
+
+      let isDragging = false;
+      let startX = 0;
+      let lastX = 0;
+
+      function updateIndicatorPosition(index, animated = true) {{
+        const targetItem = items[index];
+        if (!targetItem) return;
+        const dockRect = dock.getBoundingClientRect();
+        const itemRect = targetItem.getBoundingClientRect();
+        const targetLeft = itemRect.left - dockRect.left;
+        const targetWidth = itemRect.width;
+
+        if (animated) {{
+          indicator.classList.remove('dragging');
+        }} else {{
+          indicator.classList.add('dragging');
+        }}
+
+        indicator.style.transform = `translateX(${{targetLeft}}px)`;
+        indicator.style.width = `${{targetWidth}}px`;
+      }}
+
+      window.updateLiquidDockSlider = function(tabName) {{
+        const idx = items.findIndex(it => it.getAttribute('data-tab-id') === tabName);
+        if (idx !== -1) {{
+          updateIndicatorPosition(idx, true);
+        }}
+      }};
+
+      // 初始定位
+      setTimeout(() => {{ updateIndicatorPosition(0, false); }}, 60);
+      window.addEventListener('resize', () => {{
+        const activeIdx = items.findIndex(it => it.classList.contains('active'));
+        if (activeIdx !== -1) updateIndicatorPosition(activeIdx, false);
+      }});
+
+      // 手指在 Dock 上滑动时的流体跟随与液体形变引擎
+      dock.addEventListener('touchstart', (e) => {{
+        isDragging = true;
+        const touch = e.touches[0];
+        startX = touch.clientX;
+        lastX = startX;
+        indicator.classList.add('dragging');
+      }}, {{ passive: true }});
+
+      dock.addEventListener('touchmove', (e) => {{
+        if (!isDragging) return;
+        const touch = e.touches[0];
+        const dockRect = dock.getBoundingClientRect();
+        const touchXInDock = touch.clientX - dockRect.left;
+        
+        const dragVelocity = touch.clientX - lastX;
+        lastX = touch.clientX;
+        const stretchFactor = Math.min(1.22, Math.max(0.85, 1 + Math.abs(dragVelocity) * 0.015));
+
+        const itemWidth = dockRect.width / items.length;
+        const clampedX = Math.max(2, Math.min(dockRect.width - itemWidth - 2, touchXInDock - itemWidth / 2));
+        
+        indicator.style.transform = `translateX(${{clampedX}}px) scaleX(${{stretchFactor}})`;
+        
+        const hoveredIndex = Math.max(0, Math.min(items.length - 1, Math.floor(touchXInDock / itemWidth)));
+        items.forEach((it, i) => {{
+          if (i === hoveredIndex) {{
+            it.classList.add('active');
+          }} else {{
+            it.classList.remove('active');
+          }}
+        }});
+      }}, {{ passive: true }});
+
+      dock.addEventListener('touchend', (e) => {{
+        if (!isDragging) return;
+        isDragging = false;
+        indicator.classList.remove('dragging');
+        
+        const dockRect = dock.getBoundingClientRect();
+        const itemWidth = dockRect.width / items.length;
+        const finalIndex = Math.max(0, Math.min(items.length - 1, Math.floor((lastX - dockRect.left) / itemWidth)));
+        
+        const selectedItem = items[finalIndex];
+        if (selectedItem) {{
+          const tabId = selectedItem.getAttribute('data-tab-id');
+          mSwitch(tabId, selectedItem);
+        }}
+      }}, {{ passive: true }});
+    }}
     let currentViewTab = 'timeline';
     let currentActiveDay = 1;
 
