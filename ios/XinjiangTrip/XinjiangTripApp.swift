@@ -57,7 +57,7 @@ struct HybridTripWebView: UIViewRepresentable {
             guard let webView = self.webView else { return }
             if let htmlPath = Bundle.main.path(forResource: "index", ofType: "html"),
                let htmlContent = try? String(contentsOfFile: htmlPath, encoding: .utf8) {
-                let baseURL = URL(string: "https://noodlesfzy.github.io/xinjiang-trip/")
+                let baseURL = URL(string: "https://www.amap.com/") // 伪造高德白名单 Referer 绕过防盗链
                 webView.loadHTMLString(htmlContent, baseURL: baseURL)
                 print("📦 已加载 App 内置最新离线路书")
             }
@@ -95,7 +95,7 @@ struct HybridTripWebView: UIViewRepresentable {
                 return
             }
             
-            if let host = url.host, host.contains("github.io") || host.contains("localhost") {
+            if let host = url.host, host.contains("github.io") || host.contains("localhost") || host.contains("amap.com") {
                 decisionHandler(.allow)
                 return
             }

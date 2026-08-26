@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+  <meta name="referrer" content="no-referrer" />
   <meta charset="UTF-8" />
   <meta name="referrer" content="no-referrer" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
@@ -11751,16 +11752,15 @@ svg.leaflet-image-layer.leaflet-interactive path {
       zoomAnimation: true
     }).setView([45.5, 87.5], 6);
 
-        function createRobustTileLayer(mapInstance, primaryStyle = 7) {
-      // 100% 纯正可用、绝不返回问号的 CartoDB Voyager 底图
-      const cartoUrl = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png';
-      const cartoLayer = L.tileLayer(cartoUrl, {
-        subdomains: 'abcd',
+            function createRobustTileLayer(mapInstance, primaryStyle = 7) {
+      const autonaviUrl = 'https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={x}&y={y}&z={z}';
+      const autonaviLayer = L.tileLayer(autonaviUrl, {
+        subdomains: '1234',
         minZoom: 3,
         maxZoom: 18,
-        attribution: '&copy; CartoDB'
+        referrerPolicy: 'no-referrer' // 强制浏览器不发送 Referer
       }).addTo(mapInstance);
-      return cartoLayer;
+      return autonaviLayer;
     }
 
     createRobustTileLayer(mMap, 7);
@@ -12471,16 +12471,18 @@ const dynamicLayers = L.layerGroup().addTo(mMap);
         attributionControl: false
       }).setView([45.5, 87.5], 6);
 
-      transitLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
-        subdomains: 'abcd',
+      transitLayer = L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={x}&y={y}&z={z}', {
+        subdomains: '1234',
         minZoom: 3,
-        maxZoom: 18
+        maxZoom: 18,
+        referrerPolicy: 'no-referrer'
       }).addTo(dedicatedMap);
 
-      standardLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
-        subdomains: 'abcd',
+      standardLayer = L.tileLayer('https://wprd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+        subdomains: '1234',
         minZoom: 3,
-        maxZoom: 18
+        maxZoom: 18,
+        referrerPolicy: 'no-referrer'
       });
 mTripData.days.forEach(d => {
         const lat = d.to.lat;
