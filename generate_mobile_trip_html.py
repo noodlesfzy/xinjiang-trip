@@ -1944,7 +1944,7 @@ def build_mobile_split_screen_html():
       z-index: 200 !important;
     }}
 
-                                                /* Bottom App Dock (1:1 绝对物理居中半透明胶囊) */
+                                                    /* Bottom App Dock (1:1 绝对物理居中 nanoTV Pro 半透明通透胶囊) */
     .m-bottom-dock {{
       position: fixed;
       bottom: max(12px, env(safe-area-inset-bottom) + 4px);
@@ -1973,46 +1973,43 @@ def build_mobile_split_screen_html():
     }}
 
     .m-bottom-dock.dock-pressed {{
-      transform: translateX(-50%) scale(0.965) translateY(2px) !important;
+      transform: translateX(-50%) scale(0.968) translateY(2px) !important;
     }}
 
-    /* 独立高透水滴透镜气泡 (Optical Water Droplet Bubble) */
+    /* 独立 1:1 nanoTV Pro 高透水滴透镜气泡 */
     .m-liquid-bubble-indicator {{
       position: absolute;
-      top: 3px;
-      bottom: 3px;
+      top: 4px;
+      bottom: 4px;
       left: 0;
       width: calc((100% - 8px) / 6);
       background: var(--droplet-bg);
-      backdrop-filter: blur(12px) contrast(110%);
-      -webkit-backdrop-filter: blur(12px) contrast(110%);
-      border: 0.8px solid var(--droplet-border);
+      backdrop-filter: blur(14px) contrast(110%);
+      -webkit-backdrop-filter: blur(14px) contrast(110%);
+      border: 0.6px solid var(--droplet-border);
       border-radius: 25px;
       box-shadow: var(--droplet-shadow);
-      filter: var(--droplet-caustic);
       pointer-events: none;
       z-index: 1;
       transform: translateX(4px);
       transform-origin: center center;
-      transition: transform 0.38s cubic-bezier(0.25, 1, 0.35, 1.15), width 0.3s ease, filter 0.25s ease;
+      transition: transform 0.36s cubic-bezier(0.22, 1, 0.36, 1), width 0.28s ease, filter 0.25s ease;
       will-change: transform, width, filter;
     }}
 
-    /* 按压时光感增强（绝不在 CSS 里使用 transform 避免覆盖位移坐标） */
     .m-liquid-bubble-indicator.pressed {{
-      filter: var(--droplet-caustic) brightness(1.25);
+      filter: brightness(1.20) drop-shadow(0 2px 10px rgba(56, 189, 248, 0.35));
       box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.98), 
-                  inset 0 -2px 3px rgba(56, 189, 248, 0.4),
-                  0 8px 24px rgba(56, 189, 248, 0.45);
+                  inset 0 -1.5px 2px rgba(56, 189, 248, 0.35),
+                  var(--droplet-glow);
     }}
 
-    /* 手指拖拽滑动时的流体水滴拉伸 */
     .m-liquid-bubble-indicator.dragging {{
       transition: none !important;
-      filter: var(--droplet-caustic) brightness(1.18);
+      filter: brightness(1.15) drop-shadow(0 2px 8px rgba(56, 189, 248, 0.30));
     }}
 
-    /* 水滴顶部高光反射弧线 (纯粹纯白高光反射，无彩虹) */
+    /* 水滴顶部高光反射弧线 (纯粹纯白高光反射，还原水滴表面张力) */
     .m-bubble-sheen {{
       position: absolute;
       inset: 0;
@@ -2052,7 +2049,7 @@ def build_mobile_split_screen_html():
       font-weight: 700;
     }}
     .m-dock-item.active .m-dock-icon {{
-      transform: scale(1.18) translateY(-2px);
+      transform: scale(1.15) translateY(-2px);
     }}
   </style>
 </head>
@@ -2571,8 +2568,8 @@ def build_mobile_split_screen_html():
       }}
     }}
 
-                                    // ==========================================
-    // 1. 初始化顶部全局自适应小地图 (多源高可用极速切片引擎)
+                                        // ==========================================
+    // 1. 初始化顶部全局自适应小地图 (高德 + CartoDB 多源极速切片引擎)
     // ==========================================
     const mMap = L.map('m-map', {{
       zoomControl: false,
@@ -2582,30 +2579,34 @@ def build_mobile_split_screen_html():
     }}).setView([45.5, 87.5], 6);
 
     function createRobustTileLayer(mapInstance, primaryStyle = 7) {{
-      // 主干图层：高德标准路网切片 (https)
-      const primaryUrl = 'https://webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}';
-      const tileLayer = L.tileLayer(primaryUrl, {{
+      // 优先加载高德标准矢量路网
+      const autonaviUrl = 'https://webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}';
+      const autonaviLayer = L.tileLayer(autonaviUrl, {{
         subdomains: '1234',
         minZoom: 3,
         maxZoom: 18
       }});
 
-      let fallbackStarted = false;
-      tileLayer.on('tileerror', function() {{
-        if (!fallbackStarted) {{
-          fallbackStarted = true;
-          console.warn("主干切片切换至 CartoDB/OSM 镜像通道...");
-          const backupLayer = L.tileLayer('https://{{s}}.basemaps.cartocdn.com/rastertiles/voyager/{{z}}/{{x}}/{{y}}.png', {{
-            subdomains: 'abcd',
-            minZoom: 3,
-            maxZoom: 18
-          }});
-          backupLayer.addTo(mapInstance);
+      // 全球高可用 CartoDB Voyager 备用通道 (100% 无防盗链限制)
+      const cartoUrl = 'https://{{s}}.basemaps.cartocdn.com/rastertiles/voyager/{{z}}/{{x}}/{{y}}.png';
+      const cartoLayer = L.tileLayer(cartoUrl, {{
+        subdomains: 'abcd',
+        minZoom: 3,
+        maxZoom: 18
+      }});
+
+      let switched = false;
+      autonaviLayer.on('tileerror', function() {{
+        if (!switched) {{
+          switched = true;
+          console.warn("高德瓦片遇到网络限制，自动启用 CartoDB Voyager 高精路网...");
+          cartoLayer.addTo(mapInstance);
         }}
       }});
 
-      tileLayer.addTo(mapInstance);
-      return tileLayer;
+      // 默认同时把底图添加到地图
+      autonaviLayer.addTo(mapInstance);
+      return autonaviLayer;
     }}
 
     createRobustTileLayer(mMap, 7);
