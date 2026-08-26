@@ -77,12 +77,12 @@ struct HybridTripWebView: UIViewRepresentable {
     class Coordinator: NSObject, WKNavigationDelegate {
         weak var webView: WKWebView?
 
-        func loadApp() {
+                func loadApp() {
             if let htmlPath = Bundle.main.path(forResource: "index", ofType: "html"),
                let htmlContent = try? String(contentsOfFile: htmlPath, encoding: .utf8) {
-                let baseURL = URL(string: "https://noodlesfzy.github.io/xinjiang-trip/")
-                webView?.loadHTMLString(htmlContent, baseURL: baseURL)
-                print("✅ 路书已通过 loadHTMLString (HTTPS baseURL) 加载成功")
+                // 使用本地 Bundle URL 作为 baseURL，绝对不使用境外不可达的 github.io
+                webView?.loadHTMLString(htmlContent, baseURL: Bundle.main.bundleURL)
+                print("✅ 路书已通过 loadHTMLString (本地 Bundle URL) 加载成功")
             } else {
                 print("❌ 未找到 index.html")
             }
