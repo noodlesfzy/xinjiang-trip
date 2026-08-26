@@ -913,7 +913,7 @@ def build_mobile_split_screen_html():
       position: absolute;
       left: 5px;
       top: 4px;
-      bottom: calc(66px + env(safe-area-inset-bottom));
+      bottom: calc(76px + env(safe-area-inset-bottom));
       width: 28px;
       z-index: 700;
       display: flex;
@@ -1930,17 +1930,28 @@ def build_mobile_split_screen_html():
       color: #e11d48;
     }}
 
-    /* Map Tile Clean Rendering */
+    /* Leaflet 瓦片在 iOS WebKit 下强制可见与色彩正常 */
+    .leaflet-tile {{
+      visibility: visible !important;
+      opacity: 1 !important;
+    }}
+    .leaflet-container img.leaflet-tile {{
+      mix-blend-mode: normal !important;
+      opacity: 1 !important;
+    }}
     .leaflet-tile-pane {{
-      transition: opacity 0.3s ease;
+      opacity: 1 !important;
+      z-index: 200 !important;
     }}
 
-                                /* Bottom App Dock (1:1 Apple App Store Liquid Glass Morphing & Dynamic Force Elastic Dock) */
+                                    /* Bottom App Dock (1:1 Apple App Store 绝对物理屏幕居中与弹性胶囊) */
     .m-bottom-dock {{
-      position: absolute;
+      position: fixed;
       bottom: max(12px, env(safe-area-inset-bottom) + 4px);
-      left: 14px;
-      right: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 24px);
+      max-width: 420px;
       height: 58px;
       background: var(--liquid-dock-bg);
       backdrop-filter: blur(40px) saturate(220%) contrast(105%);
@@ -1956,7 +1967,6 @@ def build_mobile_split_screen_html():
       user-select: none;
       -webkit-user-select: none;
       box-sizing: border-box;
-      position: relative;
       transform-origin: center bottom;
       transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.35s ease;
       will-change: transform;
@@ -1964,8 +1974,8 @@ def build_mobile_split_screen_html():
 
     /* 按压时 Dock 栏整体受力动态伸缩形变 (Dock Elastic Squish) */
     .m-bottom-dock.dock-pressed {{
-      transform: scale(0.965) translateY(2px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65), inset 0 1px 2px rgba(255, 255, 255, 0.45);
+      transform: translateX(-50%) scale(0.965) translateY(2px) !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65), inset 0 1px 2px rgba(255, 255, 255, 0.45) !important;
     }}
 
     /* 独立流体滑块气泡 (Morphing Liquid Glass Bubble) */
@@ -2560,8 +2570,8 @@ def build_mobile_split_screen_html():
       }}
     }}
 
-                // ==========================================
-    // 1. 初始化顶部全局自适应小地图 (GitHub 高星 ChineseTmsProviders 规范)
+                    // ==========================================
+    // 1. 初始化顶部全局自适应小地图 (AutoNavi 100% 极速稳定切片引擎)
     // ==========================================
     const mMap = L.map('m-map', {{
       zoomControl: false,
@@ -2571,27 +2581,15 @@ def build_mobile_split_screen_html():
     }}).setView([45.5, 87.5], 6);
 
     function createRobustTileLayer(mapInstance, primaryStyle = 7) {{
-      // 标准高德地图矢量/路网 TMS 切片 (htoooth/Leaflet.ChineseTmsProviders 标准)
-      const tileUrl = 'https://webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}';
+      const tileUrl = 'https://wprd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}';
       const tileLayer = L.tileLayer(tileUrl, {{
         subdomains: '1234',
         minZoom: 3,
         maxZoom: 18
       }});
 
-      let switched = false;
-      tileLayer.on('tileerror', function() {{
-        if (!switched) {{
-          switched = true;
-          console.warn("⚠️ 自动切换至备用切片源...");
-          const backupUrl = 'https://wprd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}';
-          const backupLayer = L.tileLayer(backupUrl, {{
-            subdomains: '1234',
-            minZoom: 3,
-            maxZoom: 18
-          }});
-          backupLayer.addTo(mapInstance);
-        }}
+      tileLayer.on('tileerror', function(err) {{
+        console.warn("瓦片重试中...");
       }});
 
       tileLayer.addTo(mapInstance);
@@ -2616,8 +2614,8 @@ def build_mobile_split_screen_html():
       if (dedicatedContainer) mapObserver.observe(dedicatedContainer);
     }}
 
-    // 智能多重定时尺寸校准
-    [50, 150, 300, 800, 1500].forEach(ms => {{
+    // 智能多重定时尺寸校准与地图自动就绪
+    [50, 150, 300, 600, 1200].forEach(ms => {{
       setTimeout(() => {{
         if (mMap) mMap.invalidateSize();
       }}, ms);
