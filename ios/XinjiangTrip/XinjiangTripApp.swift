@@ -79,9 +79,9 @@ struct HybridTripWebView: UIViewRepresentable {
             guard let webView = self.webView else { return }
             if let htmlPath = Bundle.main.path(forResource: "index", ofType: "html"),
                let htmlContent = try? String(contentsOfFile: htmlPath, encoding: .utf8) {
-                let baseURL = URL(string: "https://www.amap.com/")
+                let baseURL = URL(string: "https://noodlesfzy.github.io/xinjiang-trip/")
                 webView.loadHTMLString(htmlContent, baseURL: baseURL)
-                print("📦 已加载 App 内置最新离线路书 (HTTPS BaseURL 模式，全面解锁真机外部切片与网络权限)")
+                print("📦 已加载 App 内置最新离线路书")
             } else if let htmlPath = Bundle.main.path(forResource: "index", ofType: "html") {
                 let fileURL = URL(fileURLWithPath: htmlPath)
                 let bundleDir = Bundle.main.bundleURL
@@ -113,7 +113,6 @@ struct HybridTripWebView: UIViewRepresentable {
         }
         
         func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-            loadLocalFirst()
             webView.scrollView.refreshControl?.endRefreshing()
         }
         
@@ -125,33 +124,42 @@ struct HybridTripWebView: UIViewRepresentable {
             
             let scheme = url.scheme?.lowercased() ?? ""
             
-            // 拦截并直接唤起 iPhone 原生 App（大众点评、小红书、高德、百度地图、电话等）
+            // 1. 拦截并直接唤起 iPhone 原生 App（大众点评、小红书、高德、百度地图、电话等）
             if scheme == "dianping" || scheme == "xhsdiscover" || scheme == "iosamap" || scheme == "baidumap" || scheme == "tel" || scheme == "mailto" {
                 if UIApplication.shared.canOpenURL(url) {
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                } else {
-                    // 若未安装 App，且为大众点评/小红书，降级调用系统 Safari 页面
-                    if url.absoluteString.contains("dianping") || url.absoluteString.contains("xiaohongshu") {
-                        UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                    }
                 }
                 decisionHandler(.cancel)
                 return
             }
             
-            // 允许本地离线文件
-            if url.isFileURL {
+            // 2. 核心：如果不是用户主动点击 <a> 标签跳转（如内部加载 HTML、切片下载、DOM 渲染等），100% 允许在 WebView 内部执行！
+            if navigationAction.navigationType != .linkActivated {
                 decisionHandler(.allow)
                 return
             }
             
-            // 如果是本路书的在线域名，允许在 WebView 内部实时浏览
-            if let host = url.host, host.contains("github.io") || host.contains("192.168.") || host.contains("localhost") {
+            // 3. 用户主动点击链接时的处理：
+            // 如果用户点击高德路线导航外链
+            if url.absoluteString.contains("uri.amap.com/navigation") {
+                if let naviScheme = URL(string: url.absoluteString.replacingOccurrences(of: "https://uri.amap.com/navigation", with: "iosamap://navi")),
+                   UIApplication.shared.canOpenURL(naviScheme) {
+                    UIApplication.shared.open(naviScheme, options: [:], completionHandler: nil)
+                    decisionHandler(.cancel)
+                    return
+                }
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                decisionHandler(.cancel)
+                return
+            }
+            
+            // 如果是路书内部或同源页面
+            if let host = url.host, host.contains("github.io") || host.contains("localhost") {
                 decisionHandler(.allow)
                 return
             }
             
-            // 其他外部链接（如外部资讯、外部网站），统一调用系统 Safari 打开，避免污染路书主界面
+            // 其他外部链接调用系统 Safari 打开
             if scheme == "http" || scheme == "https" {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
                 decisionHandler(.cancel)
