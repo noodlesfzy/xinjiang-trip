@@ -98,24 +98,35 @@ struct HybridTripWebView: UIViewRepresentable {
                      decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
             guard let url = nav.request.url else { decisionHandler(.allow); return }
             let scheme = url.scheme?.lowercased() ?? ""
-            if scheme == "file" {
+            
+            // 本地文件与白名单域名直接放行在应用内显示
+            if scheme == "file" { decisionHandler(.allow); return }
+            if let host = url.host?.lowercased(), host.contains("github.io") || host.contains("localhost") {
                 decisionHandler(.allow)
                 return
             }
+            
+            // 第三方 App Scheme (大众点评 / 小红书 / 高德地图 / 电话 / 邮件) 原生唤起
             if ["dianping","xhsdiscover","iosamap","baidumap","tel","mailto"].contains(scheme) {
                 if UIApplication.shared.canOpenURL(url) { UIApplication.shared.open(url) }
                 decisionHandler(.cancel)
                 return
             }
-            if nav.navigationType != .linkActivated {
-                decisionHandler(.allow)
-                return
-            }
+            
+            // 高德导航外部链接
             if url.absoluteString.contains("uri.amap.com/navigation") {
                 UIApplication.shared.open(url)
                 decisionHandler(.cancel)
                 return
             }
+            
+            // 如果不是用户主动点击的外链，全部放行（包括网页内部资源、fetch、切片等）
+            if nav.navigationType != .linkActivated {
+                decisionHandler(.allow)
+                return
+            }
+            
+            // 用户点击的其他外部网页链接，调用系统 Safari 打开
             if scheme == "http" || scheme == "https" {
                 UIApplication.shared.open(url)
                 decisionHandler(.cancel)
