@@ -101,14 +101,20 @@ struct HybridTripWebView: UIViewRepresentable {
     class Coordinator: NSObject, WKNavigationDelegate {
         weak var webView: WKWebView?
 
-                func loadApp() {
+                        func loadApp() {
+            // 优先加载官方在线实时版（与用户手机 Safari 体验 100% 一致，全网瓦片秒开）
+            if let remoteURL = URL(string: "https://noodlesfzy.github.io/xinjiang-trip/trip_mobile.html") {
+                let req = URLRequest(url: remoteURL, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 8)
+                webView?.load(req)
+                print("🚀 正在加载路书: \(remoteURL)")
+            }
+        }
+
+        func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+            print("⚠️ 在线加载失败 (\(error.localizedDescription))，自动切换至 App 内嵌离线沙盒路书...")
             if let htmlPath = Bundle.main.path(forResource: "index", ofType: "html"),
                let htmlContent = try? String(contentsOfFile: htmlPath, encoding: .utf8) {
-                // 使用本地 Bundle URL 作为 baseURL，绝对不使用境外不可达的 github.io
-                webView?.loadHTMLString(htmlContent, baseURL: Bundle.main.bundleURL)
-                print("✅ 路书已通过 loadHTMLString (本地 Bundle URL) 加载成功")
-            } else {
-                print("❌ 未找到 index.html")
+                webView.loadHTMLString(htmlContent, baseURL: Bundle.main.bundleURL)
             }
         }
 
