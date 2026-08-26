@@ -1936,7 +1936,7 @@ def build_mobile_split_screen_html():
       transition: opacity 0.3s ease;
     }}
 
-                /* Bottom App Dock (1:1 Apple App Store Liquid Glass Morphing & Sliding Dock) */
+                    /* Bottom App Dock (1:1 Apple App Store Liquid Glass Morphing & Sliding Dock) */
     .m-bottom-dock {{
       position: absolute;
       bottom: max(12px, env(safe-area-inset-bottom) + 4px);
@@ -1954,19 +1954,19 @@ def build_mobile_split_screen_html():
       align-items: center;
       padding: 4px;
       z-index: 1000;
-      touch-action: none;
       user-select: none;
       -webkit-user-select: none;
+      box-sizing: border-box;
       position: relative;
     }}
 
-    /* 流体滑动气泡指示器 (Fluid Morphing Liquid Bubble Slider) */
+    /* 独立流体滑块气泡 (Morphing Liquid Glass Bubble) */
     .m-liquid-bubble-indicator {{
       position: absolute;
       top: 4px;
       bottom: 4px;
       left: 0;
-      width: 16%;
+      width: calc((100% - 8px) / 6);
       background: var(--liquid-bubble-bg);
       border: 0.5px solid var(--liquid-bubble-border);
       border-radius: 24px;
@@ -1974,15 +1974,13 @@ def build_mobile_split_screen_html():
       pointer-events: none;
       z-index: 1;
       transform: translateX(4px);
-      transition: transform 0.42s cubic-bezier(0.25, 1, 0.35, 1.15), width 0.32s ease, filter 0.25s ease;
-      will-change: transform, width, left;
+      transition: transform 0.38s cubic-bezier(0.25, 1, 0.35, 1.15), width 0.3s ease;
+      will-change: transform, width;
     }}
 
-    /* 手指在 Dock 上触摸滑动时的流体实时跟踪与液体拉伸变形效果 */
     .m-liquid-bubble-indicator.dragging {{
       transition: none !important;
       filter: brightness(1.25) drop-shadow(0 0 14px rgba(41, 151, 255, 0.65));
-      transform-origin: center center;
     }}
 
     .m-bubble-sheen {{
@@ -2009,6 +2007,7 @@ def build_mobile_split_screen_html():
       border-radius: 24px;
       transition: color 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
       background: transparent;
+      -webkit-tap-highlight-color: transparent;
     }}
     .m-dock-item:active {{
       transform: scale(0.92);
@@ -2265,8 +2264,8 @@ def build_mobile_split_screen_html():
 
   <script>
     const mTripData = {json_dump};
-    // ==========================================
-    // 0.3 初始化 1:1 Apple App Store Liquid Glass 触摸滑动流体引擎
+        // ==========================================
+    // 0.3 1:1 Apple App Store Liquid Glass 触摸滑动与平滑滑块引擎
     // ==========================================
     function initLiquidDockGestures() {{
       const dock = document.getElementById('m-bottom-dock');
@@ -2275,43 +2274,71 @@ def build_mobile_split_screen_html():
       const items = Array.from(dock.querySelectorAll('.m-dock-item'));
       if (items.length === 0) return;
 
-      let isDragging = false;
-      let startX = 0;
-      let lastX = 0;
+      function updateIndicatorPosition(targetIndexOrTab, animated = true) {{
+        let targetItem = null;
+        if (typeof targetIndexOrTab === 'string') {{
+          targetItem = items.find(it => it.getAttribute('data-tab-id') === targetIndexOrTab);
+        }} else if (typeof targetIndexOrTab === 'number') {{
+          targetItem = items[targetIndexOrTab];
+        }}
+        if (!targetItem) targetItem = items[0];
 
-      function updateIndicatorPosition(index, animated = true) {{
-        const targetItem = items[index];
-        if (!targetItem) return;
         const dockRect = dock.getBoundingClientRect();
         const itemRect = targetItem.getBoundingClientRect();
-        const targetLeft = itemRect.left - dockRect.left;
-        const targetWidth = itemRect.width;
+        
+        let targetLeft = 4;
+        let targetWidth = (dockRect.width - 8) / items.length;
+        
+        if (dockRect.width > 0 && itemRect.width > 0) {{
+          targetLeft = itemRect.left - dockRect.left;
+          targetWidth = itemRect.width;
+        }}
 
         if (animated) {{
           indicator.classList.remove('dragging');
+          indicator.style.transition = 'transform 0.38s cubic-bezier(0.25, 1, 0.35, 1.15), width 0.3s ease';
         }} else {{
           indicator.classList.add('dragging');
+          indicator.style.transition = 'none';
         }}
 
         indicator.style.transform = `translateX(${{targetLeft}}px)`;
         indicator.style.width = `${{targetWidth}}px`;
+
+        items.forEach(it => {{
+          if (it === targetItem) {{
+            it.classList.add('active');
+          }} else {{
+            it.classList.remove('active');
+          }}
+        }});
       }}
 
       window.updateLiquidDockSlider = function(tabName) {{
-        const idx = items.findIndex(it => it.getAttribute('data-tab-id') === tabName);
-        if (idx !== -1) {{
-          updateIndicatorPosition(idx, true);
-        }}
+        updateIndicatorPosition(tabName, true);
       }};
 
-      // 初始定位
-      setTimeout(() => {{ updateIndicatorPosition(0, false); }}, 60);
-      window.addEventListener('resize', () => {{
-        const activeIdx = items.findIndex(it => it.classList.contains('active'));
-        if (activeIdx !== -1) updateIndicatorPosition(activeIdx, false);
+      // 绑定每个 Tab 的直接点击触发
+      items.forEach((it, idx) => {{
+        it.addEventListener('click', (e) => {{
+          const tabId = it.getAttribute('data-tab-id');
+          mSwitch(tabId, it);
+        }});
       }});
 
-      // 手指在 Dock 上滑动时的流体跟随与液体形变引擎
+      // 初始定位与窗口尺寸自适应
+      setTimeout(() => {{ updateIndicatorPosition(0, false); }}, 60);
+      setTimeout(() => {{ updateIndicatorPosition(0, false); }}, 300);
+      window.addEventListener('resize', () => {{
+        const activeIdx = items.findIndex(it => it.classList.contains('active'));
+        updateIndicatorPosition(activeIdx >= 0 ? activeIdx : 0, false);
+      }});
+
+      // 触摸滑动手势跟随 (Touch Dragging Flow)
+      let isDragging = false;
+      let startX = 0;
+      let lastX = 0;
+
       dock.addEventListener('touchstart', (e) => {{
         isDragging = true;
         const touch = e.touches[0];
@@ -2330,18 +2357,15 @@ def build_mobile_split_screen_html():
         lastX = touch.clientX;
         const stretchFactor = Math.min(1.22, Math.max(0.85, 1 + Math.abs(dragVelocity) * 0.015));
 
-        const itemWidth = dockRect.width / items.length;
+        const itemWidth = (dockRect.width - 8) / items.length;
         const clampedX = Math.max(2, Math.min(dockRect.width - itemWidth - 2, touchXInDock - itemWidth / 2));
         
         indicator.style.transform = `translateX(${{clampedX}}px) scaleX(${{stretchFactor}})`;
         
         const hoveredIndex = Math.max(0, Math.min(items.length - 1, Math.floor(touchXInDock / itemWidth)));
         items.forEach((it, i) => {{
-          if (i === hoveredIndex) {{
-            it.classList.add('active');
-          }} else {{
-            it.classList.remove('active');
-          }}
+          if (i === hoveredIndex) it.classList.add('active');
+          else it.classList.remove('active');
         }});
       }}, {{ passive: true }});
 
@@ -2351,7 +2375,7 @@ def build_mobile_split_screen_html():
         indicator.classList.remove('dragging');
         
         const dockRect = dock.getBoundingClientRect();
-        const itemWidth = dockRect.width / items.length;
+        const itemWidth = (dockRect.width - 8) / items.length;
         const finalIndex = Math.max(0, Math.min(items.length - 1, Math.floor((lastX - dockRect.left) / itemWidth)));
         
         const selectedItem = items[finalIndex];
@@ -2476,8 +2500,8 @@ def build_mobile_split_screen_html():
       }}
     }}
 
-        // ==========================================
-    // 1. 初始化顶部全局自适应小地图 (高可用多通道切片引擎)
+            // ==========================================
+    // 1. 初始化顶部全局自适应小地图 (多源高可用切片引擎)
     // ==========================================
     const mMap = L.map('m-map', {{
       zoomControl: false,
@@ -2485,23 +2509,23 @@ def build_mobile_split_screen_html():
     }}).setView([45.5, 87.5], 6);
 
     function createRobustTileLayer(mapInstance, primaryStyle = 7) {{
-      const tileLayer = L.tileLayer('https://webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}', {{
+      const tileUrl = 'https://webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}';
+      const tileLayer = L.tileLayer(tileUrl, {{
         subdomains: ['1', '2', '3', '4'],
         minZoom: 3,
-        maxZoom: 18,
-        crossOrigin: false
+        maxZoom: 18
       }});
 
       let switched = false;
-      tileLayer.on('tileerror', function() {{
+      tileLayer.on('tileerror', function(err) {{
         if (!switched) {{
           switched = true;
-          console.warn("⚠️ 主瓦片通道切换至高可用备用镜像...");
-          const backupLayer = L.tileLayer('https://wprd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}', {{
+          console.warn("⚠️ 主瓦片切换至高可用备用镜像...");
+          const backupUrl = 'https://wprd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}';
+          const backupLayer = L.tileLayer(backupUrl, {{
             subdomains: ['1', '2', '3', '4'],
             minZoom: 3,
-            maxZoom: 18,
-            crossOrigin: false
+            maxZoom: 18
           }});
           backupLayer.addTo(mapInstance);
         }}
@@ -3308,6 +3332,9 @@ def build_mobile_split_screen_html():
     // 6. 通用 Tab 切换引擎 (满足需求2：智能时间同步)
     // ==========================================
     function mSwitch(viewId, el) {{
+      if (window.updateLiquidDockSlider) {{
+        window.updateLiquidDockSlider(viewId);
+      }}
       currentViewTab = viewId;
       document.body.setAttribute('data-tab', viewId);
 
