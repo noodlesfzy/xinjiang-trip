@@ -237,11 +237,25 @@ def build_mobile_split_screen_html():
   <style>
     :root {{
       --primary: #96382d;
-      --bg: #090d16;
-      --card-bg: #121a2c;
-      --card-border: #1e2a44;
+      --bg: #070a12;
+      --card-bg: rgba(18, 26, 44, 0.72);
+      --card-border: rgba(255, 255, 255, 0.12);
       --text: #f8fafc;
       --text-muted: #94a3b8;
+      
+      /* Apple Liquid Glass Material Tokens */
+      --liquid-glass-bg: rgba(15, 23, 42, 0.76);
+      --liquid-glass-bg-subtle: rgba(24, 34, 58, 0.65);
+      --liquid-glass-border: rgba(255, 255, 255, 0.18);
+      --liquid-glass-specular: inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.35);
+      --liquid-glass-shadow: 0 14px 40px 0 rgba(0, 0, 0, 0.52), 0 2px 8px 0 rgba(0, 0, 0, 0.35);
+      --liquid-blur: blur(28px) saturate(190%);
+      
+      /* Continuous Hardware Curves (Apple Squircles) */
+      --radius-pill: 9999px;
+      --radius-island: 26px;
+      --radius-card: 22px;
+      --radius-sub: 16px;
     }}
     * {{
       box-sizing: border-box;
@@ -277,21 +291,22 @@ def build_mobile_split_screen_html():
       overflow: hidden;
     }}
 
-    /* Compact Top Header (适配 iOS 状态栏/灵动岛全屏沉浸) */
+    /* Liquid Glass Floating Island Header (悬浮流体顶栏叠层) */
     .m-header {{
       flex: 0 0 auto;
-      background: linear-gradient(180deg, rgba(27, 36, 56, 0.96) 0%, rgba(13, 19, 34, 0.96) 100%);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      padding-top: max(10px, env(safe-area-inset-top));
-      padding-bottom: 9px;
-      padding-left: max(12px, env(safe-area-inset-left));
-      padding-right: max(12px, env(safe-area-inset-right));
-      border-bottom: 1px solid var(--card-border);
+      margin: max(8px, env(safe-area-inset-top)) 12px 6px 12px;
+      padding: 8px 14px;
+      background: var(--liquid-glass-bg);
+      backdrop-filter: var(--liquid-blur);
+      -webkit-backdrop-filter: var(--liquid-blur);
+      border: 1px solid var(--liquid-glass-border);
+      border-radius: var(--radius-island);
+      box-shadow: var(--liquid-glass-specular), var(--liquid-glass-shadow);
       display: flex;
       justify-content: space-between;
       align-items: center;
       z-index: 100;
+      transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1);
     }}
     .m-title-box h1 {{
       font-size: 14.5px;
@@ -314,25 +329,28 @@ def build_mobile_split_screen_html():
     .m-mini-badge {{
       font-size: 10px;
       font-weight: 600;
-      padding: 3px 7px;
-      border-radius: 6px;
-      background: rgba(150, 56, 45, 0.28);
+      padding: 3px 8px;
+      border-radius: 12px;
+      background: rgba(150, 56, 45, 0.35);
       color: #fca5a5;
-      border: 1px solid rgba(150, 56, 45, 0.45);
+      border: 1px solid rgba(248, 113, 113, 0.45);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.25);
     }}
 
     /* ========================================================
-       TOP PINNED MAP ZONE (黄金 38% 比例 + 丝滑回弹)
+       TOP PINNED MAP ZONE (流体圆角独立视口)
        ======================================================== */
     .m-map-pinned-zone {{
       flex: 0 0 38vh;
       min-height: 200px;
       max-height: 52vh;
-      width: 100%;
+      margin: 0 12px 6px 12px;
+      border-radius: var(--radius-card);
+      overflow: hidden;
       background: #0f172a;
       position: relative;
-      border-bottom: 2px solid var(--card-border);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.55);
+      border: 1px solid var(--liquid-glass-border);
+      box-shadow: var(--liquid-glass-specular), var(--liquid-glass-shadow);
       z-index: 50;
       transition: flex-basis 0.35s cubic-bezier(0.32, 0.72, 0, 1);
     }}
@@ -357,10 +375,10 @@ def build_mobile_split_screen_html():
       bottom: 10px;
       right: 10px;
       z-index: 500;
-      background: rgba(15, 23, 42, 0.92);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: var(--liquid-glass-bg);
+      backdrop-filter: var(--liquid-blur);
+      -webkit-backdrop-filter: var(--liquid-blur);
+      border: 1px solid var(--liquid-glass-border);
       color: #f1f5f9;
       font-size: 11px;
       font-weight: 700;
@@ -370,7 +388,7 @@ def build_mobile_split_screen_html():
       display: flex;
       align-items: center;
       gap: 5px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      box-shadow: var(--liquid-glass-specular), var(--liquid-glass-shadow);
       cursor: pointer;
       transition: transform 0.15s ease, background-color 0.15s ease;
     }}
@@ -381,21 +399,21 @@ def build_mobile_split_screen_html():
       top: 8px;
       left: 10px;
       z-index: 500;
-      background: rgba(13, 19, 34, 0.90);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      padding: 4px 10px;
-      border-radius: 6px;
+      background: var(--liquid-glass-bg);
+      backdrop-filter: var(--liquid-blur);
+      -webkit-backdrop-filter: var(--liquid-blur);
+      border: 1px solid var(--liquid-glass-border);
+      padding: 4px 12px;
+      border-radius: 14px;
       font-size: 11px;
       font-weight: 600;
       color: #f8fafc;
-      border-left: 3px solid #f87171;
       pointer-events: none;
       max-width: 84%;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      box-shadow: var(--liquid-glass-specular), 0 4px 12px rgba(0,0,0,0.4);
     }}
 
     /* Custom Map Markers */
@@ -680,7 +698,7 @@ def build_mobile_split_screen_html():
     }}
 
     /* ========================================================
-       GLOBAL LEFT FLOATING QUICK-NAV RAIL
+       GLOBAL LEFT FLOATING QUICK-NAV RAIL (流体玻璃悬浮岛)
        ======================================================== */
     .m-main-content-layout {{
       flex: 1 1 auto;
@@ -693,21 +711,21 @@ def build_mobile_split_screen_html():
 
     .m-quick-nav-rail {{
       position: absolute;
-      left: 6px;
-      top: 10px;
-      bottom: calc(64px + env(safe-area-inset-bottom));
-      width: 36px;
+      left: 10px;
+      top: 6px;
+      bottom: calc(78px + env(safe-area-inset-bottom));
+      width: 38px;
       z-index: 700;
       display: flex;
       flex-direction: column;
-      gap: 3px;
-      padding: 6px 2px;
-      background: rgba(15, 23, 42, 0.90);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 18px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.55);
+      gap: 4px;
+      padding: 6px 3px;
+      background: var(--liquid-glass-bg);
+      backdrop-filter: var(--liquid-blur);
+      -webkit-backdrop-filter: var(--liquid-blur);
+      border: 1px solid var(--liquid-glass-border);
+      border-radius: 20px;
+      box-shadow: var(--liquid-glass-specular), var(--liquid-glass-shadow);
       overflow-y: auto;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
@@ -715,9 +733,9 @@ def build_mobile_split_screen_html():
     .m-quick-nav-rail::-webkit-scrollbar {{ display: none; }}
 
     .m-rail-pill {{
-      flex: 0 0 24px;
-      height: 24px;
-      width: 30px;
+      flex: 0 0 26px;
+      height: 26px;
+      width: 32px;
       margin: 0 auto;
       display: flex;
       align-items: center;
@@ -725,30 +743,30 @@ def build_mobile_split_screen_html():
       font-size: 10.5px;
       font-weight: 700;
       color: #94a3b8;
-      border-radius: 12px;
+      border-radius: 13px;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }}
-    .m-rail-pill:active {{ transform: scale(0.88); }}
+    .m-rail-pill:active {{ transform: scale(0.85); }}
 
-    /* 不同模式下的快捷按钮高亮主题 */
+    /* 不同模式下的快捷按钮高亮主题 (Liquid Glow) */
     .m-rail-pill.active {{
       background: #96382d;
       color: #fff;
-      box-shadow: 0 0 0 1.5px rgba(248, 113, 113, 0.6);
-      transform: scale(1.08);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 0 12px rgba(248, 113, 113, 0.7);
+      transform: scale(1.14);
     }}
     body[data-tab="dining"] .m-rail-pill.active {{
       background: #d97706;
-      box-shadow: 0 0 0 1.5px rgba(245, 158, 11, 0.6);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 0 12px rgba(245, 158, 11, 0.7);
     }}
     body[data-tab="birding"] .m-rail-pill.active {{
       background: #059669;
-      box-shadow: 0 0 0 1.5px rgba(16, 185, 129, 0.6);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 0 12px rgba(16, 185, 129, 0.7);
     }}
     body[data-tab="culture"] .m-rail-pill.active {{
       background: #7e22ce;
-      box-shadow: 0 0 0 1.5px rgba(192, 132, 252, 0.6);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 0 12px rgba(192, 132, 252, 0.7);
     }}
 
     /* ========================================================
@@ -768,7 +786,7 @@ def build_mobile_split_screen_html():
     .m-birding-view,
     .m-culture-view,
     .m-tips-view {{
-      padding: 10px 10px calc(72px + env(safe-area-inset-bottom)) 46px;
+      padding: 6px 12px calc(86px + env(safe-area-inset-bottom)) 56px;
     }}
 
     .m-metrics-strip {{
@@ -792,35 +810,40 @@ def build_mobile_split_screen_html():
     .m-m-box .m-val {{ font-size: 12.5px; font-weight: 700; color: #60a5fa; }}
 
     .m-rules-banner {{
-      background: rgba(150, 56, 45, 0.15);
-      border: 1px solid rgba(150, 56, 45, 0.4);
-      border-radius: 10px;
-      padding: 10px 12px;
-      margin-bottom: 10px;
+      background: rgba(150, 56, 45, 0.18);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(248, 113, 113, 0.35);
+      border-radius: var(--radius-sub);
+      box-shadow: var(--liquid-glass-specular), 0 4px 14px rgba(0,0,0,0.3);
+      padding: 10px 14px;
+      margin-bottom: 12px;
       font-size: 11.5px;
     }}
     .m-rules-banner h4 {{ color: #fca5a5; font-size: 12px; margin-bottom: 4px; }}
     .m-rules-banner ul {{ list-style: none; display: flex; flex-direction: column; gap: 4px; color: #e2e8f0; }}
 
     /* ========================================================
-       1. 行程卡片
+       1. 行程卡片 (Liquid Glass Squircles)
        ======================================================== */
     .m-card {{
       background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      margin-bottom: 12px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--liquid-glass-border);
+      border-radius: var(--radius-card);
+      margin-bottom: 14px;
       overflow: hidden;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.35);
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--liquid-glass-specular), 0 8px 24px rgba(0,0,0,0.4);
+      transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
     }}
     .m-card:active {{ transform: scale(0.99); }}
     
     /* 整张卡片整体反差深红变色高亮 */
     .m-card.active {{
-      background: linear-gradient(145deg, #3d1414 0%, #1f0b0b 100%) !important;
+      background: linear-gradient(145deg, rgba(61, 20, 20, 0.88) 0%, rgba(31, 11, 11, 0.94) 100%) !important;
       border: 1.5px solid #f87171 !important;
-      box-shadow: 0 8px 24px rgba(248, 113, 113, 0.35) !important;
+      box-shadow: var(--liquid-glass-specular), 0 12px 32px rgba(248, 113, 113, 0.35) !important;
       transform: translateY(-2px);
     }}
     .m-card.active .m-card-header {{
@@ -1580,50 +1603,56 @@ def build_mobile_split_screen_html():
     }}
     .m-sub-card h3 {{ font-size: 14px; color: #f87171; margin-bottom: 8px; }}
 
-    /* Bottom App Dock (iOS 原生高斯模糊 + 44pt 触控靶心) */
+    /* Bottom App Dock (Liquid Glass Floating Island 悬浮流体底栏叠层) */
     .m-bottom-dock {{
       position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: calc(56px + env(safe-area-inset-bottom));
-      padding-bottom: max(10px, env(safe-area-inset-bottom));
-      background: rgba(13, 19, 34, 0.94);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      bottom: max(12px, env(safe-area-inset-bottom));
+      left: 12px;
+      right: 12px;
+      height: 60px;
+      background: var(--liquid-glass-bg);
+      backdrop-filter: var(--liquid-blur);
+      -webkit-backdrop-filter: var(--liquid-blur);
+      border: 1px solid var(--liquid-glass-border);
+      border-radius: 30px;
+      box-shadow: var(--liquid-glass-specular), 0 16px 44px rgba(0, 0, 0, 0.65);
       display: flex;
       justify-content: space-around;
       align-items: center;
+      padding: 4px 6px;
       z-index: 1000;
     }}
     .m-dock-item {{
+      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       color: var(--text-muted);
       font-size: 10.5px;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
       width: 16.6%;
       height: 100%;
-      transition: transform 0.15s ease, color 0.15s ease;
+      border-radius: 24px;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }}
     .m-dock-item:active {{
-      transform: scale(0.90);
+      transform: scale(0.88);
     }}
     .m-dock-item .m-dock-icon {{
-      font-size: 18px;
+      font-size: 19px;
       margin-bottom: 2px;
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }}
     .m-dock-item.active {{
-      color: #f87171;
-      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.35) 0%, rgba(248, 113, 113, 0.15) 100%);
+      border: 1px solid rgba(248, 113, 113, 0.45);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.35), 0 0 16px rgba(239, 68, 68, 0.45);
     }}
     .m-dock-item.active .m-dock-icon {{
-      transform: scale(1.15);
+      transform: scale(1.18);
     }}
   </style>
 </head>
