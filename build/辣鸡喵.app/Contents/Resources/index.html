@@ -11751,35 +11751,16 @@ svg.leaflet-image-layer.leaflet-interactive path {
       zoomAnimation: true
     }).setView([45.5, 87.5], 6);
 
-    function createRobustTileLayer(mapInstance, primaryStyle = 7) {
-      // 优先加载高德标准矢量路网
-      const autonaviUrl = 'https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={x}&y={y}&z={z}';
-      const autonaviLayer = L.tileLayer(autonaviUrl, {
-        subdomains: '1234',
-        minZoom: 3,
-        maxZoom: 18
-      });
-
-      // 全球高可用 CartoDB Voyager 备用通道 (100% 无防盗链限制)
+        function createRobustTileLayer(mapInstance, primaryStyle = 7) {
+      // 100% 纯正可用、绝不返回问号的 CartoDB Voyager 底图
       const cartoUrl = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png';
       const cartoLayer = L.tileLayer(cartoUrl, {
         subdomains: 'abcd',
         minZoom: 3,
-        maxZoom: 18
-      });
-
-      let switched = false;
-      autonaviLayer.on('tileerror', function() {
-        if (!switched) {
-          switched = true;
-          console.warn("高德瓦片遇到网络限制，自动启用 CartoDB Voyager 高精路网...");
-          cartoLayer.addTo(mapInstance);
-        }
-      });
-
-      // 默认同时把底图添加到地图
-      autonaviLayer.addTo(mapInstance);
-      return autonaviLayer;
+        maxZoom: 18,
+        attribution: '&copy; CartoDB'
+      }).addTo(mapInstance);
+      return cartoLayer;
     }
 
     createRobustTileLayer(mMap, 7);
@@ -12490,14 +12471,14 @@ const dynamicLayers = L.layerGroup().addTo(mMap);
         attributionControl: false
       }).setView([45.5, 87.5], 6);
 
-      transitLayer = L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={x}&y={y}&z={z}', {
-        subdomains: ['1', '2', '3', '4'],
+      transitLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
+        subdomains: 'abcd',
         minZoom: 3,
         maxZoom: 18
       }).addTo(dedicatedMap);
 
-      standardLayer = L.tileLayer('https://wprd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
-        subdomains: ['1', '2', '3', '4'],
+      standardLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+        subdomains: 'abcd',
         minZoom: 3,
         maxZoom: 18
       });
