@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "2630"
-   version = "1.3">
+   LastUpgradeVersion = "1500"
+   version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "213238F9D45C4594BB489BE2"
+               BlueprintIdentifier = "B0F21272E3DE4427A5580C01"
                BuildableName = "XinjiangTrip.app"
                BlueprintName = "XinjiangTrip"
                ReferencedContainer = "container:XinjiangTrip.xcodeproj">
@@ -44,7 +44,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "213238F9D45C4594BB489BE2"
+            BlueprintIdentifier = "B0F21272E3DE4427A5580C01"
             BuildableName = "XinjiangTrip.app"
             BlueprintName = "XinjiangTrip"
             ReferencedContainer = "container:XinjiangTrip.xcodeproj">
@@ -61,7 +61,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "213238F9D45C4594BB489BE2"
+            BlueprintIdentifier = "B0F21272E3DE4427A5580C01"
             BuildableName = "XinjiangTrip.app"
             BlueprintName = "XinjiangTrip"
             ReferencedContainer = "container:XinjiangTrip.xcodeproj">

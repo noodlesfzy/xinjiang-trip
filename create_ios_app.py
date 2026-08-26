@@ -6,7 +6,9 @@ create_ios_app.py — 一键构建原生 iOS Xcode 工程 (XinjiangTrip)
 """
 
 import os
+import re
 import shutil
+import subprocess
 import uuid
 
 IOS_DIR = "/Users/Noodles/Documents/AG_Project/ios"
@@ -251,7 +253,30 @@ info_plist = '''<?xml version="1.0" encoding="UTF-8"?>
 with open(os.path.join(APP_DIR, "Info.plist"), "w", encoding="utf-8") as f:
     f.write(info_plist)
 
-# 4. 生成标准 PBXProject 文件 (Xcode 项目配置文件)
+# 4. 自动检测并永久锁定当前开发者的 Apple Team ID (解决每次重新选择 Team 报错)
+def detect_development_team():
+    pbx_path = os.path.join(PBX_DIR, "project.pbxproj")
+    if os.path.exists(pbx_path):
+        try:
+            with open(pbx_path, "r", encoding="utf-8") as f:
+                content = f.read()
+                m = re.search(r'DEVELOPMENT_TEAM = "??([A-Z0-9]{10})"??;', content)
+                if m and m.group(1):
+                    return m.group(1)
+        except Exception:
+            pass
+    try:
+        sec_out = subprocess.check_output(["security", "find-identity", "-p", "codesigning", "-v"]).decode("utf-8", errors="ignore")
+        m = re.search(r'\(([A-Z0-9]{10})\)', sec_out)
+        if m:
+            return m.group(1)
+    except Exception:
+        pass
+    return "4D96GR74B6"
+
+team_id = detect_development_team()
+
+# 5. 生成标准 PBXProject 文件 (Xcode 项目配置文件)
 def gen_id():
     return uuid.uuid4().hex[:24].upper()
 
@@ -358,6 +383,8 @@ project_pbx = f'''// !$*UTF8*$!
 				TargetAttributes = {{
 					{target_id} = {{
 						CreatedOnToolsVersion = 15.0;
+						DevelopmentTeam = {team_id};
+						ProvisioningStyle = Automatic;
 					}};
 				}};
 			}};
@@ -520,7 +547,7 @@ project_pbx = f'''// !$*UTF8*$!
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = {team_id};
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = XinjiangTrip/Info.plist;
@@ -555,7 +582,7 @@ project_pbx = f'''// !$*UTF8*$!
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = {team_id};
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = XinjiangTrip/Info.plist;
