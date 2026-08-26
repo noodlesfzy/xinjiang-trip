@@ -59,6 +59,10 @@ struct HybridTripWebView: UIViewRepresentable {
         // 核心：优先加载 App 内置本地最新 HTML (零延迟、零网络依赖、保证 Xcode 每次编译即时生效)
         context.coordinator.loadLocalFirst()
         
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            context.coordinator.loadLocalFirst()
+        }
+        
         return webView
     }
     
