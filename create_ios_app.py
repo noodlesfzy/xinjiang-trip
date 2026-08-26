@@ -54,10 +54,11 @@ struct ContentView: View {
 
 // MARK: - HybridTripWebView
 struct HybridTripWebView: UIViewRepresentable {
-    func makeUIView(context: Context) -> WKWebView {
+        func makeUIView(context: Context) -> WKWebView {
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
         config.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
+        config.setValue(true, forKey: "allowUniversalAccessFromFileURLs")
 
         let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = context.coordinator
@@ -80,11 +81,12 @@ struct HybridTripWebView: UIViewRepresentable {
     class Coordinator: NSObject, WKNavigationDelegate {
         weak var webView: WKWebView?
 
-        func loadApp() {
-            if let htmlPath = Bundle.main.path(forResource: "index", ofType: "html") {
-                let fileURL = URL(fileURLWithPath: htmlPath)
-                webView?.loadFileURL(fileURL, allowingReadAccessTo: Bundle.main.bundleURL)
-                print("✅ 路书已通过本地 FileURL 加载: \(htmlPath)")
+                func loadApp() {
+            if let htmlPath = Bundle.main.path(forResource: "index", ofType: "html"),
+               let htmlContent = try? String(contentsOfFile: htmlPath, encoding: .utf8) {
+                let baseURL = URL(string: "https://noodlesfzy.github.io/xinjiang-trip/")
+                webView?.loadHTMLString(htmlContent, baseURL: baseURL)
+                print("✅ 路书已通过 loadHTMLString (HTTPS baseURL) 加载成功")
             } else {
                 print("❌ 未找到 index.html")
             }
