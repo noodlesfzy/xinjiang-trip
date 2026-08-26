@@ -470,16 +470,24 @@ HERITAGE_DAY_ROUTES = {
 }
 
 
+try:
+    from heritage_images_base64 import HERITAGE_B64_IMAGES
+except ImportError:
+    HERITAGE_B64_IMAGES = {}
+
+
 def render_heritage_html():
     cards_html = []
-    for h in HERITAGE_14D_DATA:
+    for i, h in enumerate(HERITAGE_14D_DATA):
         chips_list = "".join([f'<span class="m-herit-chip">🏛️ {c}</span>' for c in h["core_highlights"]])
+        img_key = f"heritage_{h['day']}_{i+1}.jpg"
+        img_src = HERITAGE_B64_IMAGES.get(img_key, h.get("image_url", ""))
         
         card = f"""
         <div class="m-herit-card" id="herit-day-{h['day']}-{h.get('order_in_day', 1)}">
           <!-- 16:9 最佳显示比例高清实景大图卡片容器 -->
           <div class="m-herit-photo-wrapper">
-            <img src="{h['image_url']}" alt="{h['name']}" class="m-herit-photo-img" loading="lazy" />
+            <img src="{img_src}" alt="{h['name']}" class="m-herit-photo-img" loading="lazy" />
             <div class="m-herit-photo-overlay">
               <span class="m-herit-img-badge">📷 真实国保实景 · 斯飞坐标</span>
               <div class="m-herit-photo-caption">📌 {h['image_caption']}</div>

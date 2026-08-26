@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2025初冬北疆雪国与东疆火洲 14天自驾全景路书 - 中国自驾交互路书</title>
+  <!-- Leaflet CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --accent: #f59e0b;
+      --danger: #ef4444;
+      --success: #10b981;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-hover: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; }
+    body { background-color: var(--bg); color: var(--text); line-height: 1.6; }
+    
+    /* Header */
+    header { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-bottom: 1px solid var(--border); padding: 24px 20px; }
+    .header-container { max-width: 1400px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; }
+    .title-group h1 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .title-group p { font-size: 14px; color: var(--text-muted); }
+    .meta-badges { display: flex; flex-wrap: wrap; gap: 8px; }
+    .badge { padding: 6px 12px; border-radius: 9999px; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; }
+    .badge-primary { background: rgba(37, 99, 235, 0.2); color: #60a5fa; border: 1px solid rgba(37, 99, 235, 0.4); }
+    .badge-accent { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .badge-success { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .badge-danger { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+
+    /* Main Layout */
+    .container { max-width: 1400px; margin: 20px auto; padding: 0 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 1024px) {
+      .container { grid-template-columns: 1fr; }
+    }
+
+    /* Map Box */
+    .map-panel { position: sticky; top: 20px; height: calc(100vh - 100px); min-height: 500px; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; }
+    #map { flex: 1; width: 100%; height: 100%; z-index: 1; }
+    .map-footer { background: var(--card-bg); padding: 12px 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; }
+
+    /* Right Timeline Panel */
+    .content-panel { display: flex; flex-direction: column; gap: 16px; }
+
+    /* Rules Banner */
+    .critical-banner { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 12px; padding: 16px; }
+    .critical-banner h3 { font-size: 15px; font-weight: 600; color: #f87171; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .critical-banner ul { list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #cbd5e1; }
+
+    /* Day Card */
+    .day-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; transition: all 0.2s ease; cursor: pointer; }
+    .day-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    .day-card.active { border-color: #60a5fa; box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3); }
+
+    .card-header { padding: 14px 16px; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .day-tag { font-size: 14px; font-weight: 700; color: #60a5fa; background: rgba(37,99,235,0.15); padding: 4px 10px; border-radius: 6px; }
+    .day-date { font-size: 13px; color: var(--text-muted); }
+    .card-title { font-size: 16px; font-weight: 600; color: #fff; margin: 12px 16px 8px; }
+    
+    .card-metrics { display: flex; flex-wrap: wrap; gap: 12px; padding: 0 16px 12px; font-size: 12px; color: var(--text-muted); }
+    .metric-item { display: flex; align-items: center; gap: 4px; }
+    .metric-item span { color: #f1f5f9; font-weight: 500; }
+
+    .card-body { padding: 14px 16px; border-top: 1px dashed var(--border); font-size: 13px; display: flex; flex-direction: column; gap: 10px; }
+    .timeline-step { display: flex; gap: 10px; }
+    .step-time { min-width: 40px; font-weight: 600; color: #94a3b8; font-size: 12px; }
+    .step-desc { color: #cbd5e1; flex: 1; }
+
+    .card-warning-box { background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 8px 12px; font-size: 12px; color: #fde68a; }
+    .card-footer { padding: 10px 16px; background: rgba(0,0,0,0.2); border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+    .nav-buttons { display: flex; gap: 8px; }
+    .btn-nav { padding: 4px 8px; background: var(--card-hover); color: #fff; border-radius: 6px; text-decoration: none; font-size: 11px; transition: background 0.2s; }
+    .btn-nav:hover { background: var(--primary); }
+
+    /* Summary Bar */
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 16px; }
+    .summary-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; text-align: center; }
+    .summary-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+    .summary-val { font-size: 18px; font-weight: 700; color: #60a5fa; }
+
+    /* Print styles */
+    @media print {
+      body { background: #fff; color: #000; }
+      .map-panel { display: none; }
+      .container { grid-template-columns: 1fr; }
+      .day-card { border: 1px solid #ccc; break-inside: avoid; margin-bottom: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <div class="title-group">
+        <h1>2025初冬北疆雪国与东疆火洲 14天自驾全景路书</h1>
+        <p>阿勒泰冰雪童话（喀纳斯/禾木/白哈巴/可可托海）+ 吐鲁番丝路绿洲大漠（交河/火焰山/库木塔格）</p>
+      </div>
+      <div class="meta-badges">
+        <div class="badge badge-primary">📅 2025-10-25 至 2025-11-07 (14天)</div>
+        <div class="badge badge-accent">🚙 燃油四驱SUV (配备雪地胎)</div>
+        <div class="badge badge-success">📍 新疆全景（北疆+东疆）</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    
+    <!-- 左侧地图 -->
+    <div class="map-panel">
+      <div id="map"></div>
+      <div class="map-footer">
+        <span>🗺️ 底图：高德地图 AutoNavi (GCJ-02) · 国内免翻墙直连</span>
+        <span>点击右侧卡片可高亮定位路线</span>
+      </div>
+    </div>
+
+    <!-- 右侧内容 -->
+    <div class="content-panel">
+
+      <!-- 核心指标摘要 -->
+      <div class="summary-grid">
+        <div class="summary-box">
+          <div class="summary-label">总行驶里程</div>
+          <div class="summary-val">2287.7 <small style="font-size:11px;">km</small></div>
+        </div>
+        <div class="summary-box">
+          <div class="summary-label">总行车耗时</div>
+          <div class="summary-val">36.3 <small style="font-size:11px;">小时</small></div>
+        </div>
+        <div class="summary-box">
+          <div class="summary-label">高速过路费预估</div>
+          <div class="summary-val">¥800.0</div>
+        </div>
+        <div class="summary-box">
+          <div class="summary-label">油电能耗预估</div>
+          <div class="summary-val">¥1641.0</div>
+        </div>
+      </div>
+
+      <!-- 重点安全提醒 -->
+      <div class="critical-banner">
+        <h3>🛡️ 新疆自驾关键安全与规则提示</h3>
+        <ul>
+          <li>❄️ 阿勒泰山区（10月下旬起）：喀纳斯、禾木、白哈巴路段强制要求车辆为四驱并配备雪地胎（或防滑链）。</li><li>🪪 边防通行证：前往白哈巴村需在喀纳斯换乘中心或哈巴河边防大厅凭身份证办理《边境管理区通行证》（免费立取）。</li><li>💨 达坂城风区：乌鲁木齐至吐鲁番 G30 高速途经百里风区，秋冬季横风强劲，注意限速慢行。</li><li>⛔ 独库公路警示：独库公路、伊昭公路已于 10 月中旬封闭，本行程全程采用 S21 沙漠高速及 G3014/G30 高等级国道，安全畅通。</li>
+        </ul>
+      </div>
+
+      <!-- 每日行程列表 -->
+      <div class="days-list" style="display:flex; flex-direction:column; gap:16px;">
+        
+        <div class="day-card" id="day-card-1" onclick="focusDay(1)">
+          <div class="card-header">
+            <span class="day-tag">Day 1 · 周六</span>
+            <span class="day-date">2025-10-25</span>
+          </div>
+          <div class="card-title">集结乌鲁木齐 · 提车检修与物资整备</div>
+          
+          <div class="card-metrics">
+            <div class="metric-item">🚗 里程: <span>30.0 km</span></div>
+            <div class="metric-item">⏱️ 耗时: <span>市区游览约 1.2 小时</span></div>
+            <div class="metric-item">🏔️ 海拔: <span>918 m (乌鲁木齐)</span></div>
+            <div class="metric-item">🌤️ 天气: <span>多云间晴 (0°C ~ 11°C)</span></div>
+            <div class="metric-item">💳 高速费: <span>¥0.0</span></div>
+          </div>
+
+          <div class="card-body">
+            <div class="timeline-step">
+              <div class="step-time">上午</div>
+              <div class="step-desc">抵达乌鲁木齐地窝堡机场/高铁站，租车门店验车（重点检查雪地胎胎纹与胎压、玻璃水防冻标号）。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">下午</div>
+              <div class="step-desc">游览新疆国际大巴扎，采购沿途干粮、保温壶、暖宝宝及高热量零食（牛肉干、馕）。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">傍晚</div>
+              <div class="step-desc">品尝正宗新疆特色大盘鸡、烤羊肉串及手抓饭，早点休息储备体能。</div>
+            </div>
+
+            {% if day.warnings %}
+            <div class="card-warning-box">
+              {% for w in day.warnings %}
+              <div>{{w}}</div>
+              
+
+        <div class="day-card" id="day-card-2" onclick="focusDay(2)">
+          <div class="card-header">
+            <span class="day-tag">Day 2 · 周日</span>
+            <span class="day-date">2025-10-26</span>
+          </div>
+          <div class="card-title">穿越 S21 阿乌沙漠高速 · 奔赴童话边城布尔津</div>
+          
+          <div class="card-metrics">
+            <div class="metric-item">🚗 里程: <span>530.5 km</span></div>
+            <div class="metric-item">⏱️ 耗时: <span>6小时12分钟</span></div>
+            <div class="metric-item">🏔️ 海拔: <span>475 m (布尔津)</span></div>
+            <div class="metric-item">🌤️ 天气: <span>晴朗干燥 (-6°C ~ 8°C)</span></div>
+            <div class="metric-item">💳 高速费: <span>¥239.0</span></div>
+          </div>
+
+          <div class="card-body">
+            <div class="timeline-step">
+              <div class="step-time">上午</div>
+              <div class="step-desc">09:30 从乌鲁木齐出发，驶入 S21 沙漠高速，笔直公路穿行于浩瀚戈壁与沙丘之间。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">下午</div>
+              <div class="step-desc">克拉美丽服务区稍作休息补能，下午抵达布尔津县城，稍作休整后驱车前往五彩滩。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">傍晚</div>
+              <div class="step-desc">18:00 游览五彩滩（额尔齐斯河畔夕阳雅丹地貌），晚餐品尝布尔津夜市额尔齐斯河冷水烤鱼（狗鱼）。</div>
+            </div>
+
+            {% if day.warnings %}
+            <div class="card-warning-box">
+              {% for w in day.warnings %}
+              <div>{{w}}</div>
+              
+
+        <div class="day-card" id="day-card-3" onclick="focusDay(3)">
+          <div class="card-header">
+            <span class="day-tag">Day 3 · 周一</span>
+            <span class="day-date">2025-10-27</span>
+          </div>
+          <div class="card-title">挺进阿勒泰雪山之巅 · 探秘初冬喀纳斯湖</div>
+          
+          <div class="card-metrics">
+            <div class="metric-item">🚗 里程: <span>157.2 km</span></div>
+            <div class="metric-item">⏱️ 耗时: <span>3小时30分钟</span></div>
+            <div class="metric-item">🏔️ 海拔: <span>1374 m (喀纳斯)</span></div>
+            <div class="metric-item">🌤️ 天气: <span>小雪转多云 / 道路暗冰 (-15°C ~ 2°C)</span></div>
+            <div class="metric-item">💳 高速费: <span>¥24.0</span></div>
+          </div>
+
+          <div class="card-body">
+            <div class="timeline-step">
+              <div class="step-time">上午</div>
+              <div class="step-desc">09:00 出发布尔津，沿 S232 盘山公路向北驶向喀纳斯，沿途落叶松与白桦林银装素裹。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">下午</div>
+              <div class="step-desc">抵达贾登峪，办理淡季自驾进山报备（需确认四驱+雪地胎），车行直达喀纳斯老村湖区。漫步喀纳斯湖边木栈道，观赏蓝冰与雾凇。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">傍晚</div>
+              <div class="step-desc">拍摄神仙湾雪景，入住喀纳斯老村图瓦人传统暖气木屋，品尝热奶茶与手抓羊肉。</div>
+            </div>
+
+            {% if day.warnings %}
+            <div class="card-warning-box">
+              {% for w in day.warnings %}
+              <div>{{w}}</div>
+              
+
+        <div class="day-card" id="day-card-4" onclick="focusDay(4)">
+          <div class="card-header">
+            <span class="day-tag">Day 4 · 周二</span>
+            <span class="day-date">2025-10-28</span>
+          </div>
+          <div class="card-title">中哈边境秘境 · 白哈巴西北第一村的宁静</div>
+          
+          <div class="card-metrics">
+            <div class="metric-item">🚗 里程: <span>25.9 km</span></div>
+            <div class="metric-item">⏱️ 耗时: <span>36分钟</span></div>
+            <div class="metric-item">🏔️ 海拔: <span>1260 m (白哈巴)</span></div>
+            <div class="metric-item">🌤️ 天气: <span>多云间晴 (2°C ~ 14°C)</span></div>
+            <div class="metric-item">💳 高速费: <span>¥0.0</span></div>
+          </div>
+
+          <div class="card-body">
+            <div class="timeline-step">
+              <div class="step-time">上午</div>
+              <div class="step-desc">09:30 在喀纳斯换乘中心警务室凭身份证快速办理《边境管理区通行证》（免费，5分钟立取）。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">下午</div>
+              <div class="step-desc">驱车约 30 公里前往白哈巴村，沿途经过广袤的高山雪原与边境铁丝网，感受中国最西北边陲的宁静。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">傍晚</div>
+              <div class="step-desc">在白哈巴村木屋前看晚霞映照雪山，夜晚仰望北疆纯净无污染的银河星空。</div>
+            </div>
+
+            {% if day.warnings %}
+            <div class="card-warning-box">
+              {% for w in day.warnings %}
+              <div>{{w}}</div>
+              
+
+        <div class="day-card" id="day-card-5" onclick="focusDay(5)">
+          <div class="card-header">
+            <span class="day-tag">Day 5 · 周三</span>
+            <span class="day-date">2025-10-29</span>
+          </div>
+          <div class="card-title">穿越雪原森林 · 奔向神的自留地【禾木村】</div>
+          
+          <div class="card-metrics">
+            <div class="metric-item">🚗 里程: <span>67.9 km</span></div>
+            <div class="metric-item">⏱️ 耗时: <span>1小时30分钟</span></div>
+            <div class="metric-item">🏔️ 海拔: <span>1124 m (禾木)</span></div>
+            <div class="metric-item">🌤️ 天气: <span>阵雪 / 晨雾与霜冻 (-18°C ~ 0°C)</span></div>
+            <div class="metric-item">💳 高速费: <span>¥10.0</span></div>
+          </div>
+
+          <div class="card-body">
+            <div class="timeline-step">
+              <div class="step-time">上午</div>
+              <div class="step-desc">清晨告别白哈巴，沿盘山路折返经铁热克提出山，转入 X852 县道前往禾木村。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">下午</div>
+              <div class="step-desc">下午抵达禾木门票站，核验雪地胎后自驾进入禾木村。漫步于禾木河畔，看流水在冰雪间潺潺流淌，白桦树挂满雾凇。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">傍晚</div>
+              <div class="step-desc">傍晚在禾木桥附近漫步，在暖和的咖啡馆小憩，晚上品尝特色土火锅。</div>
+            </div>
+
+            {% if day.warnings %}
+            <div class="card-warning-box">
+              {% for w in day.warnings %}
+              <div>{{w}}</div>
+              
+
+        <div class="day-card" id="day-card-6" onclick="focusDay(6)">
+          <div class="card-header">
+            <span class="day-tag">Day 6 · 周四</span>
+            <span class="day-date">2025-10-30</span>
+          </div>
+          <div class="card-title">禾木观景台日出晨雾 · 冰雪童话沉浸体验</div>
+          
+          <div class="card-metrics">
+            <div class="metric-item">🚗 里程: <span>30.0 km</span></div>
+            <div class="metric-item">⏱️ 耗时: <span>市区游览约 1.2 小时</span></div>
+            <div class="metric-item">🏔️ 海拔: <span>1124 m (禾木)</span></div>
+            <div class="metric-item">🌤️ 天气: <span>阵雪 / 晨雾与霜冻 (-18°C ~ 0°C)</span></div>
+            <div class="metric-item">💳 高速费: <span>¥0.0</span></div>
+          </div>
+
+          <div class="card-body">
+            <div class="timeline-step">
+              <div class="step-time">上午</div>
+              <div class="step-desc">07:30 穿戴好极地防寒装备（羽绒服+帽子手套+暖宝宝），登上哈登平台，等待清晨第一缕阳光洒在木屋与袅袅炊烟上。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">下午</div>
+              <div class="step-desc">在禾木村体验雪地慢生活：可骑马或乘坐传统马拉爬犁穿越白桦林雪原，享受深冬前人少清幽的禾木。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">傍晚</div>
+              <div class="step-desc">村内自由摄影创作，围炉煮茶，交流自驾心得。</div>
+            </div>
+
+            {% if day.warnings %}
+            <div class="card-warning-box">
+              {% for w in day.warnings %}
+              <div>{{w}}</div>
+              
+
+        <div class="day-card" id="day-card-7" onclick="focusDay(7)">
+          <div class="card-header">
+            <span class="day-tag">Day 7 · 周五</span>
+            <span class="day-date">2025-10-31</span>
+          </div>
+          <div class="card-title">走出雪山 · 经阿勒泰市前往【可可托海】</div>
+          
+          <div class="card-metrics">
+            <div class="metric-item">🚗 里程: <span>324.3 km</span></div>
+            <div class="metric-item">⏱️ 耗时: <span>7小时12分钟</span></div>
+            <div class="metric-item">🏔️ 海拔: <span>810 m (富蕴)</span></div>
+            <div class="metric-item">🌤️ 天气: <span>多云有微雪 (-12°C ~ 3°C)</span></div>
+            <div class="metric-item">💳 高速费: <span>¥49.0</span></div>
+          </div>
+
+          <div class="card-body">
+            <div class="timeline-step">
+              <div class="step-time">上午</div>
+              <div class="step-desc">09:30 驾车出禾木村，沿 G219/S226 经北屯、阿勒泰市南下，逐步驶离深山雪原，视野逐渐开阔。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">下午</div>
+              <div class="step-desc">下午抵达富蕴县可可托海镇，参观功勋卓越的“三号矿坑”地质奇观。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">傍晚</div>
+              <div class="step-desc">入住富蕴县城或可可托海镇，品尝阿勒泰大尾羊手抓肉及哈萨克特色面食（纳仁）。</div>
+            </div>
+
+            {% if day.warnings %}
+            <div class="card-warning-box">
+              {% for w in day.warnings %}
+              <div>{{w}}</div>
+              
+
+        <div class="day-card" id="day-card-8" onclick="focusDay(8)">
+          <div class="card-header">
+            <span class="day-tag">Day 8 · 周六</span>
+            <span class="day-date">2025-11-01</span>
+          </div>
+          <div class="card-title">探访额尔齐斯大峡谷 · 沿 G216 穿越准噶尔返回乌市</div>
+          
+          <div class="card-metrics">
+            <div class="metric-item">🚗 里程: <span>466.7 km</span></div>
+            <div class="metric-item">⏱️ 耗时: <span>5小时30分钟</span></div>
+            <div class="metric-item">🏔️ 海拔: <span>918 m (乌鲁木齐)</span></div>
+            <div class="metric-item">🌤️ 天气: <span>多云间晴 (0°C ~ 11°C)</span></div>
+            <div class="metric-item">💳 高速费: <span>¥210.0</span></div>
+          </div>
+
+          <div class="card-body">
+            <div class="timeline-step">
+              <div class="step-time">上午</div>
+              <div class="step-desc">上午游览可可托海额尔齐斯大峡谷，仰望巍峨耸立的神钟山花岗岩巨峰与清澈的额河流水。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">下午</div>
+              <div class="step-desc">午后沿 G216 国道南下穿越卡拉麦里戈壁保护区，沿途注意观察路边出没的珍稀野生蒙古野驴与鹅喉羚。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">傍晚</div>
+              <div class="step-desc">傍晚抵达乌鲁木齐市，洗车（洗去北疆泥雪）并休整，准备迎接东疆火洲暖秋旅程。</div>
+            </div>
+
+            {% if day.warnings %}
+            <div class="card-warning-box">
+              {% for w in day.warnings %}
+              <div>{{w}}</div>
+              
+
+        <div class="day-card" id="day-card-9" onclick="focusDay(9)">
+          <div class="card-header">
+            <span class="day-tag">Day 9 · 周日</span>
+            <span class="day-date">2025-11-02</span>
+          </div>
+          <div class="card-title">翻越达坂城百里风区 · 抵达火洲【吐鲁番】</div>
+          
+          <div class="card-metrics">
+            <div class="metric-item">🚗 里程: <span>195.2 km</span></div>
+            <div class="metric-item">⏱️ 耗时: <span>2小时18分钟</span></div>
+            <div class="metric-item">🏔️ 海拔: <span>30 m (吐鲁番)</span></div>
+            <div class="metric-item">🌤️ 天气: <span>晴空万里 / 干燥温暖 (6°C ~ 19°C)</span></div>
+            <div class="metric-item">💳 高速费: <span>¥88.0</span></div>
+          </div>
+
+          <div class="card-body">
+            <div class="timeline-step">
+              <div class="step-time">上午</div>
+              <div class="step-desc">10:00 从乌鲁木齐出发，沿 G30 连霍高速向东南驶向吐鲁番，途经达坂城风车旷野。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">下午</div>
+              <div class="step-desc">抵达吐鲁番市高昌区（气温明显回升至 15°C~18°C），下午游览交河故城，在千年生土遗迹间感受丝路厚重沧桑。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">傍晚</div>
+              <div class="step-desc">参观苏公塔与维吾尔族郡王府，品尝吐鲁番特色烤包子、羊肉焖饼和清甜的新鲜/晾晒葡萄干。</div>
+            </div>
+
+            {% if day.warnings %}
+            <div class="card-warning-box">
+              {% for w in day.warnings %}
+              <div>{{w}}</div>
+              
+
+        <div class="day-card" id="day-card-10" onclick="focusDay(10)">
+          <div class="card-header">
+            <span class="day-tag">Day 10 · 周一</span>
+            <span class="day-date">2025-11-03</span>
+          </div>
+          <div class="card-title">漫步绿洲与赤壁 · 探秘葡萄沟与【火焰山】</div>
+          
+          <div class="card-metrics">
+            <div class="metric-item">🚗 里程: <span>102.4 km</span></div>
+            <div class="metric-item">⏱️ 耗时: <span>1小时12分钟</span></div>
+            <div class="metric-item">🏔️ 海拔: <span>410 m (鄯善)</span></div>
+            <div class="metric-item">🌤️ 天气: <span>晴天 / 沙漠干燥 (5°C ~ 18°C)</span></div>
+            <div class="metric-item">💳 高速费: <span>¥46.0</span></div>
+          </div>
+
+          <div class="card-body">
+            <div class="timeline-step">
+              <div class="step-time">上午</div>
+              <div class="step-desc">上午参观坎儿井民俗园，了解吐鲁番绿洲生命之源的地下暗渠水利智慧。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">下午</div>
+              <div class="step-desc">前往火焰山风景区，打卡巨型金箍棒温度计与红褐色如烈焰般的赤砂岩山体。随后驱车前往鄯善县。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">傍晚</div>
+              <div class="step-desc">傍晚抵达鄯善县城，入住酒店，准备次日沙漠日出与探险。</div>
+            </div>
+
+            {% if day.warnings %}
+            <div class="card-warning-box">
+              {% for w in day.warnings %}
+              <div>{{w}}</div>
+              
+
+        <div class="day-card" id="day-card-11" onclick="focusDay(11)">
+          <div class="card-header">
+            <span class="day-tag">Day 11 · 周二</span>
+            <span class="day-date">2025-11-04</span>
+          </div>
+          <div class="card-title">沙与城零距离 · 【库木塔格沙漠】狂欢与金色沙海</div>
+          
+          <div class="card-metrics">
+            <div class="metric-item">🚗 里程: <span>30.0 km</span></div>
+            <div class="metric-item">⏱️ 耗时: <span>市区游览约 1.2 小时</span></div>
+            <div class="metric-item">🏔️ 海拔: <span>410 m (鄯善)</span></div>
+            <div class="metric-item">🌤️ 天气: <span>晴天 / 沙漠干燥 (5°C ~ 18°C)</span></div>
+            <div class="metric-item">💳 高速费: <span>¥0.0</span></div>
+          </div>
+
+          <div class="card-body">
+            <div class="timeline-step">
+              <div class="step-time">上午</div>
+              <div class="step-desc">上午可睡到自然醒，在县城体验慢节奏生活，品尝特色烤馕与奶茶。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">下午</div>
+              <div class="step-desc">15:30 前往库木塔格沙漠风景名胜区，体验沙漠越野冲沙、滑沙或骑骆驼漫步于柔美的羽状沙丘之上。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">傍晚</div>
+              <div class="step-desc">18:00-19:00 在沙山顶端守候大漠绝美夕阳，看金色沙海染上红晕，壮丽无比。</div>
+            </div>
+
+            {% if day.warnings %}
+            <div class="card-warning-box">
+              {% for w in day.warnings %}
+              <div>{{w}}</div>
+              
+
+        <div class="day-card" id="day-card-12" onclick="focusDay(12)">
+          <div class="card-header">
+            <span class="day-tag">Day 12 · 周三</span>
+            <span class="day-date">2025-11-05</span>
+          </div>
+          <div class="card-title">穿越高昌历史风烟 · 探秘吐峪沟麻扎村</div>
+          
+          <div class="card-metrics">
+            <div class="metric-item">🚗 里程: <span>102.4 km</span></div>
+            <div class="metric-item">⏱️ 耗时: <span>1小时12分钟</span></div>
+            <div class="metric-item">🏔️ 海拔: <span>30 m (吐鲁番)</span></div>
+            <div class="metric-item">🌤️ 天气: <span>晴空万里 / 干燥温暖 (6°C ~ 19°C)</span></div>
+            <div class="metric-item">💳 高速费: <span>¥46.0</span></div>
+          </div>
+
+          <div class="card-body">
+            <div class="timeline-step">
+              <div class="step-time">上午</div>
+              <div class="step-desc">从鄯善出发前往吐峪沟大峡谷，走进有数百年历史的传统生土建筑群麻扎村，感受原生态西域风情。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">下午</div>
+              <div class="step-desc">游览柏孜克里克千佛洞与高昌故城，领略古丝绸之路重镇的昔日辉煌。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">傍晚</div>
+              <div class="step-desc">返回吐鲁番市区住宿，享受惬意舒适的绿洲之夜。</div>
+            </div>
+
+            {% if day.warnings %}
+            <div class="card-warning-box">
+              {% for w in day.warnings %}
+              <div>{{w}}</div>
+              
+
+        <div class="day-card" id="day-card-13" onclick="focusDay(13)">
+          <div class="card-header">
+            <span class="day-tag">Day 13 · 周四</span>
+            <span class="day-date">2025-11-06</span>
+          </div>
+          <div class="card-title">告别火洲 · 沿 G30 连霍高速从容返程乌鲁木齐</div>
+          
+          <div class="card-metrics">
+            <div class="metric-item">🚗 里程: <span>195.2 km</span></div>
+            <div class="metric-item">⏱️ 耗时: <span>2小时18分钟</span></div>
+            <div class="metric-item">🏔️ 海拔: <span>918 m (乌鲁木齐)</span></div>
+            <div class="metric-item">🌤️ 天气: <span>多云间晴 (0°C ~ 11°C)</span></div>
+            <div class="metric-item">💳 高速费: <span>¥88.0</span></div>
+          </div>
+
+          <div class="card-body">
+            <div class="timeline-step">
+              <div class="step-time">上午</div>
+              <div class="step-desc">10:30 从吐鲁番出发，经 G30 高速返程乌鲁木齐，车程约 2.5 小时，轻松无赶路压力。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">下午</div>
+              <div class="step-desc">下午参观新疆维吾尔自治区博物馆（需提前小程序实名预约），重点参观西域历史文物与干尸陈列展厅。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">傍晚</div>
+              <div class="step-desc">在乌鲁木齐享用告别晚宴，采购优质新疆干果（和田红枣、阿克苏核桃、吐鲁番无核白葡萄干）。</div>
+            </div>
+
+            {% if day.warnings %}
+            <div class="card-warning-box">
+              {% for w in day.warnings %}
+              <div>{{w}}</div>
+              
+
+        <div class="day-card" id="day-card-14" onclick="focusDay(14)">
+          <div class="card-header">
+            <span class="day-tag">Day 14 · 周五</span>
+            <span class="day-date">2025-11-07</span>
+          </div>
+          <div class="card-title">乌鲁木齐顺利还车 · 满载冰火新疆回忆返程</div>
+          
+          <div class="card-metrics">
+            <div class="metric-item">🚗 里程: <span>30.0 km</span></div>
+            <div class="metric-item">⏱️ 耗时: <span>市区游览约 1.2 小时</span></div>
+            <div class="metric-item">🏔️ 海拔: <span>918 m (乌鲁木齐)</span></div>
+            <div class="metric-item">🌤️ 天气: <span>多云间晴 (0°C ~ 11°C)</span></div>
+            <div class="metric-item">💳 高速费: <span>¥0.0</span></div>
+          </div>
+
+          <div class="card-body">
+            <div class="timeline-step">
+              <div class="step-time">上午</div>
+              <div class="step-desc">睡到自然醒，享用酒店丰盛早餐。整理行装，检查随身物品与边防证证件。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">下午</div>
+              <div class="step-desc">前往租车网点还车，验车交接，结算高速 ETC 费用与押金。</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">傍晚</div>
+              <div class="step-desc">搭乘航班/高铁返回温馨的家，圆满结束 14 天难忘的北疆冰雪与东疆大漠自驾之旅！</div>
+            </div>
+
+            {% if day.warnings %}
+            <div class="card-warning-box">
+              {% for w in day.warnings %}
+              <div>{{w}}</div>
+              
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="card-footer">
+            <div>🏨 宿：<span style="color:#f1f5f9; font-weight:500;">{{day.stay}}</span></div>
+            <div class="nav-buttons">
+              <a class="btn-nav" href="https://uri.amap.com/navigation?from={{day.from_place.lng}},{{day.from_place.lat}}&to={{day.to_place.lng}},{{day.to_place.lat}}&mode=car" target="_blank">高德导航</a>
+              <a class="btn-nav" href="http://api.map.baidu.com/direction?origin=latlng:{{day.from_place.lat}},{{day.from_place.lng}}|name:{{day.from_place.name}}&destination=latlng:{{day.to_place.lat}},{{day.to_place.lng}}|name:{{day.to_place.name}}&mode=driving&output=html" target="_blank">百度地图</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // 注入后端行程数据
+    const tripData = {"trip_title": "2025初冬北疆雪国与东疆火洲 14天自驾全景路书", "trip_subtitle": "阿勒泰冰雪童话（喀纳斯/禾木/白哈巴/可可托海）+ 吐鲁番丝路绿洲大漠（交河/火焰山/库木塔格）", "dates": "2025-10-25 至 2025-11-07", "total_days": 14, "region": "新疆全景（北疆+东疆）", "vehicle_type": "燃油四驱SUV (配备雪地胎)", "summary": {"total_distance_km": 2287.7, "total_driving_hours": 36.3, "total_tolls_rmb": 800.0, "total_energy_cost_rmb": 1641.0, "total_estimated_budget_rmb": 13091.0, "route_style": "冰雪与大漠双重体验 · 舒适度与安全性平衡环线"}, "critical_rules": ["❄️ 阿勒泰山区（10月下旬起）：喀纳斯、禾木、白哈巴路段强制要求车辆为四驱并配备雪地胎（或防滑链）。", "🪪 边防通行证：前往白哈巴村需在喀纳斯换乘中心或哈巴河边防大厅凭身份证办理《边境管理区通行证》（免费立取）。", "💨 达坂城风区：乌鲁木齐至吐鲁番 G30 高速途经百里风区，秋冬季横风强劲，注意限速慢行。", "⛔ 独库公路警示：独库公路、伊昭公路已于 10 月中旬封闭，本行程全程采用 S21 沙漠高速及 G3014/G30 高等级国道，安全畅通。"], "days": [{"day": 1, "date": "2025-10-25", "weekday": "周六", "title": "集结乌鲁木齐 · 提车检修与物资整备", "from_place": {"canonical": "新疆维吾尔自治区乌鲁木齐市", "lat": 43.825592, "lng": 87.616848, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "乌鲁木齐"}, "to_place": {"canonical": "新疆维吾尔自治区乌鲁木齐市", "lat": 43.825592, "lng": 87.616848, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "乌鲁木齐"}, "route": {"distance_km": 30.0, "duration_hours": 1.2, "duration_text": "市区游览约 1.2 小时", "tolls_rmb": 0.0, "is_mountain": false, "source": "local_city"}, "elevation": {"place": "乌鲁木齐", "elevation_m": 918, "risk_level": "safe", "elevation_gain_m": 0, "warning": null, "suggestion": "低海拔区域，无高原反应风险，适宜舒适过夜。"}, "weather": {"place": "乌鲁木齐", "date": "2025-10-25", "weather": "多云间晴", "temp_range": "0°C ~ 11°C", "hazard_warning": null, "dress_code": "初冬装束：轻薄羽绒服或大衣。", "source": "climatology_model"}, "energy": {"vehicle": "燃油车 (SUV/轿车)", "consumption_desc": "百公里综合油耗 8.0 升 (92#/95# 汽油)", "total_energy": "2.4 升", "energy_cost_rmb": 19.7, "stops_needed": 0, "warning": null}, "chargers": ["乌鲁木齐高铁站超级充电站 (120kW+)", "天山万达广场特来电快充站"], "parks": [], "highlights": ["新疆国际大巴扎", "红山公园俯瞰雪山", "提四驱SUV并检查雪地胎/防冻液(-35#)"], "morning": "抵达乌鲁木齐地窝堡机场/高铁站，租车门店验车（重点检查雪地胎胎纹与胎压、玻璃水防冻标号）。", "afternoon": "游览新疆国际大巴扎，采购沿途干粮、保温壶、暖宝宝及高热量零食（牛肉干、馕）。", "evening": "品尝正宗新疆特色大盘鸡、烤羊肉串及手抓饭，早点休息储备体能。", "stay": "乌鲁木齐市区高档酒店 (地暖/暖气充足)", "warnings": ["新疆与内地有 2 小时作息时差，早晨 9:30-10:00 出发，晚 19:30-20:00 天黑。"]}, {"day": 2, "date": "2025-10-26", "weekday": "周日", "title": "穿越 S21 阿乌沙漠高速 · 奔赴童话边城布尔津", "from_place": {"canonical": "新疆维吾尔自治区乌鲁木齐市", "lat": 43.825592, "lng": 87.616848, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "乌鲁木齐"}, "to_place": {"canonical": "新疆维吾尔自治区阿勒泰地区布尔津县", "lat": 47.700686, "lng": 86.862453, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "布尔津"}, "route": {"distance_km": 530.5, "duration_hours": 6.2, "duration_text": "6小时12分钟", "tolls_rmb": 239.0, "is_mountain": false, "source": "estimate_model"}, "elevation": {"place": "布尔津", "elevation_m": 475, "risk_level": "safe", "elevation_gain_m": -443, "warning": null, "suggestion": "低海拔区域，无高原反应风险，适宜舒适过夜。"}, "weather": {"place": "布尔津", "date": "2025-10-26", "weather": "晴朗干燥", "temp_range": "-6°C ~ 8°C", "hazard_warning": null, "dress_code": "秋末冬初着装：薄羽绒服或羊毛呢大衣，早晚温差大注意保暖。", "source": "climatology_model"}, "energy": {"vehicle": "燃油车 (SUV/轿车)", "consumption_desc": "百公里综合油耗 9.5 升 (92#/95# 汽油)", "total_energy": "50.4 升", "energy_cost_rmb": 413.3, "stops_needed": 0, "warning": "阿勒泰极寒地区若使用柴油车，必须加注 -35# 负标号抗凝柴油以防油路冻结！"}, "chargers": ["布尔津喀纳斯塔桥特来电快充站 (120kW)", "布尔津友谊峰大酒店充电站"], "parks": [{"full_name": "新疆阿勒泰布尔津五彩滩景区 (4A)", "advance_days": 0, "booking_platform": "现场窗口或美团", "ticket_price_rmb": 45, "notes": "最佳观赏时间为日落前 1~1.5 小时（雅丹地貌在夕阳下色彩最绚烂）。", "needs_border_pass": false, "matched_name": "五彩滩"}], "highlights": ["中国首条沙漠高速S21", "准噶尔盆地古尔班通古特沙漠", "布尔津五彩滩日落"], "morning": "09:30 从乌鲁木齐出发，驶入 S21 沙漠高速，笔直公路穿行于浩瀚戈壁与沙丘之间。", "afternoon": "克拉美丽服务区稍作休息补能，下午抵达布尔津县城，稍作休整后驱车前往五彩滩。", "evening": "18:00 游览五彩滩（额尔齐斯河畔夕阳雅丹地貌），晚餐品尝布尔津夜市额尔齐斯河冷水烤鱼（狗鱼）。", "stay": "布尔津县城星级酒店", "warnings": ["S21 沙漠高速部分区间测速严格，且冬季可能有横风积雪，注意控制车速。"]}, {"day": 3, "date": "2025-10-27", "weekday": "周一", "title": "挺进阿勒泰雪山之巅 · 探秘初冬喀纳斯湖", "from_place": {"canonical": "新疆维吾尔自治区阿勒泰地区布尔津县", "lat": 47.700686, "lng": 86.862453, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "布尔津"}, "to_place": {"canonical": "新疆维吾尔自治区阿勒泰地区布尔津县喀纳斯景区", "lat": 48.718698, "lng": 87.037418, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "喀纳斯"}, "route": {"distance_km": 157.2, "duration_hours": 3.5, "duration_text": "3小时30分钟", "tolls_rmb": 24.0, "is_mountain": true, "source": "estimate_model"}, "elevation": {"place": "喀纳斯", "elevation_m": 1374, "risk_level": "safe", "elevation_gain_m": 899, "warning": null, "suggestion": "低海拔区域，无高原反应风险，适宜舒适过夜。"}, "weather": {"place": "喀纳斯", "date": "2025-10-27", "weather": "小雪转多云 / 道路暗冰", "temp_range": "-15°C ~ 2°C", "hazard_warning": "⚠️ 气温在 0°C 以下，山区盘山路（如贾登峪至喀纳斯湖段）路面有黑冰与积雪，强制使用雪地胎！", "dress_code": "极地防寒级：加厚长款羽绒服、保暖抓绒冲锋衣裤、雪地保暖靴、羊毛袜、防风手套、耳罩及雪盲防晒墨镜。", "source": "climatology_model"}, "energy": {"vehicle": "燃油车 (SUV/轿车)", "consumption_desc": "百公里综合油耗 9.5 升 (92#/95# 汽油)", "total_energy": "14.9 升", "energy_cost_rmb": 122.2, "stops_needed": 0, "warning": "阿勒泰极寒地区若使用柴油车，必须加注 -35# 负标号抗凝柴油以防油路冻结！"}, "chargers": ["贾登峪换乘中心国家电网快充站 (注:冬季部分可能受冻，需提前确认)", "喀纳斯老村慢充桩群"], "parks": [{"full_name": "新疆阿勒泰喀纳斯国家级自然保护区 (5A)", "advance_days": 3, "booking_platform": "微信小程序「喀纳斯原行网」或携程/美团", "ticket_price_rmb": 160, "notes": "10月下旬起进入冬季运营模式：区间车可能停运，允许安装雪地胎的自驾四驱车报备后直接进山；需提前在小程序实名购票。", "needs_border_pass": false, "matched_name": "喀纳斯"}], "highlights": ["喀纳斯盘山公路雪景", "喀纳斯湖三道湾", "卧龙湾/月亮湾/神仙湾冰雪初现"], "morning": "09:00 出发布尔津，沿 S232 盘山公路向北驶向喀纳斯，沿途落叶松与白桦林银装素裹。", "afternoon": "抵达贾登峪，办理淡季自驾进山报备（需确认四驱+雪地胎），车行直达喀纳斯老村湖区。漫步喀纳斯湖边木栈道，观赏蓝冰与雾凇。", "evening": "拍摄神仙湾雪景，入住喀纳斯老村图瓦人传统暖气木屋，品尝热奶茶与手抓羊肉。", "stay": "喀纳斯老村特色暖气木屋民宿", "warnings": ["⚠️ 贾登峪至喀纳斯盘山路有多处背阴暗冰弯道，严禁急刹车与急打方向，全程保持低速档！"]}, {"day": 4, "date": "2025-10-28", "weekday": "周二", "title": "中哈边境秘境 · 白哈巴西北第一村的宁静", "from_place": {"canonical": "新疆维吾尔自治区阿勒泰地区布尔津县喀纳斯景区", "lat": 48.718698, "lng": 87.037418, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "喀纳斯"}, "to_place": {"canonical": "新疆维吾尔自治区阿勒泰地区哈巴河县白哈巴村", "lat": 48.685321, "lng": 86.786543, "province": "新疆", "region": "xinjiang", "needs_border_pass": true, "verdict": "match", "name": "白哈巴"}, "route": {"distance_km": 25.9, "duration_hours": 0.6, "duration_text": "36分钟", "tolls_rmb": 0.0, "is_mountain": true, "source": "estimate_model"}, "elevation": {"place": "白哈巴", "elevation_m": 1260, "risk_level": "safe", "elevation_gain_m": -114, "warning": null, "suggestion": "低海拔区域，无高原反应风险，适宜舒适过夜。"}, "weather": {"place": "白哈巴", "date": "2025-10-28", "weather": "多云间晴", "temp_range": "2°C ~ 14°C", "hazard_warning": null, "dress_code": "建议携带防风外套与保暖衣物，早晚温差较大。", "source": "default_estimate"}, "energy": {"vehicle": "燃油车 (SUV/轿车)", "consumption_desc": "百公里综合油耗 9.5 升 (92#/95# 汽油)", "total_energy": "2.5 升", "energy_cost_rmb": 20.5, "stops_needed": 0, "warning": "阿勒泰极寒地区若使用柴油车，必须加注 -35# 负标号抗凝柴油以防油路冻结！"}, "chargers": ["白哈巴城区快充站 (国家电网/特来电/星星充电)", "沿途高速服务区快充桩群"], "parks": [{"full_name": "新疆阿勒泰白哈巴西北第一村", "advance_days": 1, "booking_platform": "喀纳斯景区换乘中心现场或哈巴河县边防大厅", "ticket_price_rmb": 30, "notes": "位于中哈边境！中国内地游客凭二代身份证在喀纳斯换乘中心窗口或哈巴河县公安局边防大厅现场办理《边境管理区通行证》（免费、5分钟立等可取）。港澳台及外籍游客需专项审批。", "needs_border_pass": true, "border_pass_location": "喀纳斯换乘中心警务室 / 哈巴河县政务服务中心", "matched_name": "白哈巴"}], "highlights": ["白哈巴中哈界碑与边防哨所", "西北第一村图瓦木屋群", "金秋与白雪交织的孤寂美景"], "morning": "09:30 在喀纳斯换乘中心警务室凭身份证快速办理《边境管理区通行证》（免费，5分钟立取）。", "afternoon": "驱车约 30 公里前往白哈巴村，沿途经过广袤的高山雪原与边境铁丝网，感受中国最西北边陲的宁静。", "evening": "在白哈巴村木屋前看晚霞映照雪山，夜晚仰望北疆纯净无污染的银河星空。", "stay": "白哈巴村特色木屋客栈 (配电暖/水暖)", "warnings": ["白哈巴村紧邻边境，严禁靠近界河与边防铁丝网，严禁放飞未经报备的无人机！"]}, {"day": 5, "date": "2025-10-29", "weekday": "周三", "title": "穿越雪原森林 · 奔向神的自留地【禾木村】", "from_place": {"canonical": "新疆维吾尔自治区阿勒泰地区哈巴河县白哈巴村", "lat": 48.685321, "lng": 86.786543, "province": "新疆", "region": "xinjiang", "needs_border_pass": true, "verdict": "match", "name": "白哈巴"}, "to_place": {"canonical": "新疆维吾尔自治区阿勒泰地区布尔津县禾木喀纳斯蒙古族乡", "lat": 48.572354, "lng": 87.433892, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "禾木"}, "route": {"distance_km": 67.9, "duration_hours": 1.5, "duration_text": "1小时30分钟", "tolls_rmb": 10.0, "is_mountain": true, "source": "estimate_model"}, "elevation": {"place": "禾木", "elevation_m": 1124, "risk_level": "safe", "elevation_gain_m": -136, "warning": null, "suggestion": "低海拔区域，无高原反应风险，适宜舒适过夜。"}, "weather": {"place": "禾木", "date": "2025-10-29", "weather": "阵雪 / 晨雾与霜冻", "temp_range": "-18°C ~ 0°C", "hazard_warning": "⚠️ 晨间观景台拍摄日出极寒（-15°C以下），村内木屋路面积雪压实变滑，需穿防滑雪地靴。", "dress_code": "重度防寒保暖：保暖内衣 + 抓绒衣 + 加厚羽绒服，贴身备好暖宝宝，相机电池需贴身防低温掉电。", "source": "climatology_model"}, "energy": {"vehicle": "燃油车 (SUV/轿车)", "consumption_desc": "百公里综合油耗 9.5 升 (92#/95# 汽油)", "total_energy": "6.5 升", "energy_cost_rmb": 53.3, "stops_needed": 0, "warning": "阿勒泰极寒地区若使用柴油车，必须加注 -35# 负标号抗凝柴油以防油路冻结！"}, "chargers": ["禾木山庄停车场充电站 (120kW快充/7kW慢充)"], "parks": [{"full_name": "新疆阿勒泰禾木喀纳斯蒙古族乡景区 (5A)", "advance_days": 3, "booking_platform": "微信小程序「喀纳斯原行网」或携程/美团", "ticket_price_rmb": 50, "notes": "如需自驾进村，车辆必须满足四驱+雪地胎要求；村内观景台看日出需早起防寒。", "needs_border_pass": false, "matched_name": "禾木"}], "highlights": ["铁热克提至禾木高山公路", "禾木河雪蘑菇与冰凌", "禾木桥与百年老屋"], "morning": "清晨告别白哈巴，沿盘山路折返经铁热克提出山，转入 X852 县道前往禾木村。", "afternoon": "下午抵达禾木门票站，核验雪地胎后自驾进入禾木村。漫步于禾木河畔，看流水在冰雪间潺潺流淌，白桦树挂满雾凇。", "evening": "傍晚在禾木桥附近漫步，在暖和的咖啡馆小憩，晚上品尝特色土火锅。", "stay": "禾木村核心景区高端木屋酒店 (地暖充足)", "warnings": ["禾木夜间气温降至 -15°C 以下，车辆夜间需停在避风处，相机及手机在室外电量消耗极快。"]}, {"day": 6, "date": "2025-10-30", "weekday": "周四", "title": "禾木观景台日出晨雾 · 冰雪童话沉浸体验", "from_place": {"canonical": "新疆维吾尔自治区阿勒泰地区布尔津县禾木喀纳斯蒙古族乡", "lat": 48.572354, "lng": 87.433892, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "禾木"}, "to_place": {"canonical": "新疆维吾尔自治区阿勒泰地区布尔津县禾木喀纳斯蒙古族乡", "lat": 48.572354, "lng": 87.433892, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "禾木"}, "route": {"distance_km": 30.0, "duration_hours": 1.2, "duration_text": "市区游览约 1.2 小时", "tolls_rmb": 0.0, "is_mountain": true, "source": "local_city"}, "elevation": {"place": "禾木", "elevation_m": 1124, "risk_level": "safe", "elevation_gain_m": 0, "warning": null, "suggestion": "低海拔区域，无高原反应风险，适宜舒适过夜。"}, "weather": {"place": "禾木", "date": "2025-10-30", "weather": "阵雪 / 晨雾与霜冻", "temp_range": "-18°C ~ 0°C", "hazard_warning": "⚠️ 晨间观景台拍摄日出极寒（-15°C以下），村内木屋路面积雪压实变滑，需穿防滑雪地靴。", "dress_code": "重度防寒保暖：保暖内衣 + 抓绒衣 + 加厚羽绒服，贴身备好暖宝宝，相机电池需贴身防低温掉电。", "source": "climatology_model"}, "energy": {"vehicle": "燃油车 (SUV/轿车)", "consumption_desc": "百公里综合油耗 9.5 升 (92#/95# 汽油)", "total_energy": "2.9 升", "energy_cost_rmb": 23.8, "stops_needed": 0, "warning": "阿勒泰极寒地区若使用柴油车，必须加注 -35# 负标号抗凝柴油以防油路冻结！"}, "chargers": ["禾木山庄停车场充电站 (120kW快充/7kW慢充)"], "parks": [{"full_name": "新疆阿勒泰禾木喀纳斯蒙古族乡景区 (5A)", "advance_days": 3, "booking_platform": "微信小程序「喀纳斯原行网」或携程/美团", "ticket_price_rmb": 50, "notes": "如需自驾进村，车辆必须满足四驱+雪地胎要求；村内观景台看日出需早起防寒。", "needs_border_pass": false, "matched_name": "禾木"}], "highlights": ["哈登平台俯瞰禾木全景晨雾", "图瓦人木屋炊烟袅袅", "马拉爬犁/雪地徒步体验"], "morning": "07:30 穿戴好极地防寒装备（羽绒服+帽子手套+暖宝宝），登上哈登平台，等待清晨第一缕阳光洒在木屋与袅袅炊烟上。", "afternoon": "在禾木村体验雪地慢生活：可骑马或乘坐传统马拉爬犁穿越白桦林雪原，享受深冬前人少清幽的禾木。", "evening": "村内自由摄影创作，围炉煮茶，交流自驾心得。", "stay": "禾木村特色木屋酒店 (连住)", "warnings": ["登哈登平台观景台栈道台阶有冰雪积压较滑，务必穿戴防滑雪地靴或简易冰爪。"]}, {"day": 7, "date": "2025-10-31", "weekday": "周五", "title": "走出雪山 · 经阿勒泰市前往【可可托海】", "from_place": {"canonical": "新疆维吾尔自治区阿勒泰地区布尔津县禾木喀纳斯蒙古族乡", "lat": 48.572354, "lng": 87.433892, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "禾木"}, "to_place": {"canonical": "新疆维吾尔自治区阿勒泰地区富蕴县", "lat": 46.994462, "lng": 89.526832, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "富蕴"}, "route": {"distance_km": 324.3, "duration_hours": 7.2, "duration_text": "7小时12分钟", "tolls_rmb": 49.0, "is_mountain": true, "source": "estimate_model"}, "elevation": {"place": "富蕴", "elevation_m": 810, "risk_level": "safe", "elevation_gain_m": -314, "warning": null, "suggestion": "低海拔区域，无高原反应风险，适宜舒适过夜。"}, "weather": {"place": "富蕴", "date": "2025-10-31", "weather": "多云有微雪", "temp_range": "-12°C ~ 3°C", "hazard_warning": "可可托海峡谷内气温低，风力稍大。", "dress_code": "加厚防风羽绒服、防风保暖帽。", "source": "climatology_model"}, "energy": {"vehicle": "燃油车 (SUV/轿车)", "consumption_desc": "百公里综合油耗 9.5 升 (92#/95# 汽油)", "total_energy": "30.8 升", "energy_cost_rmb": 252.6, "stops_needed": 0, "warning": "阿勒泰极寒地区若使用柴油车，必须加注 -35# 负标号抗凝柴油以防油路冻结！"}, "chargers": ["富蕴县迎宾馆充电站", "可可托海景区停车场特来电充电桩"], "parks": [{"full_name": "新疆阿勒泰富蕴县可可托海风景区 (5A)", "advance_days": 1, "booking_platform": "携程 / 美团 / 可可托海官方公众号", "ticket_price_rmb": 90, "notes": "额尔齐斯大峡谷、三号矿坑；10月底气温较低，建议中午时段入园游览。", "needs_border_pass": false, "matched_name": "可可托海"}], "highlights": ["阿勒泰阿尔泰山南麓风光", "可可托海三号矿坑历史传奇", "富蕴县城特色美食"], "morning": "09:30 驾车出禾木村，沿 G219/S226 经北屯、阿勒泰市南下，逐步驶离深山雪原，视野逐渐开阔。", "afternoon": "下午抵达富蕴县可可托海镇，参观功勋卓越的“三号矿坑”地质奇观。", "evening": "入住富蕴县城或可可托海镇，品尝阿勒泰大尾羊手抓肉及哈萨克特色面食（纳仁）。", "stay": "富蕴县城精品品质酒店", "warnings": ["富蕴历史上有中国“第二寒极”之称，早晚温差极大，及时增添防风防寒衣物。"]}, {"day": 8, "date": "2025-11-01", "weekday": "周六", "title": "探访额尔齐斯大峡谷 · 沿 G216 穿越准噶尔返回乌市", "from_place": {"canonical": "新疆维吾尔自治区阿勒泰地区富蕴县", "lat": 46.994462, "lng": 89.526832, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "富蕴"}, "to_place": {"canonical": "新疆维吾尔自治区乌鲁木齐市", "lat": 43.825592, "lng": 87.616848, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "乌鲁木齐"}, "route": {"distance_km": 466.7, "duration_hours": 5.5, "duration_text": "5小时30分钟", "tolls_rmb": 210.0, "is_mountain": false, "source": "estimate_model"}, "elevation": {"place": "乌鲁木齐", "elevation_m": 918, "risk_level": "safe", "elevation_gain_m": 108, "warning": null, "suggestion": "低海拔区域，无高原反应风险，适宜舒适过夜。"}, "weather": {"place": "乌鲁木齐", "date": "2025-11-01", "weather": "多云间晴", "temp_range": "0°C ~ 11°C", "hazard_warning": null, "dress_code": "初冬装束：轻薄羽绒服或大衣。", "source": "climatology_model"}, "energy": {"vehicle": "燃油车 (SUV/轿车)", "consumption_desc": "百公里综合油耗 8.0 升 (92#/95# 汽油)", "total_energy": "37.3 升", "energy_cost_rmb": 305.9, "stops_needed": 0, "warning": null}, "chargers": ["乌鲁木齐高铁站超级充电站 (120kW+)", "天山万达广场特来电快充站"], "parks": [{"full_name": "新疆阿勒泰富蕴县可可托海风景区 (5A)", "advance_days": 1, "booking_platform": "携程 / 美团 / 可可托海官方公众号", "ticket_price_rmb": 90, "notes": "额尔齐斯大峡谷、三号矿坑；10月底气温较低，建议中午时段入园游览。", "needs_border_pass": false, "matched_name": "可可托海"}], "highlights": ["可可托海额尔齐斯大峡谷神钟山", "G216国道卡拉麦里有蹄类自然保护区 (寻觅野驴/普氏野马)", "乌鲁木齐休整"], "morning": "上午游览可可托海额尔齐斯大峡谷，仰望巍峨耸立的神钟山花岗岩巨峰与清澈的额河流水。", "afternoon": "午后沿 G216 国道南下穿越卡拉麦里戈壁保护区，沿途注意观察路边出没的珍稀野生蒙古野驴与鹅喉羚。", "evening": "傍晚抵达乌鲁木齐市，洗车（洗去北疆泥雪）并休整，准备迎接东疆火洲暖秋旅程。", "stay": "乌鲁木齐市区星级酒店", "warnings": ["G216 国道穿越卡拉麦里保护区路段常有野生动物横穿公路，请勿鸣笛惊扰，减速慢行。"]}, {"day": 9, "date": "2025-11-02", "weekday": "周日", "title": "翻越达坂城百里风区 · 抵达火洲【吐鲁番】", "from_place": {"canonical": "新疆维吾尔自治区乌鲁木齐市", "lat": 43.825592, "lng": 87.616848, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "乌鲁木齐"}, "to_place": {"canonical": "新疆维吾尔自治区吐鲁番市高昌区", "lat": 42.951301, "lng": 89.189688, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "吐鲁番"}, "route": {"distance_km": 195.2, "duration_hours": 2.3, "duration_text": "2小时18分钟", "tolls_rmb": 88.0, "is_mountain": false, "source": "estimate_model"}, "elevation": {"place": "吐鲁番", "elevation_m": 30, "risk_level": "safe", "elevation_gain_m": -888, "warning": null, "suggestion": "低海拔区域，无高原反应风险，适宜舒适过夜。"}, "weather": {"place": "吐鲁番", "date": "2025-11-02", "weather": "晴空万里 / 干燥温暖", "temp_range": "6°C ~ 19°C", "hazard_warning": null, "dress_code": "舒适秋装：长袖T恤 + 薄外套/风衣，早晚加一件夹克，紫外线强需备润唇膏、防晒霜与墨镜。", "source": "climatology_model"}, "energy": {"vehicle": "燃油车 (SUV/轿车)", "consumption_desc": "百公里综合油耗 8.0 升 (92#/95# 汽油)", "total_energy": "15.6 升", "energy_cost_rmb": 127.9, "stops_needed": 0, "warning": null}, "chargers": ["G30连霍高速小草湖服务区充电站 (国家电网120kW)", "吐鲁番高昌区顺丰速运充电站"], "parks": [{"full_name": "新疆吐鲁番交河故城遗址 (4A/世界文化遗产)", "advance_days": 1, "booking_platform": "携程 / 美团", "ticket_price_rmb": 70, "notes": "世界上最大最古老、保存最完好的生土建筑城市，建议请景区电子讲解器。", "needs_border_pass": false, "matched_name": "交河故城"}], "highlights": ["达坂城巨型风力发电风车群", "吐鲁番交河故城遗址 (世界文化遗产)", "苏公塔伊斯兰建筑艺术"], "morning": "10:00 从乌鲁木齐出发，沿 G30 连霍高速向东南驶向吐鲁番，途经达坂城风车旷野。", "afternoon": "抵达吐鲁番市高昌区（气温明显回升至 15°C~18°C），下午游览交河故城，在千年生土遗迹间感受丝路厚重沧桑。", "evening": "参观苏公塔与维吾尔族郡王府，品尝吐鲁番特色烤包子、羊肉焖饼和清甜的新鲜/晾晒葡萄干。", "stay": "吐鲁番高昌区特色庭院酒店 / 星级酒店", "warnings": ["🚨 达坂城至小草湖段为百里风区，秋冬季横风较强，出隧道或跨风口桥梁时请握紧方向盘并控制车速在80km/h以内。"]}, {"day": 10, "date": "2025-11-03", "weekday": "周一", "title": "漫步绿洲与赤壁 · 探秘葡萄沟与【火焰山】", "from_place": {"canonical": "新疆维吾尔自治区吐鲁番市高昌区", "lat": 42.951301, "lng": 89.189688, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "吐鲁番"}, "to_place": {"canonical": "新疆维吾尔自治区吐鲁番市鄯善县", "lat": 42.868735, "lng": 90.214065, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "鄯善"}, "route": {"distance_km": 102.4, "duration_hours": 1.2, "duration_text": "1小时12分钟", "tolls_rmb": 46.0, "is_mountain": false, "source": "estimate_model"}, "elevation": {"place": "鄯善", "elevation_m": 410, "risk_level": "safe", "elevation_gain_m": 380, "warning": null, "suggestion": "低海拔区域，无高原反应风险，适宜舒适过夜。"}, "weather": {"place": "鄯善", "date": "2025-11-03", "weather": "晴天 / 沙漠干燥", "temp_range": "5°C ~ 18°C", "hazard_warning": "库木塔格沙漠下午偶有阵风扬沙，建议携带防风防沙巾。", "dress_code": "秋季休闲防风装、防沙鞋套。", "source": "climatology_model"}, "energy": {"vehicle": "燃油车 (SUV/轿车)", "consumption_desc": "百公里综合油耗 8.0 升 (92#/95# 汽油)", "total_energy": "8.2 升", "energy_cost_rmb": 67.2, "stops_needed": 0, "warning": null}, "chargers": ["G30连霍高速鄯善服务区充电站", "库木塔格沙漠游客中心充电站"], "parks": [{"full_name": "新疆吐鲁番葡萄沟风景区 (5A)", "advance_days": 0, "booking_platform": "美团 / 携程", "ticket_price_rmb": 60, "notes": "秋季可品尝挂干葡萄和参观维吾尔族民俗家访。", "needs_border_pass": false, "matched_name": "葡萄沟"}], "highlights": ["神奇地下水利工程坎儿井", "吐鲁番葡萄沟金秋风情", "《西游记》传奇火焰山"], "morning": "上午参观坎儿井民俗园，了解吐鲁番绿洲生命之源的地下暗渠水利智慧。", "afternoon": "前往火焰山风景区，打卡巨型金箍棒温度计与红褐色如烈焰般的赤砂岩山体。随后驱车前往鄯善县。", "evening": "傍晚抵达鄯善县城，入住酒店，准备次日沙漠日出与探险。", "stay": "鄯善县高品质酒店", "warnings": ["吐鲁番气候极为干燥，紫外线依然充足，请做好补水保湿与防晒。"]}, {"day": 11, "date": "2025-11-04", "weekday": "周二", "title": "沙与城零距离 · 【库木塔格沙漠】狂欢与金色沙海", "from_place": {"canonical": "新疆维吾尔自治区吐鲁番市鄯善县", "lat": 42.868735, "lng": 90.214065, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "鄯善"}, "to_place": {"canonical": "新疆维吾尔自治区吐鲁番市鄯善县", "lat": 42.868735, "lng": 90.214065, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "鄯善"}, "route": {"distance_km": 30.0, "duration_hours": 1.2, "duration_text": "市区游览约 1.2 小时", "tolls_rmb": 0.0, "is_mountain": false, "source": "local_city"}, "elevation": {"place": "鄯善", "elevation_m": 410, "risk_level": "safe", "elevation_gain_m": 0, "warning": null, "suggestion": "低海拔区域，无高原反应风险，适宜舒适过夜。"}, "weather": {"place": "鄯善", "date": "2025-11-04", "weather": "晴天 / 沙漠干燥", "temp_range": "5°C ~ 18°C", "hazard_warning": "库木塔格沙漠下午偶有阵风扬沙，建议携带防风防沙巾。", "dress_code": "秋季休闲防风装、防沙鞋套。", "source": "climatology_model"}, "energy": {"vehicle": "燃油车 (SUV/轿车)", "consumption_desc": "百公里综合油耗 8.0 升 (92#/95# 汽油)", "total_energy": "2.4 升", "energy_cost_rmb": 19.7, "stops_needed": 0, "warning": null}, "chargers": ["G30连霍高速鄯善服务区充电站", "库木塔格沙漠游客中心充电站"], "parks": [{"full_name": "新疆吐鲁番鄯善库木塔格沙漠风景名胜区 (4A)", "advance_days": 0, "booking_platform": "美团 / 携程 / 现场购票", "ticket_price_rmb": 30, "notes": "世界上少有的与城市零距离的沙漠；可自驾至景区门口，内有越野冲沙车和骆驼骑行项目。", "needs_border_pass": false, "matched_name": "库木塔格沙漠"}], "highlights": ["库木塔格沙漠日落与冲沙", "金色沙丘波纹与骑骆驼体验", "鄯善老城夜市美食"], "morning": "上午可睡到自然醒，在县城体验慢节奏生活，品尝特色烤馕与奶茶。", "afternoon": "15:30 前往库木塔格沙漠风景名胜区，体验沙漠越野冲沙、滑沙或骑骆驼漫步于柔美的羽状沙丘之上。", "evening": "18:00-19:00 在沙山顶端守候大漠绝美夕阳，看金色沙海染上红晕，壮丽无比。", "stay": "鄯善县高品质酒店 (连住)", "warnings": ["进入沙漠请提前给手机、相机穿上防尘防沙保护套，防止细沙损坏镜头变焦环。"]}, {"day": 12, "date": "2025-11-05", "weekday": "周三", "title": "穿越高昌历史风烟 · 探秘吐峪沟麻扎村", "from_place": {"canonical": "新疆维吾尔自治区吐鲁番市鄯善县", "lat": 42.868735, "lng": 90.214065, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "鄯善"}, "to_place": {"canonical": "新疆维吾尔自治区吐鲁番市高昌区", "lat": 42.951301, "lng": 89.189688, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "吐鲁番"}, "route": {"distance_km": 102.4, "duration_hours": 1.2, "duration_text": "1小时12分钟", "tolls_rmb": 46.0, "is_mountain": false, "source": "estimate_model"}, "elevation": {"place": "吐鲁番", "elevation_m": 30, "risk_level": "safe", "elevation_gain_m": -380, "warning": null, "suggestion": "低海拔区域，无高原反应风险，适宜舒适过夜。"}, "weather": {"place": "吐鲁番", "date": "2025-11-05", "weather": "晴空万里 / 干燥温暖", "temp_range": "6°C ~ 19°C", "hazard_warning": null, "dress_code": "舒适秋装：长袖T恤 + 薄外套/风衣，早晚加一件夹克，紫外线强需备润唇膏、防晒霜与墨镜。", "source": "climatology_model"}, "energy": {"vehicle": "燃油车 (SUV/轿车)", "consumption_desc": "百公里综合油耗 8.0 升 (92#/95# 汽油)", "total_energy": "8.2 升", "energy_cost_rmb": 67.2, "stops_needed": 0, "warning": null}, "chargers": ["G30连霍高速小草湖服务区充电站 (国家电网120kW)", "吐鲁番高昌区顺丰速运充电站"], "parks": [], "highlights": ["吐峪沟大峡谷与麻扎村 (传统生土古村落)", "高昌故城历史遗迹", "柏孜克里克千佛洞"], "morning": "从鄯善出发前往吐峪沟大峡谷，走进有数百年历史的传统生土建筑群麻扎村，感受原生态西域风情。", "afternoon": "游览柏孜克里克千佛洞与高昌故城，领略古丝绸之路重镇的昔日辉煌。", "evening": "返回吐鲁番市区住宿，享受惬意舒适的绿洲之夜。", "stay": "吐鲁番高昌区特色酒店", "warnings": ["吐峪沟麻扎村为原住村民居所，参观拍摄请尊重当地民族风俗与信仰。"]}, {"day": 13, "date": "2025-11-06", "weekday": "周四", "title": "告别火洲 · 沿 G30 连霍高速从容返程乌鲁木齐", "from_place": {"canonical": "新疆维吾尔自治区吐鲁番市高昌区", "lat": 42.951301, "lng": 89.189688, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "吐鲁番"}, "to_place": {"canonical": "新疆维吾尔自治区乌鲁木齐市", "lat": 43.825592, "lng": 87.616848, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "乌鲁木齐"}, "route": {"distance_km": 195.2, "duration_hours": 2.3, "duration_text": "2小时18分钟", "tolls_rmb": 88.0, "is_mountain": false, "source": "estimate_model"}, "elevation": {"place": "乌鲁木齐", "elevation_m": 918, "risk_level": "safe", "elevation_gain_m": 888, "warning": null, "suggestion": "低海拔区域，无高原反应风险，适宜舒适过夜。"}, "weather": {"place": "乌鲁木齐", "date": "2025-11-06", "weather": "多云间晴", "temp_range": "0°C ~ 11°C", "hazard_warning": null, "dress_code": "初冬装束：轻薄羽绒服或大衣。", "source": "climatology_model"}, "energy": {"vehicle": "燃油车 (SUV/轿车)", "consumption_desc": "百公里综合油耗 8.0 升 (92#/95# 汽油)", "total_energy": "15.6 升", "energy_cost_rmb": 127.9, "stops_needed": 0, "warning": null}, "chargers": ["乌鲁木齐高铁站超级充电站 (120kW+)", "天山万达广场特来电快充站"], "parks": [], "highlights": ["G30连霍高速公路风景", "乌鲁木齐特色餐饮与伴手礼采购", "新疆博物馆 (观赏楼兰美女干尸)"], "morning": "10:30 从吐鲁番出发，经 G30 高速返程乌鲁木齐，车程约 2.5 小时，轻松无赶路压力。", "afternoon": "下午参观新疆维吾尔自治区博物馆（需提前小程序实名预约），重点参观西域历史文物与干尸陈列展厅。", "evening": "在乌鲁木齐享用告别晚宴，采购优质新疆干果（和田红枣、阿克苏核桃、吐鲁番无核白葡萄干）。", "stay": "乌鲁木齐机场/高铁站附近高档酒店", "warnings": ["新疆博物馆周一闭馆，请提前在微信小程序实名预约门票。"]}, {"day": 14, "date": "2025-11-07", "weekday": "周五", "title": "乌鲁木齐顺利还车 · 满载冰火新疆回忆返程", "from_place": {"canonical": "新疆维吾尔自治区乌鲁木齐市", "lat": 43.825592, "lng": 87.616848, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "乌鲁木齐"}, "to_place": {"canonical": "新疆维吾尔自治区乌鲁木齐市", "lat": 43.825592, "lng": 87.616848, "province": "新疆", "region": "xinjiang", "verdict": "match", "name": "乌鲁木齐"}, "route": {"distance_km": 30.0, "duration_hours": 1.2, "duration_text": "市区游览约 1.2 小时", "tolls_rmb": 0.0, "is_mountain": false, "source": "local_city"}, "elevation": {"place": "乌鲁木齐", "elevation_m": 918, "risk_level": "safe", "elevation_gain_m": 0, "warning": null, "suggestion": "低海拔区域，无高原反应风险，适宜舒适过夜。"}, "weather": {"place": "乌鲁木齐", "date": "2025-11-07", "weather": "多云间晴", "temp_range": "0°C ~ 11°C", "hazard_warning": null, "dress_code": "初冬装束：轻薄羽绒服或大衣。", "source": "climatology_model"}, "energy": {"vehicle": "燃油车 (SUV/轿车)", "consumption_desc": "百公里综合油耗 8.0 升 (92#/95# 汽油)", "total_energy": "2.4 升", "energy_cost_rmb": 19.7, "stops_needed": 0, "warning": null}, "chargers": ["乌鲁木齐高铁站超级充电站 (120kW+)", "天山万达广场特来电快充站"], "parks": [], "highlights": ["市区悠闲漫步", "车行还车与押金结算", "返程航班/高铁"], "morning": "睡到自然醒，享用酒店丰盛早餐。整理行装，检查随身物品与边防证证件。", "afternoon": "前往租车网点还车，验车交接，结算高速 ETC 费用与押金。", "evening": "搭乘航班/高铁返回温馨的家，圆满结束 14 天难忘的北疆冰雪与东疆大漠自驾之旅！", "stay": "返程 / 温馨的家", "warnings": ["建议提前 2.5 小时到达机场，新疆机场安检较为严格细致。"]}]};
+
+    // 初始化高德瓦片地图 (通过 Leaflet 渲染)
+    const map = L.map('map', {
+      zoomControl: true,
+      attributionControl: false
+    }).setView([45.5, 87.5], 6);
+
+    // 高德高清矢量/路网瓦片
+    L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+      subdomains: ['1', '2', '3', '4'],
+      minZoom: 3,
+      maxZoom: 18
+    }).addTo(map);
+
+    const markers = [];
+    const latlngs = [];
+
+    // 绘制途经点与路线折线
+    tripData.days.forEach(day => {
+      const lat = day.to_place.lat;
+      const lng = day.to_place.lng;
+      latlngs.push([lat, lng]);
+
+      // 自定义数字圆点 Marker
+      const customIcon = L.divIcon({
+        className: 'custom-day-marker',
+        html: `<div style="background:#2563eb; color:#fff; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; border:2px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,0.4);">${day.day}</div>`,
+        iconSize: [26, 26],
+        iconAnchor: [13, 13]
+      });
+
+      const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
+      marker.bindPopup(`
+        <div style="font-size:13px; line-height:1.5; color:#0f172a; min-width:180px;">
+          <b style="color:#2563eb;">Day ${day.day}: ${day.title}</b><br/>
+          📍 终点: ${day.to_place.canonical}<br/>
+          🏔️ 海拔: ${day.elevation.elevation_m}m<br/>
+          🌤️ 天气: ${day.weather.weather} (${day.weather.temp_range})<br/>
+          🚗 里程: ${day.route.distance_km} km (约 ${day.route.duration_text})<br/>
+          <hr style="margin:6px 0; border:0; border-top:1px solid #e2e8f0;"/>
+          🏨 住宿: ${day.stay}
+        </div>
+      `);
+      markers.push({ day: day.day, marker, lat, lng });
+    });
+
+    // 绘制平滑路线折线
+    const polyline = L.polyline(latlngs, {
+      color: '#3b82f6',
+      weight: 4,
+      opacity: 0.8,
+      dashArray: '8, 8'
+    }).addTo(map);
+
+    // 自动缩放自适应整个新疆行程
+    if (latlngs.length > 0) {
+      map.fitBounds(polyline.getBounds(), { padding: [40, 40] });
+    }
+
+    // 点击右侧卡片，地图聚焦并打开 Popup
+    function focusDay(dayNumber) {
+      document.querySelectorAll('.day-card').forEach(c => c.classList.remove('active'));
+      const activeCard = document.getElementById('day-card-' + dayNumber);
+      if (activeCard) activeCard.classList.add('active');
+
+      const target = markers.find(m => m.day === dayNumber);
+      if (target) {
+        map.flyTo([target.lat, target.lng], 9, { duration: 1.2 });
+        target.marker.openPopup();
+      }
+    }
+  </script>
+</body>
+</html>

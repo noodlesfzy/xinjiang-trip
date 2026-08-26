@@ -211,6 +211,10 @@ info_plist = '''<?xml version="1.0" encoding="UTF-8"?>
     <dict>
         <key>NSAllowsArbitraryLoads</key>
         <true/>
+        <key>NSAllowsArbitraryLoadsInWebContent</key>
+        <true/>
+        <key>NSAllowsLocalNetworking</key>
+        <true/>
     </dict>
     <key>UIRequiresFullScreen</key>
     <true/>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{trip_title}} - 中国自驾交互路书</title>
+  <!-- Leaflet CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --accent: #f59e0b;
+      --danger: #ef4444;
+      --success: #10b981;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-hover: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; }
+    body { background-color: var(--bg); color: var(--text); line-height: 1.6; }
+    
+    /* Header */
+    header { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-bottom: 1px solid var(--border); padding: 24px 20px; }
+    .header-container { max-width: 1400px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; }
+    .title-group h1 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .title-group p { font-size: 14px; color: var(--text-muted); }
+    .meta-badges { display: flex; flex-wrap: wrap; gap: 8px; }
+    .badge { padding: 6px 12px; border-radius: 9999px; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; }
+    .badge-primary { background: rgba(37, 99, 235, 0.2); color: #60a5fa; border: 1px solid rgba(37, 99, 235, 0.4); }
+    .badge-accent { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .badge-success { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .badge-danger { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+
+    /* Main Layout */
+    .container { max-width: 1400px; margin: 20px auto; padding: 0 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 1024px) {
+      .container { grid-template-columns: 1fr; }
+    }
+
+    /* Map Box */
+    .map-panel { position: sticky; top: 20px; height: calc(100vh - 100px); min-height: 500px; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; }
+    #map { flex: 1; width: 100%; height: 100%; z-index: 1; }
+    .map-footer { background: var(--card-bg); padding: 12px 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; }
+
+    /* Right Timeline Panel */
+    .content-panel { display: flex; flex-direction: column; gap: 16px; }
+
+    /* Rules Banner */
+    .critical-banner { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 12px; padding: 16px; }
+    .critical-banner h3 { font-size: 15px; font-weight: 600; color: #f87171; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .critical-banner ul { list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #cbd5e1; }
+
+    /* Day Card */
+    .day-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; transition: all 0.2s ease; cursor: pointer; }
+    .day-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    .day-card.active { border-color: #60a5fa; box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3); }
+
+    .card-header { padding: 14px 16px; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .day-tag { font-size: 14px; font-weight: 700; color: #60a5fa; background: rgba(37,99,235,0.15); padding: 4px 10px; border-radius: 6px; }
+    .day-date { font-size: 13px; color: var(--text-muted); }
+    .card-title { font-size: 16px; font-weight: 600; color: #fff; margin: 12px 16px 8px; }
+    
+    .card-metrics { display: flex; flex-wrap: wrap; gap: 12px; padding: 0 16px 12px; font-size: 12px; color: var(--text-muted); }
+    .metric-item { display: flex; align-items: center; gap: 4px; }
+    .metric-item span { color: #f1f5f9; font-weight: 500; }
+
+    .card-body { padding: 14px 16px; border-top: 1px dashed var(--border); font-size: 13px; display: flex; flex-direction: column; gap: 10px; }
+    .timeline-step { display: flex; gap: 10px; }
+    .step-time { min-width: 40px; font-weight: 600; color: #94a3b8; font-size: 12px; }
+    .step-desc { color: #cbd5e1; flex: 1; }
+
+    .card-warning-box { background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 8px 12px; font-size: 12px; color: #fde68a; }
+    .card-footer { padding: 10px 16px; background: rgba(0,0,0,0.2); border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+    .nav-buttons { display: flex; gap: 8px; }
+    .btn-nav { padding: 4px 8px; background: var(--card-hover); color: #fff; border-radius: 6px; text-decoration: none; font-size: 11px; transition: background 0.2s; }
+    .btn-nav:hover { background: var(--primary); }
+
+    /* Summary Bar */
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 16px; }
+    .summary-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; text-align: center; }
+    .summary-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+    .summary-val { font-size: 18px; font-weight: 700; color: #60a5fa; }
+
+    /* Print styles */
+    @media print {
+      body { background: #fff; color: #000; }
+      .map-panel { display: none; }
+      .container { grid-template-columns: 1fr; }
+      .day-card { border: 1px solid #ccc; break-inside: avoid; margin-bottom: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <div class="title-group">
+        <h1>{{trip_title}}</h1>
+        <p>{{trip_subtitle}}</p>
+      </div>
+      <div class="meta-badges">
+        <div class="badge badge-primary">📅 {{dates}} ({{total_days}}天)</div>
+        <div class="badge badge-accent">🚙 {{vehicle_type}}</div>
+        <div class="badge badge-success">📍 {{region}}</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    
+    <!-- 左侧地图 -->
+    <div class="map-panel">
+      <div id="map"></div>
+      <div class="map-footer">
+        <span>🗺️ 底图：高德地图 AutoNavi (GCJ-02) · 国内免翻墙直连</span>
+        <span>点击右侧卡片可高亮定位路线</span>
+      </div>
+    </div>
+
+    <!-- 右侧内容 -->
+    <div class="content-panel">
+
+      <!-- 核心指标摘要 -->
+      <div class="summary-grid">
+        <div class="summary-box">
+          <div class="summary-label">总行驶里程</div>
+          <div class="summary-val">{{summary.total_distance_km}} <small style="font-size:11px;">km</small></div>
+        </div>
+        <div class="summary-box">
+          <div class="summary-label">总行车耗时</div>
+          <div class="summary-val">{{summary.total_driving_hours}} <small style="font-size:11px;">小时</small></div>
+        </div>
+        <div class="summary-box">
+          <div class="summary-label">高速过路费预估</div>
+          <div class="summary-val">¥{{summary.total_tolls_rmb}}</div>
+        </div>
+        <div class="summary-box">
+          <div class="summary-label">油电能耗预估</div>
+          <div class="summary-val">¥{{summary.total_energy_cost_rmb}}</div>
+        </div>
+      </div>
+
+      <!-- 重点安全提醒 -->
+      <div class="critical-banner">
+        <h3>🛡️ 新疆自驾关键安全与规则提示</h3>
+        <ul>
+          {% for rule in critical_rules %}
+          <li>{{rule}}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- 每日行程列表 -->
+      <div class="days-list" style="display:flex; flex-direction:column; gap:16px;">
+        {% for day in days %}
+        <div class="day-card" id="day-card-{{day.day}}" onclick="focusDay({{day.day}})">
+          <div class="card-header">
+            <span class="day-tag">Day {{day.day}} · {{day.weekday}}</span>
+            <span class="day-date">{{day.date}}</span>
+          </div>
+          <div class="card-title">{{day.title}}</div>
+          
+          <div class="card-metrics">
+            <div class="metric-item">🚗 里程: <span>{{day.route.distance_km}} km</span></div>
+            <div class="metric-item">⏱️ 耗时: <span>{{day.route.duration_text}}</span></div>
+            <div class="metric-item">🏔️ 海拔: <span>{{day.elevation.elevation_m}} m ({{day.to_place.name}})</span></div>
+            <div class="metric-item">🌤️ 天气: <span>{{day.weather.weather}} ({{day.weather.temp_range}})</span></div>
+            <div class="metric-item">💳 高速费: <span>¥{{day.route.tolls_rmb}}</span></div>
+          </div>
+
+          <div class="card-body">
+            <div class="timeline-step">
+              <div class="step-time">上午</div>
+              <div class="step-desc">{{day.morning}}</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">下午</div>
+              <div class="step-desc">{{day.afternoon}}</div>
+            </div>
+            <div class="timeline-step">
+              <div class="step-time">傍晚</div>
+              <div class="step-desc">{{day.evening}}</div>
+            </div>
+
+            {% if day.warnings %}
+            <div class="card-warning-box">
+              {% for w in day.warnings %}
+              <div>{{w}}</div>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="card-footer">
+            <div>🏨 宿：<span style="color:#f1f5f9; font-weight:500;">{{day.stay}}</span></div>
+            <div class="nav-buttons">
+              <a class="btn-nav" href="https://uri.amap.com/navigation?from={{day.from_place.lng}},{{day.from_place.lat}}&to={{day.to_place.lng}},{{day.to_place.lat}}&mode=car" target="_blank">高德导航</a>
+              <a class="btn-nav" href="http://api.map.baidu.com/direction?origin=latlng:{{day.from_place.lat}},{{day.from_place.lng}}|name:{{day.from_place.name}}&destination=latlng:{{day.to_place.lat}},{{day.to_place.lng}}|name:{{day.to_place.name}}&mode=driving&output=html" target="_blank">百度地图</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // 注入后端行程数据
+    const tripData = {{trip_data_json}};
+
+    // 初始化高德瓦片地图 (通过 Leaflet 渲染)
+    const map = L.map('map', {
+      zoomControl: true,
+      attributionControl: false
+    }).setView([45.5, 87.5], 6);
+
+    // 高德高清矢量/路网瓦片
+    L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+      subdomains: ['1', '2', '3', '4'],
+      minZoom: 3,
+      maxZoom: 18
+    }).addTo(map);
+
+    const markers = [];
+    const latlngs = [];
+
+    // 绘制途经点与路线折线
+    tripData.days.forEach(day => {
+      const lat = day.to_place.lat;
+      const lng = day.to_place.lng;
+      latlngs.push([lat, lng]);
+
+      // 自定义数字圆点 Marker
+      const customIcon = L.divIcon({
+        className: 'custom-day-marker',
+        html: `<div style="background:#2563eb; color:#fff; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; border:2px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,0.4);">${day.day}</div>`,
+        iconSize: [26, 26],
+        iconAnchor: [13, 13]
+      });
+
+      const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
+      marker.bindPopup(`
+        <div style="font-size:13px; line-height:1.5; color:#0f172a; min-width:180px;">
+          <b style="color:#2563eb;">Day ${day.day}: ${day.title}</b><br/>
+          📍 终点: ${day.to_place.canonical}<br/>
+          🏔️ 海拔: ${day.elevation.elevation_m}m<br/>
+          🌤️ 天气: ${day.weather.weather} (${day.weather.temp_range})<br/>
+          🚗 里程: ${day.route.distance_km} km (约 ${day.route.duration_text})<br/>
+          <hr style="margin:6px 0; border:0; border-top:1px solid #e2e8f0;"/>
+          🏨 住宿: ${day.stay}
+        </div>
+      `);
+      markers.push({ day: day.day, marker, lat, lng });
+    });
+
+    // 绘制平滑路线折线
+    const polyline = L.polyline(latlngs, {
+      color: '#3b82f6',
+      weight: 4,
+      opacity: 0.8,
+      dashArray: '8, 8'
+    }).addTo(map);
+
+    // 自动缩放自适应整个新疆行程
+    if (latlngs.length > 0) {
+      map.fitBounds(polyline.getBounds(), { padding: [40, 40] });
+    }
+
+    // 点击右侧卡片，地图聚焦并打开 Popup
+    function focusDay(dayNumber) {
+      document.querySelectorAll('.day-card').forEach(c => c.classList.remove('active'));
+      const activeCard = document.getElementById('day-card-' + dayNumber);
+      if (activeCard) activeCard.classList.add('active');
+
+      const target = markers.find(m => m.day === dayNumber);
+      if (target) {
+        map.flyTo([target.lat, target.lng], 9, { duration: 1.2 });
+        target.marker.openPopup();
+      }
+    }
+  </script>
+</body>
+</html>

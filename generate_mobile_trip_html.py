@@ -243,6 +243,7 @@ def build_mobile_split_screen_html():
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
+  <meta name="referrer" content="no-referrer" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>新疆14天自驾路书 (大众点评100%真实名店直达 + 药丸竖排 + 单餐5选1隔离)</title>
   
@@ -260,78 +261,92 @@ def build_mobile_split_screen_html():
   </script>
 
   <style>
-    :root {{
-      --primary: #96382d;
+        :root {{
+      --primary: #0284c7;
       
-      /* Dark Theme (默认暗黑模式) */
+      /* Dark Theme (默认暗黑模式 - 深邃黑曜石) */
       --bg: #070a12;
-      --card-bg: rgba(18, 26, 44, 0.72);
-      --card-border: rgba(255, 255, 255, 0.12);
+      --card-bg: rgba(18, 26, 44, 0.80);
+      --card-border: rgba(255, 255, 255, 0.08);
       --text: #f8fafc;
       --text-muted: #94a3b8;
       --text-heading: #ffffff;
       
       /* Apple Liquid Glass Material Tokens - Dark */
-      --liquid-glass-bg: rgba(15, 23, 42, 0.76);
+      --liquid-glass-bg: rgba(15, 23, 42, 0.80);
       --liquid-glass-bg-subtle: rgba(24, 34, 58, 0.65);
-      --liquid-glass-border: rgba(255, 255, 255, 0.18);
-      --liquid-glass-specular: inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.35);
-      --liquid-glass-shadow: 0 14px 40px 0 rgba(0, 0, 0, 0.52), 0 2px 8px 0 rgba(0, 0, 0, 0.35);
-      --liquid-blur: blur(28px) saturate(190%);
+      --liquid-glass-border: rgba(255, 255, 255, 0.14);
+      --liquid-glass-specular: inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.35);
+      --liquid-glass-shadow: 0 14px 40px 0 rgba(0, 0, 0, 0.55), 0 2px 8px 0 rgba(0, 0, 0, 0.35);
+      --liquid-blur: blur(30px) saturate(190%);
       
       /* Active Accent Glow - Dark */
-      --active-card-bg: linear-gradient(145deg, rgba(61, 20, 20, 0.88) 0%, rgba(31, 11, 11, 0.94) 100%);
-      --active-card-border: #f87171;
-      --active-glow: rgba(248, 113, 113, 0.4);
-      --sub-card-bg: rgba(18, 26, 44, 0.72);
+      --active-card-bg: linear-gradient(145deg, rgba(14, 40, 70, 0.88) 0%, rgba(10, 24, 46, 0.94) 100%);
+      --active-card-border: #38bdf8;
+      --active-glow: rgba(56, 189, 248, 0.35);
+      --sub-card-bg: rgba(18, 26, 44, 0.80);
+      
+      /* Dock Tokens - Dark */
+      --liquid-dock-bg: rgba(18, 24, 38, 0.88);
+      --liquid-dock-border: rgba(255, 255, 255, 0.12);
+      --liquid-bubble-bg: linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(2, 132, 199, 0.12) 100%);
+      --liquid-bubble-border: rgba(56, 189, 248, 0.40);
+      --liquid-bubble-glow: 0 4px 16px rgba(56, 189, 248, 0.25);
       
       /* Continuous Hardware Curves (Apple Squircles) */
       --radius-pill: 9999px;
       --radius-island: 26px;
-      --radius-card: 22px;
+      --radius-card: 20px;
       --radius-sub: 16px;
     }}
 
     /* ========================================================
-       ☀️ LIGHT THEME (白天明亮模式)
+       ☀️ LIGHT THEME (极简高级明亮模式 - 参考 nanoTV Pro)
        ======================================================== */
     [data-theme="light"] {{
-      --bg: #f1f5f9;
-      --card-bg: rgba(255, 255, 255, 0.90);
-      --card-border: rgba(0, 0, 0, 0.08);
+      --bg: #f4f6fa;
+      --card-bg: #ffffff;
+      --card-border: rgba(0, 0, 0, 0.06);
       --text: #0f172a;
       --text-muted: #64748b;
       --text-heading: #020617;
       
       /* Liquid Glass Tokens - Light */
       --liquid-glass-bg: rgba(255, 255, 255, 0.88);
-      --liquid-glass-bg-subtle: rgba(241, 245, 249, 0.84);
-      --liquid-glass-border: rgba(255, 255, 255, 0.90);
-      --liquid-glass-specular: inset 0 1px 2px 0 rgba(255, 255, 255, 0.98), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.04);
-      --liquid-glass-shadow: 0 12px 32px 0 rgba(15, 23, 42, 0.08), 0 2px 6px 0 rgba(15, 23, 42, 0.04);
-      --liquid-blur: blur(28px) saturate(190%);
+      --liquid-glass-bg-subtle: rgba(244, 246, 250, 0.85);
+      --liquid-glass-border: rgba(255, 255, 255, 0.95);
+      --liquid-glass-specular: inset 0 1px 2px 0 rgba(255, 255, 255, 0.98), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.03);
+      --liquid-glass-shadow: 0 12px 32px 0 rgba(15, 23, 42, 0.08), 0 2px 6px 0 rgba(15, 23, 42, 0.03);
+      --liquid-blur: blur(30px) saturate(190%);
       
       /* Active Accent Glow - Light */
-      --active-card-bg: linear-gradient(145deg, #fff1f2 0%, #ffe4e6 100%);
-      --active-card-border: #f43f5e;
-      --active-glow: rgba(244, 63, 94, 0.25);
-      --sub-card-bg: rgba(255, 255, 255, 0.90);
+      --active-card-bg: #ffffff;
+      --active-card-border: #0284c7;
+      --active-glow: rgba(2, 132, 199, 0.18);
+      --sub-card-bg: #ffffff;
+      
+      /* Dock Tokens - Light */
+      --liquid-dock-bg: rgba(255, 255, 255, 0.88);
+      --liquid-dock-border: rgba(255, 255, 255, 0.95);
+      --liquid-bubble-bg: linear-gradient(135deg, rgba(2, 132, 199, 0.14) 0%, rgba(56, 189, 248, 0.08) 100%);
+      --liquid-bubble-border: rgba(2, 132, 199, 0.28);
+      --liquid-bubble-glow: 0 4px 14px rgba(2, 132, 199, 0.15);
     }}
 
     [data-theme="light"] .m-map-pinned-zone {{
       background: #e2e8f0;
-      border-color: rgba(0, 0, 0, 0.08);
+      border-color: rgba(0, 0, 0, 0.06);
     }}
     [data-theme="light"] .m-map-pill,
     [data-theme="light"] .m-map-hint {{
       color: #0f172a;
-      background: rgba(255, 255, 255, 0.90);
-      border-color: rgba(0, 0, 0, 0.08);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      background: rgba(255, 255, 255, 0.92);
+      border-color: rgba(0, 0, 0, 0.06);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
     }}
     [data-theme="light"] .m-quick-nav-pill {{
       color: #64748b;
-      background: rgba(241, 245, 249, 0.85);
+      background: rgba(255, 255, 255, 0.85);
       border-color: rgba(0, 0, 0, 0.06);
     }}
     [data-theme="light"] .m-quick-nav-pill.active {{
@@ -340,46 +355,50 @@ def build_mobile_split_screen_html():
       box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
     }}
     [data-theme="light"] .m-metrics-strip .m-m-box {{
-      background: rgba(255, 255, 255, 0.92);
+      background: #ffffff;
       border-color: rgba(0, 0, 0, 0.06);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
     }}
     [data-theme="light"] .m-metrics-strip .m-val {{
-      color: #0f172a;
+      color: #0284c7;
     }}
     [data-theme="light"] .m-rules-banner {{
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(245, 158, 11, 0.08) 100%);
-      border-color: rgba(239, 68, 68, 0.2);
+      background: #ffffff;
+      border-color: rgba(239, 68, 68, 0.18);
+      box-shadow: 0 3px 12px rgba(15, 23, 42, 0.03);
     }}
     [data-theme="light"] .m-rules-banner h4 {{
       color: #b91c1c;
     }}
     [data-theme="light"] .m-rules-banner ul {{
-      color: #334155;
+      color: #475569;
     }}
     [data-theme="light"] .m-card {{
-      box-shadow: var(--liquid-glass-specular), 0 6px 20px rgba(15, 23, 42, 0.06);
+      background: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
     }}
     [data-theme="light"] .m-card.active {{
-      background: linear-gradient(145deg, #fff1f2 0%, #ffe4e6 100%) !important;
-      border: 1.5px solid #f43f5e !important;
-      box-shadow: 0 10px 28px rgba(244, 63, 94, 0.2) !important;
+      background: #ffffff !important;
+      border: 1.5px solid #0284c7 !important;
+      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.14) !important;
     }}
     [data-theme="light"] .m-card.active .m-card-title {{
-      color: #9f1239 !important;
+      color: #0284c7 !important;
       text-shadow: none;
     }}
     [data-theme="light"] .m-card-title {{
       color: #0f172a;
     }}
     [data-theme="light"] .m-stats-grid {{
-      background: rgba(241, 245, 249, 0.7);
+      background: #f8fafc;
+      border-color: rgba(0, 0, 0, 0.04);
     }}
     [data-theme="light"] .m-stat b {{
       color: #0f172a;
     }}
     [data-theme="light"] .m-desc {{
-      color: #334155;
+      color: #475569;
     }}
     [data-theme="light"] .m-warn {{
       background: #fffbeb;
@@ -387,30 +406,31 @@ def build_mobile_split_screen_html():
       color: #92400e;
     }}
     [data-theme="light"] .m-card-footer {{
-      background: rgba(248, 250, 252, 0.85);
+      background: #f8fafc;
+      border-top: 1px solid rgba(0, 0, 0, 0.04);
     }}
     [data-theme="light"] .m-stay b {{
       color: #0f172a;
     }}
     [data-theme="light"] .m-btn-dine {{
-      background: #fef3c7;
-      border-color: #fde68a;
-      color: #92400e;
+      background: #fff7ed;
+      border-color: #ffedd5;
+      color: #c2410c;
     }}
     [data-theme="light"] .m-btn-bird {{
       background: #ecfdf5;
-      border-color: #a7f3d0;
-      color: #065f46;
+      border-color: #d1fae5;
+      color: #047857;
     }}
     [data-theme="light"] .m-btn-herit {{
       background: #faf5ff;
-      border-color: #e9d5ff;
-      color: #6b21a8;
+      border-color: #f3e8ff;
+      color: #7e22ce;
     }}
     [data-theme="light"] .m-dine-card {{
-      background: rgba(255, 255, 255, 0.94);
-      border-color: rgba(0, 0, 0, 0.08);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+      background: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
     }}
     [data-theme="light"] .m-dine-shop-name {{
       color: #0f172a;
@@ -424,18 +444,19 @@ def build_mobile_split_screen_html():
       color: #9a3412;
     }}
     [data-theme="light"] .m-dine-pill {{
-      background: rgba(0, 0, 0, 0.04);
-      border-color: rgba(0, 0, 0, 0.08);
-      color: #334155;
+      background: #f1f5f9;
+      border-color: rgba(0, 0, 0, 0.05);
+      color: #475569;
     }}
     [data-theme="light"] .m-dine-pill.active {{
       background: #ea580c;
       color: #ffffff;
+      box-shadow: 0 2px 8px rgba(234, 88, 12, 0.3);
     }}
     [data-theme="light"] .m-birding-card {{
-      background: rgba(255, 255, 255, 0.94);
-      border-color: rgba(0, 0, 0, 0.08);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+      background: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
     }}
     [data-theme="light"] .m-bird-loc-name {{
       color: #0f172a;
@@ -444,13 +465,13 @@ def build_mobile_split_screen_html():
       color: #475569;
     }}
     [data-theme="light"] .m-bird-notes-box {{
-      background: rgba(241, 245, 249, 0.85);
+      background: #f8fafc;
       color: #475569;
     }}
     [data-theme="light"] .m-herit-card {{
-      background: rgba(255, 255, 255, 0.94);
-      border-color: rgba(0, 0, 0, 0.08);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+      background: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
     }}
     [data-theme="light"] .m-herit-title {{
       color: #0f172a;
@@ -460,7 +481,7 @@ def build_mobile_split_screen_html():
     }}
     [data-theme="light"] .m-herit-notes-box {{
       background: #faf5ff;
-      border-color: #e9d5ff;
+      border-color: #f3e8ff;
     }}
     [data-theme="light"] .m-herit-notes-title {{
       color: #6b21a8;
@@ -473,19 +494,13 @@ def build_mobile_split_screen_html():
       border-color: #fde68a;
       color: #92400e;
     }}
-    [data-theme="light"] .m-bottom-dock {{
-      background: rgba(255, 255, 255, 0.90);
-      border-color: rgba(255, 255, 255, 0.95);
-      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15, 23, 42, 0.06);
+    [data-theme="light"] .m-sub-card {{
+      background: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
     }}
-    [data-theme="light"] .m-dock-item {{
-      color: #64748b;
-    }}
-    [data-theme="light"] .m-dock-item.active {{
-      color: #9f1239;
-      background: linear-gradient(135deg, #ffe4e6 0%, #fff1f2 100%);
-      border: 1px solid #fecdd3;
-      box-shadow: 0 4px 14px rgba(244, 63, 94, 0.2);
+    [data-theme="light"] .m-sub-card h3 {{
+      color: #0284c7;
     }}
     * {{
       box-sizing: border-box;
@@ -528,7 +543,7 @@ def build_mobile_split_screen_html():
       flex: 0 0 24vh;
       min-height: 155px;
       max-height: 28vh;
-      margin: max(6px, env(safe-area-inset-top)) 8px 4px 8px;
+      margin: max(54px, env(safe-area-inset-top) + 8px) 10px 4px 10px; border-radius: 20px;
       border-radius: 18px;
       overflow: hidden;
       background: #0f172a;
@@ -973,7 +988,13 @@ def build_mobile_split_screen_html():
     }}
     .m-more-view,
     .m-tips-view {{
-      padding: 4px 10px calc(72px + env(safe-area-inset-bottom)) 10px;
+      padding: max(54px, env(safe-area-inset-top) + 12px) 14px calc(80px + env(safe-area-inset-bottom)) 14px;
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      box-sizing: border-box;
+      margin-left: 0 !important;
     }}
 
     .m-metrics-strip {{
@@ -1157,7 +1178,7 @@ def build_mobile_split_screen_html():
 
     .m-map-days-nav {{
       position: absolute;
-      top: 10px;
+      top: max(54px, env(safe-area-inset-top) + 8px);
       left: 10px;
       right: 10px;
       z-index: 500;
@@ -1191,7 +1212,7 @@ def build_mobile_split_screen_html():
 
     .m-layer-toggle-btn {{
       position: absolute;
-      top: 55px;
+      top: calc(max(54px, env(safe-area-inset-top) + 8px) + 42px);
       right: 12px;
       z-index: 500;
       background: rgba(15, 23, 42, 0.9);
@@ -1915,23 +1936,23 @@ def build_mobile_split_screen_html():
       transition: opacity 0.3s ease;
     }}
 
-    /* Bottom App Dock (Liquid Glass Floating Island 悬浮流体底栏叠层) */
+        /* Bottom App Dock (Liquid Glass Floating Bubble Dock 悬浮液态气泡底栏) */
     .m-bottom-dock {{
       position: absolute;
-      bottom: max(6px, env(safe-area-inset-bottom));
-      left: 8px;
-      right: 8px;
-      height: 52px;
-      background: var(--liquid-glass-bg);
-      backdrop-filter: var(--liquid-blur);
-      -webkit-backdrop-filter: var(--liquid-blur);
-      border: 1px solid var(--liquid-glass-border);
-      border-radius: 26px;
-      box-shadow: var(--liquid-glass-specular), 0 12px 36px rgba(0, 0, 0, 0.55);
+      bottom: max(10px, env(safe-area-inset-bottom) + 2px);
+      left: 12px;
+      right: 12px;
+      height: 60px;
+      background: var(--liquid-dock-bg);
+      backdrop-filter: blur(32px) saturate(190%);
+      -webkit-backdrop-filter: blur(32px) saturate(190%);
+      border: 1px solid var(--liquid-dock-border);
+      border-radius: 30px;
+      box-shadow: 0 12px 36px rgba(15, 23, 42, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
       display: flex;
       justify-content: space-around;
       align-items: center;
-      padding: 2px 4px;
+      padding: 3px 6px;
       z-index: 1000;
     }}
     .m-dock-item {{
@@ -1941,30 +1962,34 @@ def build_mobile_split_screen_html():
       align-items: center;
       justify-content: center;
       color: var(--text-muted);
-      font-size: 9.5px;
+      font-size: 10px;
       font-weight: 600;
       cursor: pointer;
-      width: 16.6%;
-      height: 100%;
+      width: 16%;
+      height: 48px;
       border-radius: 20px;
-      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
     }}
     .m-dock-item:active {{
-      transform: scale(0.88);
+      transform: scale(0.90);
     }}
     .m-dock-item .m-dock-icon {{
-      font-size: 17px;
-      margin-bottom: 1px;
-      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      font-size: 19px;
+      margin-bottom: 2px;
+      transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
     }}
     .m-dock-item.active {{
-      color: #fff;
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.35) 0%, rgba(248, 113, 113, 0.15) 100%);
-      border: 1px solid rgba(248, 113, 113, 0.45);
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.35), 0 0 12px rgba(239, 68, 68, 0.45);
+      color: #0284c7;
+      background: var(--liquid-bubble-bg);
+      border: 1px solid var(--liquid-bubble-border);
+      box-shadow: 0 4px 14px var(--liquid-bubble-glow), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+    }}
+    [data-theme="dark"] .m-dock-item.active {{
+      color: #38bdf8;
+      box-shadow: 0 4px 16px var(--liquid-bubble-glow), inset 0 1px 2px rgba(255, 255, 255, 0.2);
     }}
     .m-dock-item.active .m-dock-icon {{
-      transform: scale(1.14);
+      transform: scale(1.15) translateY(-1px);
     }}
   </style>
 </head>
@@ -2325,10 +2350,11 @@ def build_mobile_split_screen_html():
       attributionControl: false
     }}).setView([45.5, 87.5], 6);
 
-    L.tileLayer('https://wprd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={{x}}&y={{y}}&z={{z}}', {{
+    L.tileLayer('https://webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={{x}}&y={{y}}&z={{z}}', {{
       subdomains: ['1', '2', '3', '4'],
       minZoom: 3,
-      maxZoom: 18
+      maxZoom: 18,
+      crossOrigin: false
     }}).addTo(mMap);
 
     // 智能多重定时尺寸校准，彻底防止 iOS WebKit 初始化尺寸为 0 导致地图黑屏
@@ -2412,7 +2438,7 @@ def build_mobile_split_screen_html():
       const rail = document.getElementById('m-quick-nav-rail');
       if (!rail) return;
 
-      if (viewId === 'map' || viewId === 'tips') {{
+      if (viewId === 'map' || viewId === 'tips' || viewId === 'more') {{
         rail.style.display = 'none';
         return;
       }}
@@ -3008,16 +3034,18 @@ def build_mobile_split_screen_html():
         attributionControl: false
       }}).setView([45.5, 87.5], 6);
 
-      transitLayer = L.tileLayer('https://wprd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={{x}}&y={{y}}&z={{z}}', {{
+      transitLayer = L.tileLayer('https://webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={{x}}&y={{y}}&z={{z}}', {{
         subdomains: ['1', '2', '3', '4'],
         minZoom: 3,
-        maxZoom: 18
+        maxZoom: 18,
+        crossOrigin: false
       }}).addTo(dedicatedMap);
 
       standardLayer = L.tileLayer('https://wprd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={{x}}&y={{y}}&z={{z}}', {{
         subdomains: ['1', '2', '3', '4'],
         minZoom: 3,
-        maxZoom: 18
+        maxZoom: 18,
+        crossOrigin: false
       }});
 
       mTripData.days.forEach(d => {{
