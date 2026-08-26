@@ -2294,8 +2294,8 @@ def build_mobile_split_screen_html():
 
   <script>
     const mTripData = {json_dump};
-                            // ==========================================
-    // 0.3 1:1 Apple App Store 绝对几何居中滑块引擎
+                                // ==========================================
+    // 0.3 1:1 Apple 纯净晶莹水滴绝对居中滑块引擎
     // ==========================================
     let currentActiveTabId = 'timeline';
 
@@ -2356,6 +2356,7 @@ def build_mobile_split_screen_html():
       // 绑定每个 Tab 的直接点击触发
       items.forEach((it) => {{
         it.onclick = function(e) {{
+          e.stopPropagation();
           const tabId = it.getAttribute('data-tab-id');
           mSwitch(tabId, it);
         }};
@@ -2374,9 +2375,11 @@ def build_mobile_split_screen_html():
       let isDragging = false;
       let startX = 0;
       let lastX = 0;
+      let didMove = false;
 
       dock.addEventListener('touchstart', (e) => {{
         isDragging = true;
+        didMove = false;
         const touch = e.touches[0];
         startX = touch.clientX;
         lastX = startX;
@@ -2384,7 +2387,7 @@ def build_mobile_split_screen_html():
         dock.classList.add('dock-pressed');
         indicator.classList.add('pressed');
 
-        // 计算当前触摸位置对应的 Tab，直接在此图标上产生水滴放大透镜效果 (scale 1.22, 1.15)
+        // 计算当前触摸位置对应的 Tab，直接在此图标上产生水滴放大透镜效果 (scale 1.20, 1.12)
         const dockRect = dock.getBoundingClientRect();
         const touchXInDock = touch.clientX - dockRect.left;
         const itemWidth = (dock.offsetWidth - 8) / items.length;
@@ -2392,7 +2395,7 @@ def build_mobile_split_screen_html():
         
         const touchedItem = items[touchedIndex];
         if (touchedItem) {{
-          setBubblePosition(touchedItem.offsetLeft, touchedItem.offsetWidth, 1.22, 1.15, true);
+          setBubblePosition(touchedItem.offsetLeft, touchedItem.offsetWidth, 1.20, 1.12, true);
         }}
       }}, {{ passive: true }});
 
@@ -2402,12 +2405,17 @@ def build_mobile_split_screen_html():
         const dockRect = dock.getBoundingClientRect();
         const touchXInDock = touch.clientX - dockRect.left;
         
+        const moveDist = Math.abs(touch.clientX - startX);
+        if (moveDist > 6) {{
+          didMove = true;
+        }}
+
         const dragVelocity = touch.clientX - lastX;
         lastX = touch.clientX;
         
         // 实时跟随触摸位置与水滴拉伸
-        const stretchX = Math.min(1.28, Math.max(0.92, 1.15 + Math.abs(dragVelocity) * 0.015));
-        const squashY = Math.max(0.88, 1.10 - Math.abs(dragVelocity) * 0.010);
+        const stretchX = Math.min(1.25, Math.max(0.95, 1.12 + Math.abs(dragVelocity) * 0.012));
+        const squashY = Math.max(0.90, 1.08 - Math.abs(dragVelocity) * 0.008);
 
         const itemWidth = (dock.offsetWidth - 8) / items.length;
         const targetX = Math.max(4, Math.min(dock.offsetWidth - itemWidth - 4, touchXInDock - itemWidth / 2));
@@ -2425,18 +2433,19 @@ def build_mobile_split_screen_html():
         if (!isDragging) return;
         isDragging = false;
         
-        // 释放压力，产生弹簧物理回弹 (Spring Snap Release)
         dock.classList.remove('dock-pressed');
         indicator.classList.remove('pressed');
         
-        const dockRect = dock.getBoundingClientRect();
-        const itemWidth = (dock.offsetWidth - 8) / items.length;
-        const finalIndex = Math.max(0, Math.min(items.length - 1, Math.floor((lastX - dockRect.left - 4) / itemWidth)));
-        
-        const selectedItem = items[finalIndex] || items[0];
-        if (selectedItem) {{
-          const tabId = selectedItem.getAttribute('data-tab-id');
-          mSwitch(tabId, selectedItem);
+        if (didMove) {{
+          const dockRect = dock.getBoundingClientRect();
+          const itemWidth = (dock.offsetWidth - 8) / items.length;
+          const finalIndex = Math.max(0, Math.min(items.length - 1, Math.floor((lastX - dockRect.left - 4) / itemWidth)));
+          
+          const selectedItem = items[finalIndex] || items[0];
+          if (selectedItem) {{
+            const tabId = selectedItem.getAttribute('data-tab-id');
+            mSwitch(tabId, selectedItem);
+          }}
         }}
       }}, {{ passive: true }});
     }}
@@ -2562,8 +2571,8 @@ def build_mobile_split_screen_html():
       }}
     }}
 
-                                // ==========================================
-    // 1. 初始化顶部全局自适应小地图 (标准高可用直连切片引擎)
+                                    // ==========================================
+    // 1. 初始化顶部全局自适应小地图 (多源高可用极速切片引擎)
     // ==========================================
     const mMap = L.map('m-map', {{
       zoomControl: false,
@@ -2573,21 +2582,26 @@ def build_mobile_split_screen_html():
     }}).setView([45.5, 87.5], 6);
 
     function createRobustTileLayer(mapInstance, primaryStyle = 7) {{
-      const tileUrl = 'https://webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}';
-      const tileLayer = L.tileLayer(tileUrl, {{
+      // 主干图层：高德标准路网切片 (https)
+      const primaryUrl = 'https://webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}';
+      const tileLayer = L.tileLayer(primaryUrl, {{
         subdomains: '1234',
         minZoom: 3,
         maxZoom: 18
       }});
 
+      let fallbackStarted = false;
       tileLayer.on('tileerror', function() {{
-        const backupUrl = 'https://wprd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}';
-        const backupLayer = L.tileLayer(backupUrl, {{
-          subdomains: '1234',
-          minZoom: 3,
-          maxZoom: 18
-        }});
-        backupLayer.addTo(mapInstance);
+        if (!fallbackStarted) {{
+          fallbackStarted = true;
+          console.warn("主干切片切换至 CartoDB/OSM 镜像通道...");
+          const backupLayer = L.tileLayer('https://{{s}}.basemaps.cartocdn.com/rastertiles/voyager/{{z}}/{{x}}/{{y}}.png', {{
+            subdomains: 'abcd',
+            minZoom: 3,
+            maxZoom: 18
+          }});
+          backupLayer.addTo(mapInstance);
+        }}
       }});
 
       tileLayer.addTo(mapInstance);
