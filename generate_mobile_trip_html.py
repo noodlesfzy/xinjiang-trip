@@ -2633,14 +2633,13 @@ def build_mobile_split_screen_html():
       zoomAnimation: true
     }}).setView([45.5, 87.5], 6);
 
-            function createRobustTileLayer(mapInstance, primaryStyle = 7) {{
-      // autonavi:// 伪协议 → Swift WKURLSchemeHandler 代理 + 注入 Referer: https://www.amap.com/
-      const url = 'tripapp://localhost/autonavi/{{s}}.basemaps.cartocdn.com/rastertiles/voyager/{{z}}/{{x}}/{{y}}.png';
-      const layer = L.tileLayer(url, {{
+                function createRobustTileLayer(mapInstance, primaryStyle = 7) {{
+      const cartoUrl = 'https://{{s}}.basemaps.cartocdn.com/rastertiles/voyager/{{z}}/{{x}}/{{y}}.png';
+      const layer = L.tileLayer(cartoUrl, {{
         subdomains: 'abcd',
         minZoom: 3,
         maxZoom: 18,
-        attribution: '&copy; CartoDB'
+        attribution: '&copy; CartoDB &copy; OpenStreetMap'
       }}).addTo(mapInstance);
       return layer;
     }}
@@ -3353,15 +3352,15 @@ const dynamicLayers = L.layerGroup().addTo(mMap);
         attributionControl: false
       }}).setView([45.5, 87.5], 6);
 
-      transitLayer = L.tileLayer('tripapp://localhost/autonavi/{{s}}.basemaps.cartocdn.com/rastertiles/voyager/{{z}}/{{x}}/{{y}}.png', {{
-        subdomains: '1234',
+      transitLayer = L.tileLayer('https://{{s}}.basemaps.cartocdn.com/rastertiles/voyager/{{z}}/{{x}}/{{y}}.png', {{
+        subdomains: 'abcd',
         minZoom: 3,
         maxZoom: 18,
         referrerPolicy: 'no-referrer'
       }}).addTo(dedicatedMap);
 
-      standardLayer = L.tileLayer('tripapp://localhost/autonavi/{{s}}.basemaps.cartocdn.com/light_all/{{z}}/{{x}}/{{y}}.png', {{
-        subdomains: '1234',
+      standardLayer = L.tileLayer('https://{{s}}.basemaps.cartocdn.com/light_all/{{z}}/{{x}}/{{y}}.png', {{
+        subdomains: 'abcd',
         minZoom: 3,
         maxZoom: 18,
         referrerPolicy: 'no-referrer'
