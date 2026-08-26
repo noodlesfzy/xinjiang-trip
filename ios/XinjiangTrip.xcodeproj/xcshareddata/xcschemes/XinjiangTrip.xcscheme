@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F6A07A49CAED4505BCFC986A"
+               BlueprintIdentifier = "89CCC28C14BD40DE9491D421"
                BuildableName = "XinjiangTrip.app"
                BlueprintName = "XinjiangTrip"
                ReferencedContainer = "container:XinjiangTrip.xcodeproj">
@@ -44,7 +44,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F6A07A49CAED4505BCFC986A"
+            BlueprintIdentifier = "89CCC28C14BD40DE9491D421"
             BuildableName = "XinjiangTrip.app"
             BlueprintName = "XinjiangTrip"
             ReferencedContainer = "container:XinjiangTrip.xcodeproj">
@@ -61,7 +61,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F6A07A49CAED4505BCFC986A"
+            BlueprintIdentifier = "89CCC28C14BD40DE9491D421"
             BuildableName = "XinjiangTrip.app"
             BlueprintName = "XinjiangTrip"
             ReferencedContainer = "container:XinjiangTrip.xcodeproj">

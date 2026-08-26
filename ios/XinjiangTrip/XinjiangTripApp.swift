@@ -1,15 +1,35 @@
 //
 //  XinjiangTripApp.swift
 //  辣鸡喵 (Xinjiang Road Trip)
-//  Clean Native WKWebView with local file loading
+//  Clean Native WKWebView with Cellular Data Authorization Trigger
 //
 
 import SwiftUI
 import WebKit
 import Foundation
+import CoreTelephony
+import Network
 
 @main
 struct XinjiangTripApp: App {
+    init() {
+        // 显式触发国行 iOS 网络权限弹窗 (无线局域网与蜂窝网络)
+        let cellularData = CTCellularData()
+        cellularData.cellularDataRestrictionDidUpdateNotifier = { state in
+            print("📶 网络权限状态变更: \(state.rawValue)")
+        }
+        
+        // 触发一次原生网络请求唤醒 iOS 网络栈
+        if let testURL = URL(string: "https://www.apple.com/library/test/success.html") {
+            let task = URLSession.shared.dataTask(with: testURL) { data, _, _ in
+                if let d = data {
+                    print("🌐 网络连通性测试成功: \(d.count) 字节")
+                }
+            }
+            task.resume()
+        }
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -30,7 +50,7 @@ struct ContentView: View {
 
 // MARK: - HybridTripWebView
 struct HybridTripWebView: UIViewRepresentable {
-        func makeUIView(context: Context) -> WKWebView {
+    func makeUIView(context: Context) -> WKWebView {
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
         config.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
@@ -57,7 +77,7 @@ struct HybridTripWebView: UIViewRepresentable {
     class Coordinator: NSObject, WKNavigationDelegate {
         weak var webView: WKWebView?
 
-                func loadApp() {
+        func loadApp() {
             if let htmlPath = Bundle.main.path(forResource: "index", ofType: "html"),
                let htmlContent = try? String(contentsOfFile: htmlPath, encoding: .utf8) {
                 let baseURL = URL(string: "https://noodlesfzy.github.io/xinjiang-trip/")
