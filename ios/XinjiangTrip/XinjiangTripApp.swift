@@ -73,11 +73,16 @@ struct HybridTripWebView: UIViewRepresentable {
         
         func loadLocalFirst() {
             guard let webView = self.webView else { return }
-            if let htmlPath = Bundle.main.path(forResource: "index", ofType: "html") {
+            if let htmlPath = Bundle.main.path(forResource: "index", ofType: "html"),
+               let htmlContent = try? String(contentsOfFile: htmlPath, encoding: .utf8) {
+                let baseURL = URL(string: "https://noodlesfzy.github.io/xinjiang-trip/")
+                webView.loadHTMLString(htmlContent, baseURL: baseURL)
+                print("📦 已加载 App 内置最新离线路书 (HTTPS BaseURL 模式，全面解锁真机外部切片与网络权限)")
+            } else if let htmlPath = Bundle.main.path(forResource: "index", ofType: "html") {
                 let fileURL = URL(fileURLWithPath: htmlPath)
                 let bundleDir = Bundle.main.bundleURL
                 webView.loadFileURL(fileURL, allowingReadAccessTo: bundleDir)
-                print("📦 已加载 App 内置最新离线路书")
+                print("📦 已降级加载本地 FileURL")
             }
         }
         

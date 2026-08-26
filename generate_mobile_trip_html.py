@@ -943,19 +943,17 @@ def build_mobile_split_screen_html():
       justify-content: center;
       font-size: 9.5px;
       font-weight: 700;
-      color: #94a3b8;
+      color: var(--text-muted);
       border-radius: 11px;
       cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
     }}
     .m-rail-pill:active {{ transform: scale(0.85); }}
-
-    /* 不同模式下的快捷按钮高亮主题 (Liquid Glow) */
     .m-rail-pill.active {{
-      background: #96382d;
+      background: var(--primary-vibrant);
       color: #fff;
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 0 10px rgba(248, 113, 113, 0.7);
-      transform: scale(1.12);
+      box-shadow: inset 0 1px 1.5px rgba(255, 255, 255, 0.45), 0 2px 10px rgba(41, 151, 255, 0.6);
+      transform: scale(1.15);
     }}
     body[data-tab="dining"] .m-rail-pill.active {{
       background: #d97706;

@@ -7,21 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		98DF2FCBA34F4C519711AFD7 /* XinjiangTripApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98DF2FCBA34F4C519711AFD7F /* XinjiangTripApp.swift */; };
-		638559EECB384A50A1AF43CD /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 638559EECB384A50A1AF43CDF /* index.html */; };
-		340B2A639058436C88D14555 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 340B2A639058436C88D14555F /* Assets.xcassets */; };
+		A8C3D3955C8444D0B5EB727B /* XinjiangTripApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C3D3955C8444D0B5EB727BF /* XinjiangTripApp.swift */; };
+		39CD1300E66D491481D2D059 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 39CD1300E66D491481D2D059F /* index.html */; };
+		D77F48BC9B5540878E549181 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D77F48BC9B5540878E549181F /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		13E5AD0E46724635B18CE24C /* XinjiangTrip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XinjiangTrip.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		98DF2FCBA34F4C519711AFD7F /* XinjiangTripApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XinjiangTripApp.swift; sourceTree = "<group>"; };
-		638559EECB384A50A1AF43CDF /* index.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
-		73FC1EBE442A44D9AEF058A0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		340B2A639058436C88D14555F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2A87E1597D874644BD6BEE94 /* XinjiangTrip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XinjiangTrip.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A8C3D3955C8444D0B5EB727BF /* XinjiangTripApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XinjiangTripApp.swift; sourceTree = "<group>"; };
+		39CD1300E66D491481D2D059F /* index.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
+		E7A03272C7A84B5FA6A98BDCF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D77F48BC9B5540878E549181F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		CE2803FC94E741398632C7F9 /* Frameworks */ = {
+		24E8AD18B066426DBC559D31 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -31,21 +31,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		C9A56A24A2C34867A930EE23 = {
+		F6074A2D1F604EE898DAE9F0 = {
 			isa = PBXGroup;
 			children = (
-				D72606D8D190418FA94D9248 /* XinjiangTrip */,
-				13E5AD0E46724635B18CE24C /* Products */,
+				C97E397BCE9747D9B39A2A60 /* XinjiangTrip */,
+				2A87E1597D874644BD6BEE94 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		D72606D8D190418FA94D9248 /* XinjiangTrip */ = {
+		C97E397BCE9747D9B39A2A60 /* XinjiangTrip */ = {
 			isa = PBXGroup;
 			children = (
-				98DF2FCBA34F4C519711AFD7F /* XinjiangTripApp.swift */,
-				638559EECB384A50A1AF43CDF /* index.html */,
-				340B2A639058436C88D14555F /* Assets.xcassets */,
-				73FC1EBE442A44D9AEF058A0F /* Info.plist */,
+				A8C3D3955C8444D0B5EB727BF /* XinjiangTripApp.swift */,
+				39CD1300E66D491481D2D059F /* index.html */,
+				D77F48BC9B5540878E549181F /* Assets.xcassets */,
+				E7A03272C7A84B5FA6A98BDCF /* Info.plist */,
 			);
 			path = XinjiangTrip;
 			sourceTree = "<group>";
@@ -53,13 +53,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		059CBA3E4C56461DB2F6F4A9 /* XinjiangTrip */ = {
+		E9D694727FD34FA29C157341 /* XinjiangTrip */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6DF5E4381CAE43269F229A5F /* Build configuration list for PBXNativeTarget "XinjiangTrip" */;
+			buildConfigurationList = 0F67FDDF18254FF5BB4B9B81 /* Build configuration list for PBXNativeTarget "XinjiangTrip" */;
 			buildPhases = (
-				4A170B1821FB49D7A6FBB949 /* Sources */,
-				CE2803FC94E741398632C7F9 /* Frameworks */,
-				FB14AFECA7BC4ED4B9E5D41A /* Resources */,
+				71E26484BE3E4D9FBD8D9EA1 /* Sources */,
+				24E8AD18B066426DBC559D31 /* Frameworks */,
+				A2D51DF428D9438EB61CB06D /* Resources */,
 			);
 			buildRules = (
 			);
@@ -67,27 +67,27 @@
 			);
 			name = XinjiangTrip;
 			productName = XinjiangTrip;
-			productReference = 13E5AD0E46724635B18CE24C /* XinjiangTrip.app */;
+			productReference = 2A87E1597D874644BD6BEE94 /* XinjiangTrip.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		488FCF9C1A5546F5BF81B6C1 /* Project object */ = {
+		5FA21C3D02D04289AA8456B9 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
-					059CBA3E4C56461DB2F6F4A9 = {
+					E9D694727FD34FA29C157341 = {
 						CreatedOnToolsVersion = 15.0;
 						DevelopmentTeam = D2953L7MB6;
 						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = A8EE523BD0BF4D02B1FA53C0 /* Build configuration list for PBXProject "XinjiangTrip" */;
+			buildConfigurationList = 51C84AC6B29540D48CA188AA /* Build configuration list for PBXProject "XinjiangTrip" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = zh_CN;
 			hasScannedForEncodings = 0;
@@ -95,41 +95,41 @@
 				zh_CN,
 				Base,
 			);
-			mainGroup = C9A56A24A2C34867A930EE23;
-			productRefGroup = C9A56A24A2C34867A930EE23;
+			mainGroup = F6074A2D1F604EE898DAE9F0;
+			productRefGroup = F6074A2D1F604EE898DAE9F0;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				059CBA3E4C56461DB2F6F4A9 /* XinjiangTrip */,
+				E9D694727FD34FA29C157341 /* XinjiangTrip */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		FB14AFECA7BC4ED4B9E5D41A /* Resources */ = {
+		A2D51DF428D9438EB61CB06D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				638559EECB384A50A1AF43CD /* index.html in Resources */,
-				340B2A639058436C88D14555 /* Assets.xcassets in Resources */,
+				39CD1300E66D491481D2D059 /* index.html in Resources */,
+				D77F48BC9B5540878E549181 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		4A170B1821FB49D7A6FBB949 /* Sources */ = {
+		71E26484BE3E4D9FBD8D9EA1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				98DF2FCBA34F4C519711AFD7 /* XinjiangTripApp.swift in Sources */,
+				A8C3D3955C8444D0B5EB727B /* XinjiangTripApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		BE74EE6BF49749009CFF4643 /* Debug */ = {
+		F1166DD6302A4ADD94EE5C75 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -189,7 +189,7 @@
 			};
 			name = Debug;
 		};
-		06505734C6134933BC5A6CDC /* Release */ = {
+		7B70D3915106428987308594 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -244,7 +244,7 @@
 			};
 			name = Release;
 		};
-		2BD93E77F414425AA53FDD76 /* Debug */ = {
+		0A19374553F04C82BBF57870 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -280,7 +280,7 @@
 			};
 			name = Debug;
 		};
-		96DFEBBFD4064E34BAB384B2 /* Release */ = {
+		067A056FF46B435E9D11A3AC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -319,22 +319,22 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A8EE523BD0BF4D02B1FA53C0 /* Build configuration list for PBXProject "XinjiangTrip" */;
-		A8EE523BD0BF4D02B1FA53C0 = {
+		51C84AC6B29540D48CA188AA /* Build configuration list for PBXProject "XinjiangTrip" */;
+		51C84AC6B29540D48CA188AA = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				BE74EE6BF49749009CFF4643 /* Debug */,
-				06505734C6134933BC5A6CDC /* Release */,
+				F1166DD6302A4ADD94EE5C75 /* Debug */,
+				7B70D3915106428987308594 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6DF5E4381CAE43269F229A5F /* Build configuration list for PBXNativeTarget "XinjiangTrip" */;
-		6DF5E4381CAE43269F229A5F = {
+		0F67FDDF18254FF5BB4B9B81 /* Build configuration list for PBXNativeTarget "XinjiangTrip" */;
+		0F67FDDF18254FF5BB4B9B81 = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				2BD93E77F414425AA53FDD76 /* Debug */,
-				96DFEBBFD4064E34BAB384B2 /* Release */,
+				0A19374553F04C82BBF57870 /* Debug */,
+				067A056FF46B435E9D11A3AC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -342,5 +342,5 @@
 /* End XCConfigurationList section */
 
 	};
-	rootObject = 488FCF9C1A5546F5BF81B6C1 /* Project object */;
+	rootObject = 5FA21C3D02D04289AA8456B9 /* Project object */;
 }
