@@ -22,65 +22,218 @@ os.makedirs(PBX_DIR, exist_ok=True)
 shutil.copy2("/Users/Noodles/Documents/AG_Project/trip_mobile.html", os.path.join(APP_DIR, "index.html"))
 
 # 2. 生成原生 Swift 入口文件
-swift_code = '''import SwiftUI
+swift_code = '''//
+//  XinjiangTripApp.swift
+//  辣鸡喵 (Xinjiang Road Trip)
+//  100% Apple Native MapKit + Liquid Glass Hybrid Architecture
+//
+
+import SwiftUI
 import WebKit
+import MapKit
 
 @main
 struct XinjiangTripApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .ignoresSafeArea()
                 .preferredColorScheme(.dark)
         }
     }
 }
 
-struct ContentView: View {
-    var body: some View {
-        HybridTripWebView()
-            .ignoresSafeArea()
-            .background(Color(red: 13/255, green: 19/255, blue: 34/255))
+// MARK: - 自定义地图标记
+class TripAnnotation: NSObject, MKAnnotation {
+    let coordinate: CLLocationCoordinate2D
+    let title: String?
+    let subtitle: String?
+    let type: String // "day", "dine", "bird", "culture"
+    let dayNum: Int
+    
+    init(coordinate: CLLocationCoordinate2D, title: String?, subtitle: String?, type: String, dayNum: Int) {
+        self.coordinate = coordinate
+        self.title = title
+        self.subtitle = subtitle
+        self.type = type
+        self.dayNum = dayNum
+        super.init()
     }
 }
 
+// MARK: - 地图状态协调中心
+class MapStateManager: ObservableObject {
+    @Published var isFullScreenMap: Bool = false
+    @Published var currentDay: Int = 1
+    @Published var routeCoordinates: [CLLocationCoordinate2D] = []
+    
+    weak var mapView: MKMapView?
+    
+    func updateRegion(center: CLLocationCoordinate2D, latSpan: Double = 0.8, lonSpan: Double = 0.8, animated: Bool = true) {
+        let span = MKCoordinateSpan(latitudeDelta: latSpan, longitudeDelta: lonSpan)
+        let region = MKCoordinateRegion(center: center, span: span)
+        mapView?.setRegion(region, animated: animated)
+    }
+    
+    func fitCoordinates(_ coords: [CLLocationCoordinate2D], animated: Bool = true) {
+        guard !coords.isEmpty else { return }
+        var minLat = coords[0].latitude
+        var maxLat = coords[0].latitude
+        var minLon = coords[0].longitude
+        var maxLon = coords[0].longitude
+        
+        for c in coords {
+            minLat = min(minLat, c.latitude)
+            maxLat = max(maxLat, c.latitude)
+            minLon = min(minLon, c.longitude)
+            maxLon = max(maxLon, c.longitude)
+        }
+        
+        let center = CLLocationCoordinate2D(latitude: (minLat + maxLat) / 2.0, longitude: (minLon + maxLon) / 2.0)
+        let latDelta = max(0.1, (maxLat - minLat) * 1.35)
+        let lonDelta = max(0.1, (maxLon - minLon) * 1.35)
+        let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: latDelta, longitudeDelta: lonDelta))
+        mapView?.setRegion(region, animated: animated)
+    }
+}
+
+// MARK: - 主界面视图
+struct ContentView: View {
+    @StateObject private var mapState = MapStateManager()
+    
+    var body: some View {
+        ZStack {
+            Color(hex: "#0f172a").ignoresSafeArea()
+            
+            VStack(spacing: 0) {
+                // 顶部：Apple 原生 MapKit（硬件加速、高德数据源、永不白屏、毫秒级响应）
+                if !mapState.isFullScreenMap {
+                    NativeMapKitView(mapState: mapState)
+                        .frame(height: UIScreen.main.bounds.height * 0.36)
+                        .clipped()
+                        .shadow(color: Color.black.opacity(0.4), radius: 8, x: 0, y: 4)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                } else {
+                    NativeMapKitView(mapState: mapState)
+                        .edgesIgnoringSafeArea(.all)
+                        .transition(.opacity)
+                }
+                
+                // 下部：路书卡片与 Liquid Glass Dock 混合视图
+                if !mapState.isFullScreenMap {
+                    HybridTripWebView(mapState: mapState)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+            }
+            .ignoresSafeArea(edges: mapState.isFullScreenMap ? .all : .top)
+        }
+    }
+}
+
+// MARK: - Native MapKit 视图包装器
+struct NativeMapKitView: UIViewRepresentable {
+    @ObservedObject var mapState: MapStateManager
+    
+    func makeUIView(context: Context) -> MKMapView {
+        let mapView = MKMapView()
+        mapView.delegate = context.coordinator
+        mapView.showsUserLocation = true
+        mapView.showsCompass = true
+        mapView.showsScale = true
+        mapView.mapType = .standard
+        mapView.overrideUserInterfaceStyle = .dark
+        
+        // 初始视野：新疆全境全貌
+        let xinjiangCenter = CLLocationCoordinate2D(latitude: 45.0, longitude: 87.5)
+        let span = MKCoordinateSpan(latitudeDelta: 10.0, longitudeDelta: 10.0)
+        mapView.setRegion(MKCoordinateRegion(center: xinjiangCenter, span: span), animated: false)
+        
+        mapState.mapView = mapView
+        context.coordinator.mapView = mapView
+        context.coordinator.mapState = mapState
+        
+        return mapView
+    }
+    
+    func updateUIView(_ uiView: MKMapView, context: Context) {}
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+    
+    class Coordinator: NSObject, MKMapViewDelegate {
+        weak var mapView: MKMapView?
+        weak var mapState: MapStateManager?
+        var currentPolyline: MKPolyline?
+        
+        func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+            if let polyline = overlay as? MKPolyline {
+                let renderer = MKPolylineRenderer(polyline: polyline)
+                renderer.strokeColor = UIColor(red: 0.65, green: 0.35, blue: 0.98, alpha: 0.95) // 紫色自驾走廊
+                renderer.lineWidth = 5.0
+                renderer.lineCap = .round
+                renderer.lineJoin = .round
+                return renderer
+            }
+            return MKOverlayRenderer(overlay: overlay)
+        }
+        
+        func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+            guard let tripAnn = annotation as? TripAnnotation else { return nil }
+            let identifier = "TripMarker"
+            var marker = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView
+            if marker == nil {
+                marker = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                marker?.canShowCallout = true
+            } else {
+                marker?.annotation = annotation
+            }
+            
+            switch tripAnn.type {
+            case "day":
+                marker?.markerTintColor = UIColor(red: 0.58, green: 0.20, blue: 0.92, alpha: 1.0)
+                marker?.glyphText = "D\(tripAnn.dayNum)"
+            case "dine":
+                marker?.markerTintColor = UIColor(red: 0.94, green: 0.36, blue: 0.15, alpha: 1.0)
+                marker?.glyphText = "🍲"
+            case "bird":
+                marker?.markerTintColor = UIColor(red: 0.05, green: 0.65, blue: 0.40, alpha: 1.0)
+                marker?.glyphText = "🦅"
+            case "culture":
+                marker?.markerTintColor = UIColor(red: 0.70, green: 0.50, blue: 0.10, alpha: 1.0)
+                marker?.glyphText = "🏛️"
+            default:
+                marker?.markerTintColor = UIColor(red: 0.02, green: 0.52, blue: 0.78, alpha: 1.0)
+                marker?.glyphText = "📍"
+            }
+            
+            return marker
+        }
+    }
+}
+
+// MARK: - Hybrid Trip Web View (带 Native JS Bridge 通信)
 struct HybridTripWebView: UIViewRepresentable {
-    // 线上实时路书地址（优先调用，获取最新实时路况、天气、通知与动态信息）
-    static let remoteURLString = "https://noodlesfzy.github.io/xinjiang-trip/trip_mobile.html"
+    @ObservedObject var mapState: MapStateManager
+    static let remoteURLString = "https://noodlesfzy.github.io/xinjiang-trip/"
     
     func makeUIView(context: Context) -> WKWebView {
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = true
-        config.mediaTypesRequiringUserActionForPlayback = []
-        config.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
-        config.setValue(true, forKey: "allowUniversalAccessFromFileURLs")
-        config.defaultWebpagePreferences.allowsContentJavaScript = true
         
-        // 核心：在真机启动时主动触发网络探测，激活 iOS 蜂窝网络与 Wi-Fi 联网权限 (避免本地 file:// 被系统静默禁止联网请求地图瓦片)
-        if let probeURL = URL(string: "https://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x=108&y=53&z=7") {
-            let task = URLSession.shared.dataTask(with: probeURL) { _, _, _ in }
-            task.resume()
-        }
+        // 注册 Native JS Bridge
+        let contentController = WKUserContentController()
+        contentController.add(context.coordinator, name: "nativeMap")
+        config.userContentController = contentController
         
         let webView = WKWebView(frame: .zero, configuration: config)
-        if #available(iOS 16.4, *) {
-            webView.isInspectable = true
-        }
         webView.navigationDelegate = context.coordinator
         webView.isOpaque = false
-        webView.backgroundColor = UIColor(red: 13/255, green: 19/255, blue: 34/255, alpha: 1.0)
-        webView.scrollView.bounces = true
+        webView.backgroundColor = UIColor(red: 0.06, green: 0.09, blue: 0.16, alpha: 1.0)
+        webView.scrollView.backgroundColor = UIColor(red: 0.06, green: 0.09, blue: 0.16, alpha: 1.0)
         webView.scrollView.contentInsetAdjustmentBehavior = .never
         
-        // 绑定下拉刷新控件 (Pull to Refresh)
-        let refreshControl = UIRefreshControl()
-        refreshControl.tintColor = UIColor(red: 248/255, green: 113/255, blue: 113/255, alpha: 1.0)
-        refreshControl.addTarget(context.coordinator, action: #selector(Coordinator.handleRefresh(_:)), for: .valueChanged)
-        webView.scrollView.refreshControl = refreshControl
-        
         context.coordinator.webView = webView
-        
-        // 核心：优先加载 App 内置本地最新 HTML (零延迟、零网络依赖、保证 Xcode 每次编译即时生效)
+        context.coordinator.mapState = mapState
         context.coordinator.loadLocalFirst()
         
         return webView
@@ -92,12 +245,9 @@ struct HybridTripWebView: UIViewRepresentable {
         Coordinator()
     }
     
-    class Coordinator: NSObject, WKNavigationDelegate {
+    class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
         weak var webView: WKWebView?
-        
-        @objc func handleRefresh(_ sender: UIRefreshControl) {
-            loadRemoteWithCacheBuster()
-        }
+        weak var mapState: MapStateManager?
         
         func loadLocalFirst() {
             guard let webView = self.webView else { return }
@@ -106,40 +256,85 @@ struct HybridTripWebView: UIViewRepresentable {
                 let baseURL = URL(string: "https://noodlesfzy.github.io/xinjiang-trip/")
                 webView.loadHTMLString(htmlContent, baseURL: baseURL)
                 print("📦 已加载 App 内置最新离线路书")
-            } else if let htmlPath = Bundle.main.path(forResource: "index", ofType: "html") {
-                let fileURL = URL(fileURLWithPath: htmlPath)
-                let bundleDir = Bundle.main.bundleURL
-                webView.loadFileURL(fileURL, allowingReadAccessTo: bundleDir)
-                print("📦 已降级加载本地 FileURL")
             }
         }
         
-        func loadRemoteWithCacheBuster() {
-            guard let webView = self.webView else { return }
-            let cacheBuster = Int(Date().timeIntervalSince1970)
-            if let remoteURL = URL(string: "\\(HybridTripWebView.remoteURLString)?t=\\(cacheBuster)") {
-                var request = URLRequest(url: remoteURL, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 5.0)
-                request.addValue("XinjiangTrip-iOS-Hybrid", forHTTPHeaderField: "User-Agent")
-                webView.load(request)
-            } else {
-                webView.scrollView.refreshControl?.endRefreshing()
+        // MARK: - WKScriptMessageHandler (接收来自 Web 的地图联动指令)
+        func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+            guard message.name == "nativeMap",
+                  let body = message.body as? [String: Any],
+                  let action = body["action"] as? String else { return }
+            
+            DispatchQueue.main.async {
+                guard let mapState = self.mapState, let mapView = mapState.mapView else { return }
+                
+                if action == "initRoute", let pts = body["points"] as? [[Double]] {
+                    // 绘制全疆自驾大环线
+                    let coords = pts.map { CLLocationCoordinate2D(latitude: $0[0], longitude: $0[1]) }
+                    mapState.routeCoordinates = coords
+                    
+                    let overlays = mapView.overlays
+                    mapView.removeOverlays(overlays)
+                    
+                    let polyline = MKPolyline(coordinates: coords, count: coords.count)
+                    mapView.addOverlay(polyline)
+                    mapState.fitCoordinates(coords, animated: true)
+                }
+                else if action == "focusDay", let day = body["day"] as? Int {
+                    mapState.currentDay = day
+                    if let pts = body["points"] as? [[Double]], !pts.isEmpty {
+                        let coords = pts.map { CLLocationCoordinate2D(latitude: $0[0], longitude: $0[1]) }
+                        
+                        // 移除旧的点位标记，添加今日点位
+                        let oldAnns = mapView.annotations.filter { !($0 is MKUserLocation) }
+                        mapView.removeAnnotations(oldAnns)
+                        
+                        if let waypoints = body["waypoints"] as? [[String: Any]] {
+                            for wp in waypoints {
+                                if let lat = wp["lat"] as? Double, let lng = wp["lng"] as? Double {
+                                    let name = wp["name"] as? String ?? ""
+                                    let time = wp["time"] as? String ?? ""
+                                    let ann = TripAnnotation(
+                                        coordinate: CLLocationCoordinate2D(latitude: lat, longitude: lng),
+                                        title: name,
+                                        subtitle: "D\(day) 预计: \(time)",
+                                        type: "day",
+                                        dayNum: day
+                                    )
+                                    mapView.addAnnotation(ann)
+                                }
+                            }
+                        }
+                        
+                        mapState.fitCoordinates(coords, animated: true)
+                    }
+                }
+                else if action == "focusPOI", let lat = body["lat"] as? Double, let lng = body["lng"] as? Double {
+                    let title = body["title"] as? String ?? "目标点"
+                    let subtitle = body["subtitle"] as? String ?? ""
+                    let type = body["type"] as? String ?? "poi"
+                    let coord = CLLocationCoordinate2D(latitude: lat, longitude: lng)
+                    
+                    let ann = TripAnnotation(
+                        coordinate: coord,
+                        title: title,
+                        subtitle: subtitle,
+                        type: type,
+                        dayNum: mapState.currentDay
+                    )
+                    mapView.addAnnotation(ann)
+                    mapView.selectAnnotation(ann, animated: true)
+                    mapState.updateRegion(center: coord, latSpan: 0.15, lonSpan: 0.15, animated: true)
+                }
+                else if action == "toggleFullScreen", let isFull = body["isFullScreen"] as? Bool {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                        mapState.isFullScreenMap = isFull
+                    }
+                }
             }
         }
         
         // MARK: - WKNavigationDelegate
-        
-        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            webView.scrollView.refreshControl?.endRefreshing()
-        }
-        
-        func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-            webView.scrollView.refreshControl?.endRefreshing()
-        }
-        
-        func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-            webView.scrollView.refreshControl?.endRefreshing()
-        }
-        
         func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
             guard let url = navigationAction.request.url else {
                 decisionHandler(.allow)
@@ -147,8 +342,6 @@ struct HybridTripWebView: UIViewRepresentable {
             }
             
             let scheme = url.scheme?.lowercased() ?? ""
-            
-            // 1. 拦截并直接唤起 iPhone 原生 App（大众点评、小红书、高德、百度地图、电话等）
             if scheme == "dianping" || scheme == "xhsdiscover" || scheme == "iosamap" || scheme == "baidumap" || scheme == "tel" || scheme == "mailto" {
                 if UIApplication.shared.canOpenURL(url) {
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
@@ -157,14 +350,11 @@ struct HybridTripWebView: UIViewRepresentable {
                 return
             }
             
-            // 2. 核心：如果不是用户主动点击 <a> 标签跳转（如内部加载 HTML、切片下载、DOM 渲染等），100% 允许在 WebView 内部执行！
             if navigationAction.navigationType != .linkActivated {
                 decisionHandler(.allow)
                 return
             }
             
-            // 3. 用户主动点击链接时的处理：
-            // 如果用户点击高德路线导航外链
             if url.absoluteString.contains("uri.amap.com/navigation") {
                 if let naviScheme = URL(string: url.absoluteString.replacingOccurrences(of: "https://uri.amap.com/navigation", with: "iosamap://navi")),
                    UIApplication.shared.canOpenURL(naviScheme) {
@@ -177,13 +367,11 @@ struct HybridTripWebView: UIViewRepresentable {
                 return
             }
             
-            // 如果是路书内部或同源页面
             if let host = url.host, host.contains("github.io") || host.contains("localhost") {
                 decisionHandler(.allow)
                 return
             }
             
-            // 其他外部链接调用系统 Safari 打开
             if scheme == "http" || scheme == "https" {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
                 decisionHandler(.cancel)
@@ -192,6 +380,33 @@ struct HybridTripWebView: UIViewRepresentable {
             
             decisionHandler(.allow)
         }
+    }
+}
+
+// MARK: - 颜色 Hex 辅助扩展
+extension Color {
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (255, 0, 0, 0)
+        }
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue:  Double(b) / 255,
+            opacity: Double(a) / 255
+        )
     }
 }
 '''

@@ -249,6 +249,13 @@ def build_mobile_split_screen_html():
   
   <style>
     {leaflet_css}
+      /* 当处于 iOS 原生 MapKit 容器时，隐藏 Web 端多余的顶部小地图区域，顶部直通原生 Apple 地图 */
+    body.is-native-app #m-map-zone {{
+      display: none !important;
+    }}
+    body.is-native-app .m-main-content-layout {{
+      height: 100vh !important;
+    }}
   </style>
   <script>
     {leaflet_js}
@@ -2051,6 +2058,13 @@ def build_mobile_split_screen_html():
     .m-dock-item.active .m-dock-icon {{
       transform: scale(1.15) translateY(-2px);
     }}
+      /* 当处于 iOS 原生 MapKit 容器时，隐藏 Web 端多余的顶部小地图区域，顶部直通原生 Apple 地图 */
+    body.is-native-app #m-map-zone {{
+      display: none !important;
+    }}
+    body.is-native-app .m-main-content-layout {{
+      height: 100vh !important;
+    }}
   </style>
 </head>
 <body data-tab="timeline">
@@ -2291,7 +2305,47 @@ def build_mobile_split_screen_html():
 
   <script>
     const mTripData = {json_dump};
-                                // ==========================================
+                                    // ==========================================
+    // 0.4 Apple 原生 MapKit 硬件级通信 Bridge
+    // ==========================================
+    const isNativeApp = !!(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.nativeMap);
+    if (isNativeApp) {{
+      document.body.classList.add('is-native-app');
+      console.log("🚀 已激活 Apple 原生 MapKit 桥接模式");
+    }}
+
+    function notifyNativeMap(action, data = {{}}) {{
+      if (isNativeApp) {{
+        try {{
+          window.webkit.messageHandlers.nativeMap.postMessage({{ action, ...data }});
+        }} catch(e) {{
+          console.warn("Native MapKit bridge dispatch error:", e);
+        }}
+      }}
+    }}
+
+    // 初始化全疆大环线数据至原生 MapKit
+    function syncAllRoutesToNative() {{
+      if (!isNativeApp) return;
+      const allPoints = [];
+      Object.keys(ROUTES_GEOJSON).forEach(k => {{
+        const r = ROUTES_GEOJSON[k];
+        if (r && r.points) {{
+          r.points.forEach(p => allPoints.push(p));
+        }}
+      }});
+      if (allPoints.length > 0) {{
+        notifyNativeMap('initRoute', {{ points: allPoints }});
+      }}
+    }}
+
+    if (document.readyState === 'loading') {{
+      document.addEventListener('DOMContentLoaded', syncAllRoutesToNative);
+    }} else {{
+      syncAllRoutesToNative();
+    }}
+
+    // ==========================================
     // 0.3 1:1 Apple 纯净晶莹水滴绝对居中滑块引擎
     // ==========================================
     let currentActiveTabId = 'timeline';
@@ -2872,6 +2926,14 @@ const dynamicLayers = L.layerGroup().addTo(mMap);
 
     // 行程卡片聚焦
     function mFocusDay(dayNum, shouldScroll = true) {{
+      const routeInfo = ROUTES_GEOJSON[dayNum];
+      if (routeInfo && routeInfo.points) {{
+        notifyNativeMap('focusDay', {{
+          day: dayNum,
+          points: routeInfo.points,
+          waypoints: (routeInfo.stops || []).map(s => ({{ name: s.name, time: s.time, lat: s.lat, lng: s.lng }}))
+        }});
+      }}
       currentActiveDay = dayNum;
       syncRailActive(dayNum);
       document.querySelectorAll('.m-card').forEach(c => c.classList.remove('active'));
@@ -3147,6 +3209,10 @@ const dynamicLayers = L.layerGroup().addTo(mMap);
     }}
 
     function mFocusBirdDay(dayNum, shouldScroll = true) {{
+      const routeInfo = ROUTES_GEOJSON[dayNum];
+      if (routeInfo && routeInfo.points) {{
+        notifyNativeMap('focusDay', {{ day: dayNum, points: routeInfo.points }});
+      }}
       currentActiveDay = dayNum;
       syncRailActive(dayNum);
       document.querySelectorAll('.m-birding-card').forEach(c => c.classList.remove('active'));
@@ -3257,6 +3323,10 @@ const dynamicLayers = L.layerGroup().addTo(mMap);
     }}
 
     function mFocusHeritDay(dayNum, shouldScroll = true) {{
+      const routeInfo = ROUTES_GEOJSON[dayNum];
+      if (routeInfo && routeInfo.points) {{
+        notifyNativeMap('focusDay', {{ day: dayNum, points: routeInfo.points }});
+      }}
       currentActiveDay = dayNum;
       syncRailActive(dayNum);
       document.querySelectorAll('.m-herit-card').forEach(c => c.classList.remove('active'));
@@ -3425,6 +3495,7 @@ mTripData.days.forEach(d => {{
       const rail = document.getElementById('m-quick-nav-rail');
 
       if (viewId === 'map') {{
+        notifyNativeMap('toggleFullScreen', {{ isFullScreen: true }});
         mapZone.classList.add('mode-hidden');
         if (mainLayout) mainLayout.style.display = 'none';
         if (rail) rail.style.display = 'none';
@@ -3436,6 +3507,7 @@ mTripData.days.forEach(d => {{
         return;
       }} else {{
         dedicatedMapView.style.display = 'none';
+        notifyNativeMap('toggleFullScreen', {{ isFullScreen: false }});
         if (mainLayout) mainLayout.style.display = 'flex';
       }}
 
