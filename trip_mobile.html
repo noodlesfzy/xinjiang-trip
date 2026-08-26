@@ -11750,10 +11750,10 @@ svg.leaflet-image-layer.leaflet-interactive path {
       zoomAnimation: true
     }).setView([45.5, 87.5], 6);
 
-                    function createRobustTileLayer(mapInstance, primaryStyle = 7) {
-      // 使用高德官方无线 CDN 瓦片引擎 (wprd01-04)，国内秒开，无 GFW 阻断
-      const gaodeUrl = 'https://wprd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={x}&y={y}&z={z}';
-      const layer = L.tileLayer(gaodeUrl, {
+                        function createRobustTileLayer(mapInstance, primaryStyle = 7) {
+      // 走 127.0.0.1 本地原生流式中继，100% 规避 WebKit 的 Network Offline 拦截
+      const localTileUrl = 'http://127.0.0.1:8088/maptile?s={s}&style=' + primaryStyle + '&x={x}&y={y}&z={z}';
+      const layer = L.tileLayer(localTileUrl, {
         subdomains: '1234',
         minZoom: 3,
         maxZoom: 18,
@@ -12470,14 +12470,14 @@ const dynamicLayers = L.layerGroup().addTo(mMap);
         attributionControl: false
       }).setView([45.5, 87.5], 6);
 
-      transitLayer = L.tileLayer('https://wprd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={x}&y={y}&z={z}', {
+      transitLayer = L.tileLayer('http://127.0.0.1:8088/maptile?s={s}&style=7&x={x}&y={y}&z={z}', {
         subdomains: '1234',
         minZoom: 3,
         maxZoom: 18,
         referrerPolicy: 'no-referrer'
       }).addTo(dedicatedMap);
 
-      standardLayer = L.tileLayer('https://wprd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+      standardLayer = L.tileLayer('http://127.0.0.1:8088/maptile?s={s}&style=8&x={x}&y={y}&z={z}', {
         subdomains: '1234',
         minZoom: 3,
         maxZoom: 18,

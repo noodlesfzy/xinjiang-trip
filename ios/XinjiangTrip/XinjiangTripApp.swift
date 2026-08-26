@@ -1,8 +1,7 @@
 //
 //  XinjiangTripApp.swift
 //  辣鸡喵 (Xinjiang Road Trip)
-//  Local HTTP Server Architecture (NWListener on localhost:8088)
-//  彻底摆脱 file:// 沙盒对 HTTPS 切片图片的跨域阻断，100% 对齐 Safari 纯标准 Web 环境
+//  Local HTTP Server + Native Tile Relay + Detailed Diagnostic Logging
 //
 
 import SwiftUI
@@ -16,12 +15,12 @@ struct XinjiangTripApp: App {
     private let localServer = LocalHTTPServer()
 
     init() {
-        // 启动内置本地高速 HTTP 服务器 (127.0.0.1:8088)
         localServer.start()
         
-        // 触发国行 iOS 蜂窝与无线局域网授权
         let cellularData = CTCellularData()
-        cellularData.cellularDataRestrictionDidUpdateNotifier = { _ in }
+        cellularData.cellularDataRestrictionDidUpdateNotifier = { state in
+            print("📶 Cellular Data State: \(state.rawValue)")
+        }
     }
 
     var body: some Scene {
@@ -32,10 +31,19 @@ struct XinjiangTripApp: App {
     }
 }
 
-// MARK: - LocalHTTPServer (基于 Apple 原生 Network.framework NWListener)
+// MARK: - LocalHTTPServer
 class LocalHTTPServer {
     private var listener: NWListener?
     let port: NWEndpoint.Port = 8088
+    
+    private let tileSession: URLSession = {
+        let cfg = URLSessionConfiguration.default
+        cfg.timeoutIntervalForRequest = 10
+        cfg.timeoutIntervalForResource = 15
+        cfg.requestCachePolicy = .returnCacheDataElseLoad
+        cfg.urlCache = URLCache(memoryCapacity: 64*1024*1024, diskCapacity: 256*1024*1024)
+        return URLSession(configuration: cfg)
+    }()
 
     func start() {
         do {
@@ -45,7 +53,7 @@ class LocalHTTPServer {
                 self?.handleConnection(connection)
             }
             listener?.start(queue: .global(qos: .userInitiated))
-            print("🚀 本地极速 HTTP 服务器已在 http://127.0.0.1:\(port)/ 启动")
+            print("🚀 本地服务器已在端口 \(port) 启动")
         } catch {
             print("❌ 本地服务器启动失败: \(error)")
         }
@@ -63,12 +71,73 @@ class LocalHTTPServer {
             guard let firstLine = lines.first else { connection.cancel(); return }
             let parts = firstLine.components(separatedBy: " ")
             guard parts.count >= 2 else { connection.cancel(); return }
-            var path = parts[1]
+            let fullPath = parts[1]
+            
+            var path = fullPath
+            var query = ""
+            if let qIdx = fullPath.firstIndex(of: "?") {
+                path = String(fullPath[..<qIdx])
+                query = String(fullPath[fullPath.index(after: qIdx)...])
+            }
             if path == "/" || path.isEmpty { path = "/index.html" }
-            if let qIdx = path.firstIndex(of: "?") {
-                path = String(path[..<qIdx])
+
+            // ── 路径 1：瓦片中继与调试 ─────────────────────────────────────────
+            if path == "/maptile" {
+                let params = self.parseQuery(query)
+                let s = params["s"] ?? "1"
+                let style = params["style"] ?? "7"
+                let x = params["x"] ?? "0"
+                let y = params["y"] ?? "0"
+                let z = params["z"] ?? "0"
+                
+                let gaodeURLStr = "https://wprd0\(s).is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=\(style)&x=\(x)&y=\(y)&z=\(z)"
+                guard let gaodeURL = URL(string: gaodeURLStr) else {
+                    self.sendNotFound(connection, reason: "Bad URL")
+                    return
+                }
+                
+                var req = URLRequest(url: gaodeURL, cachePolicy: .returnCacheDataElseLoad, timeoutInterval: 8)
+                req.setValue("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)", forHTTPHeaderField: "User-Agent")
+                
+                self.tileSession.dataTask(with: req) { tileData, resp, err in
+                    if let err = err {
+                        print("❌ 瓦片下载失败 [\(z)/\(x)/\(y)]: \(err.localizedDescription)")
+                        self.sendNotFound(connection, reason: err.localizedDescription)
+                        return
+                    }
+                    guard let tileData = tileData, !tileData.isEmpty else {
+                        print("❌ 瓦片数据为空 [\(z)/\(x)/\(y)]")
+                        self.sendNotFound(connection, reason: "Empty data")
+                        return
+                    }
+                    
+                    let header = "HTTP/1.1 200 OK\r\nContent-Type: image/png\r\nContent-Length: \(tileData.count)\r\nAccess-Control-Allow-Origin: *\r\nCache-Control: public, max-age=86400\r\nConnection: close\r\n\r\n"
+                    var total = header.data(using: .utf8)!
+                    total.append(tileData)
+                    connection.send(content: total, completion: .contentProcessed({ _ in
+                        connection.cancel()
+                    }))
+                }.resume()
+                return
             }
 
+            // ── 路径 2：诊断接口 (/diag) ───────────────────────────────────────
+            if path == "/diag" {
+                let diagURL = URL(string: "https://wprd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x=47&y=23&z=6")!
+                var req = URLRequest(url: diagURL, timeoutInterval: 5)
+                req.setValue("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)", forHTTPHeaderField: "User-Agent")
+                self.tileSession.dataTask(with: req) { d, r, e in
+                    let status = (r as? HTTPURLResponse)?.statusCode ?? 0
+                    let resJSON = "{\"http_status\": \(status), \"data_bytes\": \(d?.count ?? 0), \"error\": \"\(e?.localizedDescription ?? "none")\"}"
+                    let header = "HTTP/1.1 200 OK\r\nContent-Type: application/json; charset=utf-8\r\nAccess-Control-Allow-Origin: *\r\nConnection: close\r\n\r\n"
+                    var total = header.data(using: .utf8)!
+                    total.append(resJSON.data(using: .utf8)!)
+                    connection.send(content: total, completion: .contentProcessed({ _ in connection.cancel() }))
+                }.resume()
+                return
+            }
+
+            // ── 路径 3：本地静态资源 ──────────────────────────────────────────
             let filename = (path as NSString).lastPathComponent
             let ext = (filename as NSString).pathExtension
             let name = (filename as NSString).deletingPathExtension
@@ -90,12 +159,25 @@ class LocalHTTPServer {
                     connection.cancel()
                 }))
             } else {
-                let notFound = "HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
-                connection.send(content: notFound.data(using: .utf8)!, completion: .contentProcessed({ _ in
-                    connection.cancel()
-                }))
+                self.sendNotFound(connection, reason: "File not found: \(path)")
             }
         }
+    }
+    
+    private func parseQuery(_ q: String) -> [String: String] {
+        var res: [String: String] = [:]
+        for item in q.components(separatedBy: "&") {
+            let pair = item.components(separatedBy: "=")
+            if pair.count == 2 { res[pair[0]] = pair[1] }
+        }
+        return res
+    }
+    
+    private func sendNotFound(_ connection: NWConnection, reason: String = "") {
+        let msg = "HTTP/1.1 404 Not Found\r\nX-Error-Reason: \(reason)\r\nContent-Length: 0\r\nAccess-Control-Allow-Origin: *\r\nConnection: close\r\n\r\n"
+        connection.send(content: msg.data(using: .utf8)!, completion: .contentProcessed({ _ in
+            connection.cancel()
+        }))
     }
 }
 
@@ -138,7 +220,6 @@ struct HybridTripWebView: UIViewRepresentable {
         weak var webView: WKWebView?
 
         func loadApp() {
-            // 稍等 150ms 确保本地服务器端口就绪后加载
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { [weak self] in
                 if let url = URL(string: "http://127.0.0.1:8088/index.html") {
                     let req = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
@@ -153,33 +234,28 @@ struct HybridTripWebView: UIViewRepresentable {
             guard let url = nav.request.url else { decisionHandler(.allow); return }
             let scheme = url.scheme?.lowercased() ?? ""
 
-            // 本地 HTTP 服务器与内部导航直接放行
             if let host = url.host?.lowercased(), host == "127.0.0.1" || host == "localhost" {
                 decisionHandler(.allow)
                 return
             }
 
-            // 第三方 App Scheme (大众点评 / 小红书 / 高德地图 / 电话 / 邮件) 原生唤起
             if ["dianping","xhsdiscover","iosamap","baidumap","tel","mailto"].contains(scheme) {
                 if UIApplication.shared.canOpenURL(url) { UIApplication.shared.open(url) }
                 decisionHandler(.cancel)
                 return
             }
 
-            // 高德导航外部链接
             if url.absoluteString.contains("uri.amap.com/navigation") {
                 UIApplication.shared.open(url)
                 decisionHandler(.cancel)
                 return
             }
 
-            // 如果不是用户主动点击的外链（例如页面发起的瓦片图片、fetch、API），全部放行
             if nav.navigationType != .linkActivated {
                 decisionHandler(.allow)
                 return
             }
 
-            // 用户点击的其他外部网页链接，调用系统 Safari 打开
             if scheme == "http" || scheme == "https" {
                 UIApplication.shared.open(url)
                 decisionHandler(.cancel)
