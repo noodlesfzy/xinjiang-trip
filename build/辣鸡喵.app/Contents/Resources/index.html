@@ -11752,13 +11752,14 @@ svg.leaflet-image-layer.leaflet-interactive path {
       zoomAnimation: true
     }).setView([45.5, 87.5], 6);
 
-                function createRobustTileLayer(mapInstance, primaryStyle = 7) {
-      const cartoUrl = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png';
-      const layer = L.tileLayer(cartoUrl, {
-        subdomains: 'abcd',
+                    function createRobustTileLayer(mapInstance, primaryStyle = 7) {
+      // 使用高德官方无线 CDN 瓦片引擎 (wprd01-04)，国内秒开，无 GFW 阻断
+      const gaodeUrl = 'https://wprd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={x}&y={y}&z={z}';
+      const layer = L.tileLayer(gaodeUrl, {
+        subdomains: '1234',
         minZoom: 3,
         maxZoom: 18,
-        attribution: '&copy; CartoDB &copy; OpenStreetMap'
+        attribution: '&copy; 高德地图 AutoNavi'
       }).addTo(mapInstance);
       return layer;
     }
@@ -12471,15 +12472,15 @@ const dynamicLayers = L.layerGroup().addTo(mMap);
         attributionControl: false
       }).setView([45.5, 87.5], 6);
 
-      transitLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png', {
-        subdomains: 'abcd',
+      transitLayer = L.tileLayer('https://wprd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={x}&y={y}&z={z}', {
+        subdomains: '1234',
         minZoom: 3,
         maxZoom: 18,
         referrerPolicy: 'no-referrer'
       }).addTo(dedicatedMap);
 
-      standardLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
-        subdomains: 'abcd',
+      standardLayer = L.tileLayer('https://wprd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+        subdomains: '1234',
         minZoom: 3,
         maxZoom: 18,
         referrerPolicy: 'no-referrer'
