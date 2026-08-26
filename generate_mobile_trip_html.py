@@ -1935,7 +1935,7 @@ def build_mobile_split_screen_html():
       transition: opacity 0.3s ease;
     }}
 
-                            /* Bottom App Dock (1:1 Apple App Store Liquid Glass Morphing & Dynamic Force Elastic Dock) */
+                                /* Bottom App Dock (1:1 Apple App Store Liquid Glass Morphing & Dynamic Force Elastic Dock) */
     .m-bottom-dock {{
       position: absolute;
       bottom: max(12px, env(safe-area-inset-bottom) + 4px);
@@ -1964,8 +1964,8 @@ def build_mobile_split_screen_html():
 
     /* 按压时 Dock 栏整体受力动态伸缩形变 (Dock Elastic Squish) */
     .m-bottom-dock.dock-pressed {{
-      transform: scale(0.968) translateY(2px) !important;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65), inset 0 1px 2px rgba(255, 255, 255, 0.45) !important;
+      transform: scale(0.965) translateY(2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65), inset 0 1px 2px rgba(255, 255, 255, 0.45);
     }}
 
     /* 独立流体滑块气泡 (Morphing Liquid Glass Bubble) */
@@ -1987,14 +1987,12 @@ def build_mobile_split_screen_html():
       will-change: transform, width, filter;
     }}
 
-    /* 按压受力时气泡的水滴压扁与流体向外扩散拉伸 (Liquid Force Squash & Stretch) */
-    .m-liquid-bubble-indicator.bubble-pressed {{
-      transform: scale(1.12, 0.86) !important;
-      filter: brightness(1.35) saturate(160%) drop-shadow(0 0 16px rgba(41, 151, 255, 0.75)) !important;
-      box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.7), 0 4px 18px rgba(41, 151, 255, 0.5) !important;
+    /* 按压受力时的光晕增强 */
+    .m-liquid-bubble-indicator.pressed {{
+      filter: brightness(1.35) saturate(160%) drop-shadow(0 0 16px rgba(41, 151, 255, 0.75));
     }}
 
-    /* 手指拖拽滑动时的流体实时跟踪与液体拉伸 */
+    /* 手指拖拽滑动时的流体实时跟踪 */
     .m-liquid-bubble-indicator.dragging {{
       transition: none !important;
       filter: brightness(1.28) saturate(140%) drop-shadow(0 0 14px rgba(41, 151, 255, 0.65));
@@ -2281,12 +2279,32 @@ def build_mobile_split_screen_html():
 
   <script>
     const mTripData = {json_dump};
-                // ==========================================
+                    // ==========================================
     // 0.3 1:1 Apple App Store Liquid Glass 物理压力感应与流体滑动引擎
     // ==========================================
-    let activeDockTab = 'timeline';
+    let currentActiveTabId = 'timeline';
 
-    function updateLiquidDockSlider(targetTabOrIndex, animated = true) {{
+    function setBubblePosition(targetX, targetWidth, scaleX = 1, scaleY = 1, animated = true) {{
+      const indicator = document.getElementById('m-liquid-bubble-indicator');
+      if (!indicator) return;
+
+      if (animated) {{
+        indicator.classList.remove('dragging');
+        indicator.style.transition = 'transform 0.38s cubic-bezier(0.25, 1, 0.35, 1.15), width 0.3s ease';
+      }} else {{
+        indicator.classList.add('dragging');
+        indicator.style.transition = 'none';
+      }}
+
+      indicator.style.width = `${{targetWidth}}px`;
+      indicator.style.transform = `translateX(${{targetLeftTransform(targetX)}}px) scale(${{scaleX}}, ${{scaleY}})`;
+    }}
+
+    function targetLeftTransform(x) {{
+      return Math.round(x * 10) / 10;
+    }}
+
+    function updateLiquidDockSlider(targetTabOrIndex, animated = true, scaleX = 1, scaleY = 1) {{
       const dock = document.getElementById('m-bottom-dock');
       const indicator = document.getElementById('m-liquid-bubble-indicator');
       if (!dock || !indicator) return;
@@ -2296,10 +2314,10 @@ def build_mobile_split_screen_html():
       let targetItem = null;
       if (typeof targetTabOrIndex === 'string') {{
         targetItem = items.find(it => it.getAttribute('data-tab-id') === targetTabOrIndex);
-        activeDockTab = targetTabOrIndex;
+        currentActiveTabId = targetTabOrIndex;
       }} else if (typeof targetTabOrIndex === 'number') {{
         targetItem = items[targetTabOrIndex];
-        if (targetItem) activeDockTab = targetItem.getAttribute('data-tab-id');
+        if (targetItem) currentActiveTabId = targetItem.getAttribute('data-tab-id');
       }}
       if (!targetItem) targetItem = items[0];
 
@@ -2314,16 +2332,7 @@ def build_mobile_split_screen_html():
         targetWidth = itemRect.width;
       }}
 
-      if (animated) {{
-        indicator.classList.remove('dragging');
-        indicator.style.transition = 'transform 0.38s cubic-bezier(0.25, 1, 0.35, 1.15), width 0.3s ease';
-      }} else {{
-        indicator.classList.add('dragging');
-        indicator.style.transition = 'none';
-      }}
-
-      indicator.style.transform = `translateX(${{targetLeft}}px)`;
-      indicator.style.width = `${{targetWidth}}px`;
+      setBubblePosition(targetLeft, targetWidth, scaleX, scaleY, animated);
 
       items.forEach(it => {{
         if (it === targetItem) {{
@@ -2348,20 +2357,19 @@ def build_mobile_split_screen_html():
         }};
       }});
 
-      // 初始定位
+      // 初始精确定位
       updateLiquidDockSlider('timeline', false);
       setTimeout(() => {{ updateLiquidDockSlider('timeline', false); }}, 60);
-      setTimeout(() => {{ updateLiquidDockSlider('timeline', false); }}, 300);
+      setTimeout(() => {{ updateLiquidDockSlider('timeline', false); }}, 250);
 
       window.addEventListener('resize', () => {{
-        updateLiquidDockSlider(activeDockTab, false);
+        updateLiquidDockSlider(currentActiveTabId, false);
       }});
 
-      // 压力与流体滑动物理交互 (Touch Pressure & Elastic Deformation)
+      // 压力与流体滑动物理交互 (Touch Pressure & Elastic Dragging Flow)
       let isDragging = false;
       let startX = 0;
       let lastX = 0;
-      let pressTimer = null;
 
       dock.addEventListener('touchstart', (e) => {{
         isDragging = true;
@@ -2369,10 +2377,21 @@ def build_mobile_split_screen_html():
         startX = touch.clientX;
         lastX = startX;
         
-        // 触发 Dock 整体与气泡的压力形变 (Squash & Stretch)
         dock.classList.add('dock-pressed');
-        indicator.classList.add('bubble-pressed');
-        indicator.classList.add('dragging');
+        indicator.classList.add('pressed');
+
+        // 计算当前触摸位置对应的 Tab 并进行水滴受压微形变
+        const dockRect = dock.getBoundingClientRect();
+        const touchXInDock = touch.clientX - dockRect.left;
+        const itemWidth = (dockRect.width - 8) / items.length;
+        const touchedIndex = Math.max(0, Math.min(items.length - 1, Math.floor((touchXInDock - 4) / itemWidth)));
+        
+        const touchedItem = items[touchedIndex];
+        if (touchedItem) {{
+          const itemRect = touchedItem.getBoundingClientRect();
+          const targetLeft = itemRect.left - dockRect.left;
+          setBubblePosition(targetLeft, itemRect.width, 1.12, 0.88, true);
+        }}
       }}, {{ passive: true }});
 
       dock.addEventListener('touchmove', (e) => {{
@@ -2384,16 +2403,16 @@ def build_mobile_split_screen_html():
         const dragVelocity = touch.clientX - lastX;
         lastX = touch.clientX;
         
-        // 根据移动速度产生液体横向延展与弹性拉伸 (Fluid Drag Velocity Stretch)
+        // 实时跟随触摸位置与流体拉伸 (Fluid Drag Velocity Stretch)
         const stretchX = Math.min(1.25, Math.max(0.85, 1 + Math.abs(dragVelocity) * 0.018));
         const squashY = Math.max(0.80, 1 - Math.abs(dragVelocity) * 0.012);
 
         const itemWidth = (dockRect.width - 8) / items.length;
-        const clampedX = Math.max(2, Math.min(dockRect.width - itemWidth - 2, touchXInDock - itemWidth / 2));
+        const targetX = Math.max(4, Math.min(dockRect.width - itemWidth - 4, touchXInDock - itemWidth / 2));
         
-        indicator.style.transform = `translateX(${{clampedX}}px) scale(${{stretchX}}, ${{squashY}})`;
+        setBubblePosition(targetX, itemWidth, stretchX, squashY, false);
         
-        const hoveredIndex = Math.max(0, Math.min(items.length - 1, Math.floor(touchXInDock / itemWidth)));
+        const hoveredIndex = Math.max(0, Math.min(items.length - 1, Math.floor((touchXInDock - 4) / itemWidth)));
         items.forEach((it, i) => {{
           if (i === hoveredIndex) it.classList.add('active');
           else it.classList.remove('active');
@@ -2406,14 +2425,13 @@ def build_mobile_split_screen_html():
         
         // 释放压力，产生弹簧物理回弹 (Spring Snap Release)
         dock.classList.remove('dock-pressed');
-        indicator.classList.remove('bubble-pressed');
-        indicator.classList.remove('dragging');
+        indicator.classList.remove('pressed');
         
         const dockRect = dock.getBoundingClientRect();
         const itemWidth = (dockRect.width - 8) / items.length;
-        const finalIndex = Math.max(0, Math.min(items.length - 1, Math.floor((lastX - dockRect.left) / itemWidth)));
+        const finalIndex = Math.max(0, Math.min(items.length - 1, Math.floor((lastX - dockRect.left - 4) / itemWidth)));
         
-        const selectedItem = items[finalIndex];
+        const selectedItem = items[finalIndex] || items[0];
         if (selectedItem) {{
           const tabId = selectedItem.getAttribute('data-tab-id');
           mSwitch(tabId, selectedItem);

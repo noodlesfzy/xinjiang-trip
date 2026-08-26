@@ -59,10 +59,6 @@ struct HybridTripWebView: UIViewRepresentable {
         // 核心：优先加载 App 内置本地最新 HTML (零延迟、零网络依赖、保证 Xcode 每次编译即时生效)
         context.coordinator.loadLocalFirst()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-            context.coordinator.loadLocalFirst()
-        }
-        
         return webView
     }
     
@@ -83,7 +79,7 @@ struct HybridTripWebView: UIViewRepresentable {
             guard let webView = self.webView else { return }
             if let htmlPath = Bundle.main.path(forResource: "index", ofType: "html"),
                let htmlContent = try? String(contentsOfFile: htmlPath, encoding: .utf8) {
-                let baseURL = URL(string: "https://noodlesfzy.github.io/xinjiang-trip/")
+                let baseURL = URL(string: "https://www.amap.com/")
                 webView.loadHTMLString(htmlContent, baseURL: baseURL)
                 print("📦 已加载 App 内置最新离线路书 (HTTPS BaseURL 模式，全面解锁真机外部切片与网络权限)")
             } else if let htmlPath = Bundle.main.path(forResource: "index", ofType: "html") {
