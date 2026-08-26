@@ -286,14 +286,15 @@ def build_mobile_split_screen_html():
       --active-glow: rgba(56, 189, 248, 0.35);
       --sub-card-bg: rgba(18, 26, 44, 0.80);
       
-      /* Dock Tokens - Dark */
-      --liquid-dock-bg: rgba(18, 24, 38, 0.88);
-      --liquid-dock-border: rgba(255, 255, 255, 0.12);
-      --liquid-bubble-bg: linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(2, 132, 199, 0.12) 100%);
-      --liquid-bubble-border: rgba(56, 189, 248, 0.40);
-      --liquid-bubble-glow: 0 4px 16px rgba(56, 189, 248, 0.25);
+            /* Apple Official Liquid Glass Tab Bar Tokens - Dark (App Store Today Style) */
+      --liquid-dock-bg: rgba(30, 30, 32, 0.78);
+      --liquid-dock-border: rgba(255, 255, 255, 0.16);
+      --liquid-dock-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+      --liquid-bubble-bg: rgba(255, 255, 255, 0.14);
+      --liquid-bubble-border: rgba(255, 255, 255, 0.18);
+      --liquid-bubble-glow: 0 2px 8px rgba(0, 0, 0, 0.2);
       
-      /* Continuous Hardware Curves (Apple Squircles) */
+/* Continuous Hardware Curves (Apple Squircles) */
       --radius-pill: 9999px;
       --radius-island: 26px;
       --radius-card: 20px;
@@ -325,12 +326,13 @@ def build_mobile_split_screen_html():
       --active-glow: rgba(2, 132, 199, 0.18);
       --sub-card-bg: #ffffff;
       
-      /* Dock Tokens - Light */
-      --liquid-dock-bg: rgba(255, 255, 255, 0.88);
-      --liquid-dock-border: rgba(255, 255, 255, 0.95);
-      --liquid-bubble-bg: linear-gradient(135deg, rgba(2, 132, 199, 0.14) 0%, rgba(56, 189, 248, 0.08) 100%);
-      --liquid-bubble-border: rgba(2, 132, 199, 0.28);
-      --liquid-bubble-glow: 0 4px 14px rgba(2, 132, 199, 0.15);
+            /* Apple Official Liquid Glass Tab Bar Tokens - Light (App Store Today Style) */
+      --liquid-dock-bg: rgba(255, 255, 255, 0.82);
+      --liquid-dock-border: rgba(255, 255, 255, 0.90);
+      --liquid-dock-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+      --liquid-bubble-bg: rgba(0, 122, 255, 0.10);
+      --liquid-bubble-border: rgba(0, 122, 255, 0.22);
+      --liquid-bubble-glow: 0 2px 8px rgba(0, 122, 255, 0.12);
     }}
 
     [data-theme="light"] .m-map-pinned-zone {{
@@ -1936,19 +1938,19 @@ def build_mobile_split_screen_html():
       transition: opacity 0.3s ease;
     }}
 
-        /* Bottom App Dock (Liquid Glass Floating Bubble Dock 悬浮液态气泡底栏) */
+            /* Bottom App Dock (Apple Official Liquid Glass Tab Bar - App Store / Files Style) */
     .m-bottom-dock {{
       position: absolute;
-      bottom: max(10px, env(safe-area-inset-bottom) + 2px);
-      left: 12px;
-      right: 12px;
-      height: 60px;
+      bottom: max(12px, env(safe-area-inset-bottom) + 4px);
+      left: 16px;
+      right: 16px;
+      height: 56px;
       background: var(--liquid-dock-bg);
-      backdrop-filter: blur(32px) saturate(190%);
-      -webkit-backdrop-filter: blur(32px) saturate(190%);
-      border: 1px solid var(--liquid-dock-border);
-      border-radius: 30px;
-      box-shadow: 0 12px 36px rgba(15, 23, 42, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
+      backdrop-filter: blur(40px) saturate(210%);
+      -webkit-backdrop-filter: blur(40px) saturate(210%);
+      border: 0.5px solid var(--liquid-dock-border);
+      border-radius: 28px;
+      box-shadow: var(--liquid-dock-shadow);
       display: flex;
       justify-content: space-around;
       align-items: center;
@@ -1963,33 +1965,32 @@ def build_mobile_split_screen_html():
       justify-content: center;
       color: var(--text-muted);
       font-size: 10px;
-      font-weight: 600;
+      font-weight: 500;
       cursor: pointer;
       width: 16%;
-      height: 48px;
-      border-radius: 20px;
-      transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+      height: 44px;
+      border-radius: 18px;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }}
     .m-dock-item:active {{
-      transform: scale(0.90);
+      transform: scale(0.92);
     }}
     .m-dock-item .m-dock-icon {{
-      font-size: 19px;
+      font-size: 18px;
       margin-bottom: 2px;
-      transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }}
     .m-dock-item.active {{
-      color: #0284c7;
+      color: #007aff;
       background: var(--liquid-bubble-bg);
-      border: 1px solid var(--liquid-bubble-border);
-      box-shadow: 0 4px 14px var(--liquid-bubble-glow), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+      border: 0.5px solid var(--liquid-bubble-border);
+      box-shadow: var(--liquid-bubble-glow), inset 0 1px 1.5px rgba(255, 255, 255, 0.3);
     }}
     [data-theme="dark"] .m-dock-item.active {{
-      color: #38bdf8;
-      box-shadow: 0 4px 16px var(--liquid-bubble-glow), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+      color: #2997ff;
     }}
     .m-dock-item.active .m-dock-icon {{
-      transform: scale(1.15) translateY(-1px);
+      transform: scale(1.08) translateY(-1px);
     }}
   </style>
 </head>
@@ -2342,20 +2343,42 @@ def build_mobile_split_screen_html():
       }}
     }}
 
-    // ==========================================
-    // 1. 初始化顶部全局自适应小地图
+        // ==========================================
+    // 1. 初始化顶部全局自适应小地图 (高可用多通道切片引擎)
     // ==========================================
     const mMap = L.map('m-map', {{
       zoomControl: false,
       attributionControl: false
     }}).setView([45.5, 87.5], 6);
 
-    L.tileLayer('https://webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={{x}}&y={{y}}&z={{z}}', {{
-      subdomains: ['1', '2', '3', '4'],
-      minZoom: 3,
-      maxZoom: 18,
-      crossOrigin: false
-    }}).addTo(mMap);
+    function createRobustTileLayer(mapInstance, primaryStyle = 7) {{
+      const tileLayer = L.tileLayer('https://webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}', {{
+        subdomains: ['1', '2', '3', '4'],
+        minZoom: 3,
+        maxZoom: 18,
+        crossOrigin: false
+      }});
+
+      let switched = false;
+      tileLayer.on('tileerror', function() {{
+        if (!switched) {{
+          switched = true;
+          console.warn("⚠️ 主瓦片通道切换至高可用备用镜像...");
+          const backupLayer = L.tileLayer('https://wprd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}', {{
+            subdomains: ['1', '2', '3', '4'],
+            minZoom: 3,
+            maxZoom: 18,
+            crossOrigin: false
+          }});
+          backupLayer.addTo(mapInstance);
+        }}
+      }});
+
+      tileLayer.addTo(mapInstance);
+      return tileLayer;
+    }}
+
+    createRobustTileLayer(mMap, 7);
 
     // 智能多重定时尺寸校准，彻底防止 iOS WebKit 初始化尺寸为 0 导致地图黑屏
     [50, 200, 500, 1200].forEach(ms => {{
