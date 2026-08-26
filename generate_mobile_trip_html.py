@@ -218,6 +218,7 @@ def build_mobile_split_screen_html():
     dining_html = render_dining_html_5_options()
     birding_html = render_birding_html()
     heritage_html = render_heritage_html()
+    initial_rail_html = "".join([f'<div class="m-rail-pill {"active" if d["day"]==1 else ""}" id="rail-pill-{d["day"]}" onclick="quickJumpDay({d["day"]}, this)">D{d["day"]}</div>' for d in TRIP_DATA["days"]])
     json_dump = json.dumps(TRIP_DATA, ensure_ascii=False)
 
     html = f"""<!DOCTYPE html>
@@ -497,14 +498,14 @@ def build_mobile_split_screen_html():
     }}
 
     /* ========================================================
-       TOP PINNED MAP ZONE (流体圆角独立视口)
+       TOP PINNED MAP ZONE (流体圆角独立视口 - 优化黄金比例)
        ======================================================== */
     .m-map-pinned-zone {{
-      flex: 0 0 38vh;
-      min-height: 200px;
-      max-height: 52vh;
-      margin: max(10px, env(safe-area-inset-top)) 12px 6px 12px;
-      border-radius: var(--radius-card);
+      flex: 0 0 24vh;
+      min-height: 155px;
+      max-height: 28vh;
+      margin: max(6px, env(safe-area-inset-top)) 8px 4px 8px;
+      border-radius: 18px;
       overflow: hidden;
       background: #0f172a;
       position: relative;
@@ -514,39 +515,39 @@ def build_mobile_split_screen_html():
       transition: flex-basis 0.35s cubic-bezier(0.32, 0.72, 0, 1);
     }}
     .m-map-pinned-zone.mode-compact {{
-      flex-basis: 20vh !important;
-      min-height: 140px !important;
-      max-height: 24vh !important;
+      flex-basis: 15vh !important;
+      min-height: 100px !important;
+      max-height: 18vh !important;
     }}
     .m-map-pinned-zone.mode-expanded {{
-      flex-basis: 72vh !important;
-      min-height: 60vh !important;
-      max-height: 85vh !important;
+      flex-basis: 58vh !important;
+      min-height: 48vh !important;
+      max-height: 75vh !important;
     }}
     .m-map-pinned-zone.mode-hidden {{
       display: none !important;
     }}
 
-    #m-map {{ width: 100%; height: 100%; }}
+    #m-map {{ width: 100%; height: 100%; min-height: 100px; }}
 
     .m-map-pill {{
       position: absolute;
-      bottom: 10px;
-      right: 10px;
+      bottom: 6px;
+      right: 6px;
       z-index: 500;
       background: var(--liquid-glass-bg);
       backdrop-filter: var(--liquid-blur);
       -webkit-backdrop-filter: var(--liquid-blur);
       border: 1px solid var(--liquid-glass-border);
       color: #f1f5f9;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
-      padding: 6px 12px;
-      min-height: 32px;
-      border-radius: 16px;
+      padding: 4px 10px;
+      min-height: 28px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       box-shadow: var(--liquid-glass-specular), var(--liquid-glass-shadow);
       cursor: pointer;
       transition: transform 0.15s ease, background-color 0.15s ease;
@@ -555,16 +556,16 @@ def build_mobile_split_screen_html():
 
     .m-map-hint {{
       position: absolute;
-      top: 8px;
-      left: 10px;
+      top: 6px;
+      left: 8px;
       z-index: 500;
       background: var(--liquid-glass-bg);
       backdrop-filter: var(--liquid-blur);
       -webkit-backdrop-filter: var(--liquid-blur);
       border: 1px solid var(--liquid-glass-border);
-      padding: 4px 12px;
-      border-radius: 14px;
-      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 10.5px;
       font-weight: 600;
       color: #f8fafc;
       pointer-events: none;
@@ -857,7 +858,7 @@ def build_mobile_split_screen_html():
     }}
 
     /* ========================================================
-       GLOBAL LEFT FLOATING QUICK-NAV RAIL (流体玻璃悬浮岛)
+       GLOBAL LEFT FLOATING QUICK-NAV RAIL (超纤细流体玻璃悬浮岛)
        ======================================================== */
     .m-main-content-layout {{
       flex: 1 1 auto;
@@ -870,20 +871,20 @@ def build_mobile_split_screen_html():
 
     .m-quick-nav-rail {{
       position: absolute;
-      left: 10px;
-      top: 6px;
-      bottom: calc(78px + env(safe-area-inset-bottom));
-      width: 38px;
+      left: 5px;
+      top: 4px;
+      bottom: calc(66px + env(safe-area-inset-bottom));
+      width: 28px;
       z-index: 700;
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      padding: 6px 3px;
+      gap: 3px;
+      padding: 4px 1px;
       background: var(--liquid-glass-bg);
       backdrop-filter: var(--liquid-blur);
       -webkit-backdrop-filter: var(--liquid-blur);
       border: 1px solid var(--liquid-glass-border);
-      border-radius: 20px;
+      border-radius: 14px;
       box-shadow: var(--liquid-glass-specular), var(--liquid-glass-shadow);
       overflow-y: auto;
       scrollbar-width: none;
@@ -892,17 +893,17 @@ def build_mobile_split_screen_html():
     .m-quick-nav-rail::-webkit-scrollbar {{ display: none; }}
 
     .m-rail-pill {{
-      flex: 0 0 26px;
-      height: 26px;
-      width: 32px;
+      flex: 0 0 22px;
+      height: 22px;
+      width: 24px;
       margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 10.5px;
+      font-size: 9.5px;
       font-weight: 700;
       color: #94a3b8;
-      border-radius: 13px;
+      border-radius: 11px;
       cursor: pointer;
       transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }}
@@ -912,20 +913,20 @@ def build_mobile_split_screen_html():
     .m-rail-pill.active {{
       background: #96382d;
       color: #fff;
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 0 12px rgba(248, 113, 113, 0.7);
-      transform: scale(1.14);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 0 10px rgba(248, 113, 113, 0.7);
+      transform: scale(1.12);
     }}
     body[data-tab="dining"] .m-rail-pill.active {{
       background: #d97706;
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 0 12px rgba(245, 158, 11, 0.7);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 0 10px rgba(245, 158, 11, 0.7);
     }}
     body[data-tab="birding"] .m-rail-pill.active {{
       background: #059669;
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 0 12px rgba(16, 185, 129, 0.7);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 0 10px rgba(16, 185, 129, 0.7);
     }}
     body[data-tab="culture"] .m-rail-pill.active {{
       background: #7e22ce;
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 0 12px rgba(192, 132, 252, 0.7);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 0 10px rgba(192, 132, 252, 0.7);
     }}
 
     /* ========================================================
@@ -943,30 +944,34 @@ def build_mobile_split_screen_html():
     .m-scroll-body,
     .m-dining-view,
     .m-birding-view,
-    .m-culture-view,
+    .m-culture-view {{
+      padding: 4px 8px calc(72px + env(safe-area-inset-bottom)) 38px;
+    }}
+    .m-more-view,
     .m-tips-view {{
-      padding: 6px 12px calc(86px + env(safe-area-inset-bottom)) 56px;
+      padding: 4px 10px calc(72px + env(safe-area-inset-bottom)) 10px;
     }}
 
     .m-metrics-strip {{
-      display: flex;
-      overflow-x: auto;
-      gap: 6px;
-      padding-bottom: 10px;
-      scrollbar-width: none;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 3.5px;
+      margin-bottom: 8px;
+      width: 100%;
     }}
-    .m-metrics-strip::-webkit-scrollbar {{ display: none; }}
     .m-m-box {{
-      flex: 0 0 auto;
       background: var(--card-bg);
-      border: 1px solid var(--card-border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--liquid-glass-border);
       border-radius: 8px;
-      padding: 6px 8px;
+      padding: 4px 2px;
       text-align: center;
-      min-width: 68px;
+      min-width: 0;
+      box-shadow: var(--liquid-glass-specular), 0 2px 6px rgba(0,0,0,0.25);
     }}
-    .m-m-box .m-lbl {{ font-size: 9px; color: var(--text-muted); }}
-    .m-m-box .m-val {{ font-size: 12.5px; font-weight: 700; color: #60a5fa; }}
+    .m-m-box .m-lbl {{ font-size: 8px; color: var(--text-muted); line-height: 1.1; white-space: nowrap; }}
+    .m-m-box .m-val {{ font-size: 11px; font-weight: 700; color: #38bdf8; line-height: 1.2; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
 
     .m-rules-banner {{
       background: rgba(150, 56, 45, 0.18);
@@ -975,12 +980,12 @@ def build_mobile_split_screen_html():
       border: 1px solid rgba(248, 113, 113, 0.35);
       border-radius: var(--radius-sub);
       box-shadow: var(--liquid-glass-specular), 0 4px 14px rgba(0,0,0,0.3);
-      padding: 10px 14px;
-      margin-bottom: 12px;
-      font-size: 11.5px;
+      padding: 8px 10px;
+      margin-bottom: 10px;
+      font-size: 11px;
     }}
-    .m-rules-banner h4 {{ color: #fca5a5; font-size: 12px; margin-bottom: 4px; }}
-    .m-rules-banner ul {{ list-style: none; display: flex; flex-direction: column; gap: 4px; color: #e2e8f0; }}
+    .m-rules-banner h4 {{ color: #fca5a5; font-size: 11.5px; margin-bottom: 3px; }}
+    .m-rules-banner ul {{ list-style: none; display: flex; flex-direction: column; gap: 3px; color: #e2e8f0; }}
 
     /* ========================================================
        1. 行程卡片 (Liquid Glass Squircles)
@@ -1881,34 +1886,28 @@ def build_mobile_split_screen_html():
       color: #e11d48;
     }}
 
-    /* Map Tile Filter Transition */
+    /* Map Tile Clean Rendering */
     .leaflet-tile-pane {{
-      transition: filter 0.3s ease;
-    }}
-    [data-theme="dark"] .leaflet-tile-pane {{
-      filter: brightness(0.85) contrast(1.1) invert(0.9) hue-rotate(180deg);
-    }}
-    [data-theme="light"] .leaflet-tile-pane {{
-      filter: none;
+      transition: opacity 0.3s ease;
     }}
 
     /* Bottom App Dock (Liquid Glass Floating Island 悬浮流体底栏叠层) */
     .m-bottom-dock {{
       position: absolute;
-      bottom: max(12px, env(safe-area-inset-bottom));
-      left: 12px;
-      right: 12px;
-      height: 60px;
+      bottom: max(6px, env(safe-area-inset-bottom));
+      left: 8px;
+      right: 8px;
+      height: 52px;
       background: var(--liquid-glass-bg);
       backdrop-filter: var(--liquid-blur);
       -webkit-backdrop-filter: var(--liquid-blur);
       border: 1px solid var(--liquid-glass-border);
-      border-radius: 30px;
-      box-shadow: var(--liquid-glass-specular), 0 16px 44px rgba(0, 0, 0, 0.65);
+      border-radius: 26px;
+      box-shadow: var(--liquid-glass-specular), 0 12px 36px rgba(0, 0, 0, 0.55);
       display: flex;
       justify-content: space-around;
       align-items: center;
-      padding: 4px 6px;
+      padding: 2px 4px;
       z-index: 1000;
     }}
     .m-dock-item {{
@@ -1918,30 +1917,30 @@ def build_mobile_split_screen_html():
       align-items: center;
       justify-content: center;
       color: var(--text-muted);
-      font-size: 10.5px;
+      font-size: 9.5px;
       font-weight: 600;
       cursor: pointer;
       width: 16.6%;
       height: 100%;
-      border-radius: 24px;
+      border-radius: 20px;
       transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }}
     .m-dock-item:active {{
       transform: scale(0.88);
     }}
     .m-dock-item .m-dock-icon {{
-      font-size: 19px;
-      margin-bottom: 2px;
+      font-size: 17px;
+      margin-bottom: 1px;
       transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }}
     .m-dock-item.active {{
       color: #fff;
       background: linear-gradient(135deg, rgba(239, 68, 68, 0.35) 0%, rgba(248, 113, 113, 0.15) 100%);
       border: 1px solid rgba(248, 113, 113, 0.45);
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.35), 0 0 16px rgba(239, 68, 68, 0.45);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.35), 0 0 12px rgba(239, 68, 68, 0.45);
     }}
     .m-dock-item.active .m-dock-icon {{
-      transform: scale(1.18);
+      transform: scale(1.14);
     }}
   </style>
 </head>
@@ -1962,7 +1961,7 @@ def build_mobile_split_screen_html():
     <div class="m-main-content-layout" id="m-main-layout">
 
       <!-- 左侧动态快捷导航条 (按当前页面内容动态填充仅有内容的天数) -->
-      <div class="m-quick-nav-rail" id="m-quick-nav-rail"></div>
+      <div class="m-quick-nav-rail" id="m-quick-nav-rail">{initial_rail_html}</div>
 
       <!-- 可滚动主体内容容器 -->
       <div class="m-content-container" id="m-content-container">
@@ -2302,11 +2301,20 @@ def build_mobile_split_screen_html():
       attributionControl: false
     }}).setView([45.5, 87.5], 6);
 
-    L.tileLayer('https://webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={{x}}&y={{y}}&z={{z}}', {{
+    L.tileLayer('https://wprd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={{x}}&y={{y}}&z={{z}}', {{
       subdomains: ['1', '2', '3', '4'],
-      minZoom: 4,
+      minZoom: 3,
       maxZoom: 18
     }}).addTo(mMap);
+
+    // 智能多重定时尺寸校准，彻底防止 iOS WebKit 初始化尺寸为 0 导致地图黑屏
+    [50, 200, 500, 1200].forEach(ms => {{
+      setTimeout(() => {{
+        if (mMap) {{
+          mMap.invalidateSize();
+        }}
+      }}, ms);
+    }});
 
     const dynamicLayers = L.layerGroup().addTo(mMap);
 
