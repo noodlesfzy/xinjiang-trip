@@ -1,0 +1,250 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E189FD0F0CDC4DF58ED0F17C /* XinjiangTripApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E189FD0F0CDC4DF58ED0F17CF /* XinjiangTripApp.swift */; };
+		AC1F1F28186642ED953DEE4D /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = AC1F1F28186642ED953DEE4DF /* index.html */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		5B450FCB34EC459AA1F7068E /* XinjiangTrip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XinjiangTrip.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E189FD0F0CDC4DF58ED0F17CF /* XinjiangTripApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XinjiangTripApp.swift; sourceTree = "<group>"; };
+		AC1F1F28186642ED953DEE4DF /* index.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
+		55B3AEAFE58E4B36B7501C71F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		058E7A0AFCCB4DCFA8520713 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C2CD5006BAEC4B8F9483EEBE = {
+			isa = PBXGroup;
+			children = (
+				B9F21F4C42EB4B27886C1256 /* XinjiangTrip */,
+				5B450FCB34EC459AA1F7068E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B9F21F4C42EB4B27886C1256 /* XinjiangTrip */ = {
+			isa = PBXGroup;
+			children = (
+				E189FD0F0CDC4DF58ED0F17CF /* XinjiangTripApp.swift */,
+				AC1F1F28186642ED953DEE4DF /* index.html */,
+				55B3AEAFE58E4B36B7501C71F /* Info.plist */,
+			);
+			path = XinjiangTrip;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BF5E2A514B484F8D9289D105 /* XinjiangTrip */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B640B469B9E74038BBFFC316 /* Build configuration list for PBXNativeTarget "XinjiangTrip" */;
+			buildPhases = (
+				86D6D93D486946D48B38B8F1 /* Sources */,
+				058E7A0AFCCB4DCFA8520713 /* Frameworks */,
+				5F7025951B124E96AA520A17 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = XinjiangTrip;
+			productName = XinjiangTrip;
+			productReference = 5B450FCB34EC459AA1F7068E /* XinjiangTrip.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E330B5FD1E7E4AA6A1506D1A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					BF5E2A514B484F8D9289D105 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = 13BB5970F651448EAC7DF84C /* Build configuration list for PBXProject "XinjiangTrip" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = zh_CN;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				zh_CN,
+				Base,
+			);
+			mainGroup = C2CD5006BAEC4B8F9483EEBE;
+			productRefGroup = C2CD5006BAEC4B8F9483EEBE;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BF5E2A514B484F8D9289D105 /* XinjiangTrip */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		5F7025951B124E96AA520A17 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AC1F1F28186642ED953DEE4D /* index.html in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		86D6D93D486946D48B38B8F1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E189FD0F0CDC4DF58ED0F17C /* XinjiangTripApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3A4C4AB44EB049A4BC0E2F99 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		DE3DF8B24D6949679D786338 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_OPTIMIZATION_LEVEL = s;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		7A65B99EF5D747A5869BB886 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = XinjiangTrip/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "新疆自驾路书";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.noodles.xinjiangtrip;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		308743E9F29A42E5B70229F3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = XinjiangTrip/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "新疆自驾路书";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.noodles.xinjiangtrip;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		13BB5970F651448EAC7DF84C /* Build configuration list for PBXProject "XinjiangTrip" */;
+		13BB5970F651448EAC7DF84C = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3A4C4AB44EB049A4BC0E2F99 /* Debug */,
+				DE3DF8B24D6949679D786338 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B640B469B9E74038BBFFC316 /* Build configuration list for PBXNativeTarget "XinjiangTrip" */;
+		B640B469B9E74038BBFFC316 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7A65B99EF5D747A5869BB886 /* Debug */,
+				308743E9F29A42E5B70229F3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = E330B5FD1E7E4AA6A1506D1A /* Project object */;
+}
