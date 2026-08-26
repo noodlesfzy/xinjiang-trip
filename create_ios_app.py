@@ -54,6 +54,7 @@ struct HybridTripWebView: UIViewRepresentable {
         config.mediaTypesRequiringUserActionForPlayback = []
         config.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
         config.setValue(true, forKey: "allowUniversalAccessFromFileURLs")
+        config.defaultWebpagePreferences.allowsContentJavaScript = true
         
         // 核心：在真机启动时主动触发网络探测，激活 iOS 蜂窝网络与 Wi-Fi 联网权限 (避免本地 file:// 被系统静默禁止联网请求地图瓦片)
         if let probeURL = URL(string: "https://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x=108&y=53&z=7") {
@@ -62,6 +63,9 @@ struct HybridTripWebView: UIViewRepresentable {
         }
         
         let webView = WKWebView(frame: .zero, configuration: config)
+        if #available(iOS 16.4, *) {
+            webView.isInspectable = true
+        }
         webView.navigationDelegate = context.coordinator
         webView.isOpaque = false
         webView.backgroundColor = UIColor(red: 13/255, green: 19/255, blue: 34/255, alpha: 1.0)

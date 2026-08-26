@@ -546,7 +546,6 @@ def build_mobile_split_screen_html():
       min-height: 155px;
       max-height: 28vh;
       margin: max(54px, env(safe-area-inset-top) + 8px) 10px 4px 10px; border-radius: 20px;
-      border-radius: 18px;
       overflow: hidden;
       background: #0f172a;
       position: relative;
@@ -1936,7 +1935,7 @@ def build_mobile_split_screen_html():
       transition: opacity 0.3s ease;
     }}
 
-                    /* Bottom App Dock (1:1 Apple App Store Liquid Glass Morphing & Sliding Dock) */
+                        /* Bottom App Dock (1:1 Apple App Store Liquid Glass Morphing & Sliding Dock) */
     .m-bottom-dock {{
       position: absolute;
       bottom: max(12px, env(safe-area-inset-bottom) + 4px);
@@ -2264,74 +2263,77 @@ def build_mobile_split_screen_html():
 
   <script>
     const mTripData = {json_dump};
-        // ==========================================
+            // ==========================================
     // 0.3 1:1 Apple App Store Liquid Glass 触摸滑动与平滑滑块引擎
     // ==========================================
-    function initLiquidDockGestures() {{
+    function updateLiquidDockSlider(targetTabOrIndex, animated = true) {{
       const dock = document.getElementById('m-bottom-dock');
       const indicator = document.getElementById('m-liquid-bubble-indicator');
       if (!dock || !indicator) return;
       const items = Array.from(dock.querySelectorAll('.m-dock-item'));
       if (items.length === 0) return;
 
-      function updateIndicatorPosition(targetIndexOrTab, animated = true) {{
-        let targetItem = null;
-        if (typeof targetIndexOrTab === 'string') {{
-          targetItem = items.find(it => it.getAttribute('data-tab-id') === targetIndexOrTab);
-        }} else if (typeof targetIndexOrTab === 'number') {{
-          targetItem = items[targetIndexOrTab];
-        }}
-        if (!targetItem) targetItem = items[0];
+      let targetItem = null;
+      if (typeof targetTabOrIndex === 'string') {{
+        targetItem = items.find(it => it.getAttribute('data-tab-id') === targetTabOrIndex);
+      }} else if (typeof targetTabOrIndex === 'number') {{
+        targetItem = items[targetTabOrIndex];
+      }}
+      if (!targetItem) targetItem = items[0];
 
-        const dockRect = dock.getBoundingClientRect();
-        const itemRect = targetItem.getBoundingClientRect();
-        
-        let targetLeft = 4;
-        let targetWidth = (dockRect.width - 8) / items.length;
-        
-        if (dockRect.width > 0 && itemRect.width > 0) {{
-          targetLeft = itemRect.left - dockRect.left;
-          targetWidth = itemRect.width;
-        }}
-
-        if (animated) {{
-          indicator.classList.remove('dragging');
-          indicator.style.transition = 'transform 0.38s cubic-bezier(0.25, 1, 0.35, 1.15), width 0.3s ease';
-        }} else {{
-          indicator.classList.add('dragging');
-          indicator.style.transition = 'none';
-        }}
-
-        indicator.style.transform = `translateX(${{targetLeft}}px)`;
-        indicator.style.width = `${{targetWidth}}px`;
-
-        items.forEach(it => {{
-          if (it === targetItem) {{
-            it.classList.add('active');
-          }} else {{
-            it.classList.remove('active');
-          }}
-        }});
+      const dockRect = dock.getBoundingClientRect();
+      const itemRect = targetItem.getBoundingClientRect();
+      
+      let targetLeft = 4;
+      let targetWidth = (dockRect.width > 0 ? (dockRect.width - 8) / items.length : 55);
+      
+      if (dockRect.width > 0 && itemRect.width > 0) {{
+        targetLeft = itemRect.left - dockRect.left;
+        targetWidth = itemRect.width;
       }}
 
-      window.updateLiquidDockSlider = function(tabName) {{
-        updateIndicatorPosition(tabName, true);
-      }};
+      if (animated) {{
+        indicator.classList.remove('dragging');
+        indicator.style.transition = 'transform 0.38s cubic-bezier(0.25, 1, 0.35, 1.15), width 0.3s ease';
+      }} else {{
+        indicator.classList.add('dragging');
+        indicator.style.transition = 'none';
+      }}
+
+      indicator.style.transform = `translateX(${{targetLeft}}px)`;
+      indicator.style.width = `${{targetWidth}}px`;
+
+      items.forEach(it => {{
+        if (it === targetItem) {{
+          it.classList.add('active');
+        }} else {{
+          it.classList.remove('active');
+        }}
+      }});
+    }}
+
+    function initLiquidDockGestures() {{
+      const dock = document.getElementById('m-bottom-dock');
+      const indicator = document.getElementById('m-liquid-bubble-indicator');
+      if (!dock || !indicator) return;
+      const items = Array.from(dock.querySelectorAll('.m-dock-item'));
 
       // 绑定每个 Tab 的直接点击触发
-      items.forEach((it, idx) => {{
-        it.addEventListener('click', (e) => {{
+      items.forEach((it) => {{
+        it.onclick = function(e) {{
           const tabId = it.getAttribute('data-tab-id');
           mSwitch(tabId, it);
-        }});
+        }};
       }});
 
-      // 初始定位与窗口尺寸自适应
-      setTimeout(() => {{ updateIndicatorPosition(0, false); }}, 60);
-      setTimeout(() => {{ updateIndicatorPosition(0, false); }}, 300);
+      // 初始定位
+      updateLiquidDockSlider('timeline', false);
+      setTimeout(() => {{ updateLiquidDockSlider('timeline', false); }}, 60);
+      setTimeout(() => {{ updateLiquidDockSlider('timeline', false); }}, 300);
+
       window.addEventListener('resize', () => {{
-        const activeIdx = items.findIndex(it => it.classList.contains('active'));
-        updateIndicatorPosition(activeIdx >= 0 ? activeIdx : 0, false);
+        const activeItem = items.find(it => it.classList.contains('active')) || items[0];
+        updateLiquidDockSlider(activeItem.getAttribute('data-tab-id'), false);
       }});
 
       // 触摸滑动手势跟随 (Touch Dragging Flow)
@@ -2384,6 +2386,13 @@ def build_mobile_split_screen_html():
           mSwitch(tabId, selectedItem);
         }}
       }}, {{ passive: true }});
+    }}
+
+    // 立即执行 Dock 初始化
+    if (document.readyState === 'loading') {{
+      document.addEventListener('DOMContentLoaded', initLiquidDockGestures);
+    }} else {{
+      initLiquidDockGestures();
     }}
     let currentViewTab = 'timeline';
     let currentActiveDay = 1;
@@ -3206,7 +3215,7 @@ def build_mobile_split_screen_html():
     const dedicatedMarkers = [];
     let dedicatedPolyline = null;
 
-    function initDedicatedMap() {{
+        function initDedicatedMap() {{
       if (dedicatedMap) return;
 
       dedicatedMap = L.map('m-dedicated-map', {{
@@ -3217,18 +3226,15 @@ def build_mobile_split_screen_html():
       transitLayer = L.tileLayer('https://webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={{x}}&y={{y}}&z={{z}}', {{
         subdomains: ['1', '2', '3', '4'],
         minZoom: 3,
-        maxZoom: 18,
-        crossOrigin: false
+        maxZoom: 18
       }}).addTo(dedicatedMap);
 
       standardLayer = L.tileLayer('https://wprd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={{x}}&y={{y}}&z={{z}}', {{
         subdomains: ['1', '2', '3', '4'],
         minZoom: 3,
-        maxZoom: 18,
-        crossOrigin: false
+        maxZoom: 18
       }});
-
-      mTripData.days.forEach(d => {{
+mTripData.days.forEach(d => {{
         const lat = d.to.lat;
         const lng = d.to.lng;
 
@@ -3332,17 +3338,9 @@ def build_mobile_split_screen_html():
     // 6. 通用 Tab 切换引擎 (满足需求2：智能时间同步)
     // ==========================================
     function mSwitch(viewId, el) {{
-      if (window.updateLiquidDockSlider) {{
-        window.updateLiquidDockSlider(viewId);
-      }}
       currentViewTab = viewId;
       document.body.setAttribute('data-tab', viewId);
-
-      if (el) {{
-        document.querySelectorAll('.m-dock-item').forEach(i => i.classList.remove('active'));
-        el.classList.add('active');
-      }}
-
+      updateLiquidDockSlider(viewId, true);
       const mapZone = document.getElementById('m-map-zone');
       const mainLayout = document.getElementById('m-main-layout');
       const dedicatedMapView = document.getElementById('m-view-map');
