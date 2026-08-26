@@ -237,13 +237,16 @@ def build_mobile_split_screen_html():
   <style>
     :root {{
       --primary: #96382d;
+      
+      /* Dark Theme (默认暗黑模式) */
       --bg: #070a12;
       --card-bg: rgba(18, 26, 44, 0.72);
       --card-border: rgba(255, 255, 255, 0.12);
       --text: #f8fafc;
       --text-muted: #94a3b8;
+      --text-heading: #ffffff;
       
-      /* Apple Liquid Glass Material Tokens */
+      /* Apple Liquid Glass Material Tokens - Dark */
       --liquid-glass-bg: rgba(15, 23, 42, 0.76);
       --liquid-glass-bg-subtle: rgba(24, 34, 58, 0.65);
       --liquid-glass-border: rgba(255, 255, 255, 0.18);
@@ -251,11 +254,213 @@ def build_mobile_split_screen_html():
       --liquid-glass-shadow: 0 14px 40px 0 rgba(0, 0, 0, 0.52), 0 2px 8px 0 rgba(0, 0, 0, 0.35);
       --liquid-blur: blur(28px) saturate(190%);
       
+      /* Active Accent Glow - Dark */
+      --active-card-bg: linear-gradient(145deg, rgba(61, 20, 20, 0.88) 0%, rgba(31, 11, 11, 0.94) 100%);
+      --active-card-border: #f87171;
+      --active-glow: rgba(248, 113, 113, 0.4);
+      --sub-card-bg: rgba(18, 26, 44, 0.72);
+      
       /* Continuous Hardware Curves (Apple Squircles) */
       --radius-pill: 9999px;
       --radius-island: 26px;
       --radius-card: 22px;
       --radius-sub: 16px;
+    }}
+
+    /* ========================================================
+       ☀️ LIGHT THEME (白天明亮模式)
+       ======================================================== */
+    [data-theme="light"] {{
+      --bg: #f1f5f9;
+      --card-bg: rgba(255, 255, 255, 0.90);
+      --card-border: rgba(0, 0, 0, 0.08);
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --text-heading: #020617;
+      
+      /* Liquid Glass Tokens - Light */
+      --liquid-glass-bg: rgba(255, 255, 255, 0.88);
+      --liquid-glass-bg-subtle: rgba(241, 245, 249, 0.84);
+      --liquid-glass-border: rgba(255, 255, 255, 0.90);
+      --liquid-glass-specular: inset 0 1px 2px 0 rgba(255, 255, 255, 0.98), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.04);
+      --liquid-glass-shadow: 0 12px 32px 0 rgba(15, 23, 42, 0.08), 0 2px 6px 0 rgba(15, 23, 42, 0.04);
+      --liquid-blur: blur(28px) saturate(190%);
+      
+      /* Active Accent Glow - Light */
+      --active-card-bg: linear-gradient(145deg, #fff1f2 0%, #ffe4e6 100%);
+      --active-card-border: #f43f5e;
+      --active-glow: rgba(244, 63, 94, 0.25);
+      --sub-card-bg: rgba(255, 255, 255, 0.90);
+    }}
+
+    [data-theme="light"] .m-map-pinned-zone {{
+      background: #e2e8f0;
+      border-color: rgba(0, 0, 0, 0.08);
+    }}
+    [data-theme="light"] .m-map-pill,
+    [data-theme="light"] .m-map-hint {{
+      color: #0f172a;
+      background: rgba(255, 255, 255, 0.90);
+      border-color: rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    }}
+    [data-theme="light"] .m-quick-nav-pill {{
+      color: #64748b;
+      background: rgba(241, 245, 249, 0.85);
+      border-color: rgba(0, 0, 0, 0.06);
+    }}
+    [data-theme="light"] .m-quick-nav-pill.active {{
+      background: #0284c7;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }}
+    [data-theme="light"] .m-metrics-strip .m-m-box {{
+      background: rgba(255, 255, 255, 0.92);
+      border-color: rgba(0, 0, 0, 0.06);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }}
+    [data-theme="light"] .m-metrics-strip .m-val {{
+      color: #0f172a;
+    }}
+    [data-theme="light"] .m-rules-banner {{
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(245, 158, 11, 0.08) 100%);
+      border-color: rgba(239, 68, 68, 0.2);
+    }}
+    [data-theme="light"] .m-rules-banner h4 {{
+      color: #b91c1c;
+    }}
+    [data-theme="light"] .m-rules-banner ul {{
+      color: #334155;
+    }}
+    [data-theme="light"] .m-card {{
+      box-shadow: var(--liquid-glass-specular), 0 6px 20px rgba(15, 23, 42, 0.06);
+    }}
+    [data-theme="light"] .m-card.active {{
+      background: linear-gradient(145deg, #fff1f2 0%, #ffe4e6 100%) !important;
+      border: 1.5px solid #f43f5e !important;
+      box-shadow: 0 10px 28px rgba(244, 63, 94, 0.2) !important;
+    }}
+    [data-theme="light"] .m-card.active .m-card-title {{
+      color: #9f1239 !important;
+      text-shadow: none;
+    }}
+    [data-theme="light"] .m-card-title {{
+      color: #0f172a;
+    }}
+    [data-theme="light"] .m-stats-grid {{
+      background: rgba(241, 245, 249, 0.7);
+    }}
+    [data-theme="light"] .m-stat b {{
+      color: #0f172a;
+    }}
+    [data-theme="light"] .m-desc {{
+      color: #334155;
+    }}
+    [data-theme="light"] .m-warn {{
+      background: #fffbeb;
+      border-color: #fde68a;
+      color: #92400e;
+    }}
+    [data-theme="light"] .m-card-footer {{
+      background: rgba(248, 250, 252, 0.85);
+    }}
+    [data-theme="light"] .m-stay b {{
+      color: #0f172a;
+    }}
+    [data-theme="light"] .m-btn-dine {{
+      background: #fef3c7;
+      border-color: #fde68a;
+      color: #92400e;
+    }}
+    [data-theme="light"] .m-btn-bird {{
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+      color: #065f46;
+    }}
+    [data-theme="light"] .m-btn-herit {{
+      background: #faf5ff;
+      border-color: #e9d5ff;
+      color: #6b21a8;
+    }}
+    [data-theme="light"] .m-dine-card {{
+      background: rgba(255, 255, 255, 0.94);
+      border-color: rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    }}
+    [data-theme="light"] .m-dine-shop-name {{
+      color: #0f172a;
+    }}
+    [data-theme="light"] .m-dine-score {{
+      color: #ea580c;
+    }}
+    [data-theme="light"] .m-dine-rec-dish {{
+      background: #fff7ed;
+      border-color: #fed7aa;
+      color: #9a3412;
+    }}
+    [data-theme="light"] .m-dine-pill {{
+      background: rgba(0, 0, 0, 0.04);
+      border-color: rgba(0, 0, 0, 0.08);
+      color: #334155;
+    }}
+    [data-theme="light"] .m-dine-pill.active {{
+      background: #ea580c;
+      color: #ffffff;
+    }}
+    [data-theme="light"] .m-birding-card {{
+      background: rgba(255, 255, 255, 0.94);
+      border-color: rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    }}
+    [data-theme="light"] .m-bird-loc-name {{
+      color: #0f172a;
+    }}
+    [data-theme="light"] .m-bird-habitat-box {{
+      color: #475569;
+    }}
+    [data-theme="light"] .m-bird-notes-box {{
+      background: rgba(241, 245, 249, 0.85);
+      color: #475569;
+    }}
+    [data-theme="light"] .m-herit-card {{
+      background: rgba(255, 255, 255, 0.94);
+      border-color: rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    }}
+    [data-theme="light"] .m-herit-title {{
+      color: #0f172a;
+    }}
+    [data-theme="light"] .m-herit-intro-p {{
+      color: #475569;
+    }}
+    [data-theme="light"] .m-herit-notes-box {{
+      background: #faf5ff;
+      border-color: #e9d5ff;
+    }}
+    [data-theme="light"] .m-herit-notes-title {{
+      color: #6b21a8;
+    }}
+    [data-theme="light"] .m-herit-notes-body {{
+      color: #334155;
+    }}
+    [data-theme="light"] .m-herit-photo-box {{
+      background: #fffbeb;
+      border-color: #fde68a;
+      color: #92400e;
+    }}
+    [data-theme="light"] .m-bottom-dock {{
+      background: rgba(255, 255, 255, 0.90);
+      border-color: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15, 23, 42, 0.06);
+    }}
+    [data-theme="light"] .m-dock-item {{
+      color: #64748b;
+    }}
+    [data-theme="light"] .m-dock-item.active {{
+      color: #9f1239;
+      background: linear-gradient(135deg, #ffe4e6 0%, #fff1f2 100%);
+      border: 1px solid #fecdd3;
+      box-shadow: 0 4px 14px rgba(244, 63, 94, 0.2);
     }}
     * {{
       box-sizing: border-box;
@@ -1542,20 +1747,150 @@ def build_mobile_split_screen_html():
     }}
 
     /* ========================================================
-       TAB 6: TIPS (海拔 + 每日最高/最低温差走势图)
+       TAB 6: MORE (其他 - 外观设置 / 极端防寒 / 安全规则 / 每日温差走势图)
        ======================================================== */
+    .m-more-view,
     .m-tips-view {{
       display: none;
     }}
 
     .m-sub-card {{
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
+      background: var(--sub-card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--liquid-glass-border);
+      border-radius: var(--radius-card);
       padding: 14px;
+      margin-bottom: 14px;
+      box-shadow: var(--liquid-glass-specular), var(--liquid-glass-shadow);
+      transition: all 0.3s ease;
+    }}
+    .m-sub-card h3 {{
+      font-size: 14px;
+      font-weight: 700;
+      color: #f87171;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }}
+    [data-theme="light"] .m-sub-card h3 {{
+      color: #e11d48;
+    }}
+
+    /* ========================================================
+       THEME SELECTOR (外观偏好设置组件)
+       ======================================================== */
+    .m-theme-card-header {{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 12px;
     }}
-    .m-sub-card h3 {{ font-size: 14px; color: #f87171; margin-bottom: 8px; }}
+    .m-theme-card-title {{
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }}
+    .m-theme-card-icon {{
+      font-size: 20px;
+    }}
+    .m-theme-badge {{
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 10px;
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }}
+    [data-theme="light"] .m-theme-badge {{
+      background: rgba(239, 68, 68, 0.1);
+      color: #e11d48;
+      border-color: rgba(239, 68, 68, 0.25);
+    }}
+
+    .m-theme-selector {{
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }}
+    .m-theme-btn {{
+      background: var(--liquid-glass-bg-subtle);
+      border: 1.5px solid var(--liquid-glass-border);
+      border-radius: var(--radius-sub);
+      padding: 10px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }}
+    .m-theme-btn:active {{
+      transform: scale(0.92);
+    }}
+    .m-theme-btn.active {{
+      border-color: #ef4444;
+      background: linear-gradient(145deg, rgba(239, 68, 68, 0.22) 0%, rgba(248, 113, 113, 0.08) 100%);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), 0 0 14px rgba(239, 68, 68, 0.35);
+    }}
+    .m-theme-btn-preview {{
+      width: 44px;
+      height: 28px;
+      border-radius: 7px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }}
+    .preview-system {{
+      display: flex;
+    }}
+    .preview-half.light {{
+      width: 50%;
+      height: 100%;
+      background: #f8fafc;
+    }}
+    .preview-half.dark {{
+      width: 50%;
+      height: 100%;
+      background: #0f172a;
+    }}
+    .preview-light {{
+      background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+      color: #f59e0b;
+      font-size: 16px;
+    }}
+    .preview-dark {{
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: #cbd5e1;
+      font-size: 16px;
+    }}
+    .m-theme-btn-label {{
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text);
+    }}
+    .m-theme-btn.active .m-theme-btn-label {{
+      color: #f87171;
+    }}
+    [data-theme="light"] .m-theme-btn.active .m-theme-btn-label {{
+      color: #e11d48;
+    }}
+
+    /* Map Tile Filter Transition */
+    .leaflet-tile-pane {{
+      transition: filter 0.3s ease;
+    }}
+    [data-theme="dark"] .leaflet-tile-pane {{
+      filter: brightness(0.85) contrast(1.1) invert(0.9) hue-rotate(180deg);
+    }}
+    [data-theme="light"] .leaflet-tile-pane {{
+      filter: none;
+    }}
 
     /* Bottom App Dock (Liquid Glass Floating Island 悬浮流体底栏叠层) */
     .m-bottom-dock {{
@@ -1677,9 +2012,45 @@ def build_mobile_split_screen_html():
           {heritage_html}
         </div>
 
-        <!-- ==================== 6. 提醒页 (海拔剖面 + 气温走势 + 虚线指示 + 极寒装备) ==================== -->
-        <div class="m-tips-view" id="m-view-tips">
-          <!-- 海拔与气温双轴走势曲线 (带滑动虚线竖线指示) -->
+        <!-- ==================== 6. 其他设置与应急提醒 (外观偏好 + 海拔温差 + 极寒装备 + 安全守则) ==================== -->
+        <div class="m-more-view" id="m-view-more">
+          <!-- 1. 外观偏好与主题切换 (跟随系统 / 白天模式 / 暗黑模式) -->
+          <div class="m-sub-card m-theme-card">
+            <div class="m-theme-card-header">
+              <div class="m-theme-card-title">
+                <span class="m-theme-card-icon">🎨</span>
+                <div>
+                  <div style="font-size:13.5px; font-weight:700; color:var(--text-heading);">外观设置</div>
+                  <div style="font-size:10px; color:var(--text-muted); margin-top:1px;">实时切换界面色彩模式</div>
+                </div>
+              </div>
+              <span class="m-theme-badge" id="theme-status-badge">跟随系统</span>
+            </div>
+            
+            <div class="m-theme-selector">
+              <button class="m-theme-btn active" id="theme-btn-system" onclick="setAppTheme('system')">
+                <div class="m-theme-btn-preview preview-system">
+                  <div class="preview-half light"></div>
+                  <div class="preview-half dark"></div>
+                </div>
+                <span class="m-theme-btn-label">跟随系统</span>
+              </button>
+              <button class="m-theme-btn" id="theme-btn-light" onclick="setAppTheme('light')">
+                <div class="m-theme-btn-preview preview-light">
+                  <span style="font-size:15px;">☀️</span>
+                </div>
+                <span class="m-theme-btn-label">白天模式</span>
+              </button>
+              <button class="m-theme-btn" id="theme-btn-dark" onclick="setAppTheme('dark')">
+                <div class="m-theme-btn-preview preview-dark">
+                  <span style="font-size:15px;">🌙</span>
+                </div>
+                <span class="m-theme-btn-label">暗黑模式</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 2. 海拔与气温双轴走势曲线 (带滑动虚线竖线指示) -->
           <div class="m-sub-card">
             <h3>🏔️ 14天自驾落脚点海拔与每日温差曲线</h3>
             <p style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">
@@ -1691,27 +2062,27 @@ def build_mobile_split_screen_html():
             
             <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin-top:10px; font-size:10.5px; text-align:center;">
               <div style="background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.3); border-radius:6px; padding:6px 4px;">
-                <div style="color:#7dd3fc; font-weight:700;">🏔️ 最高海拔</div>
-                <div style="color:#fff; font-weight:700; margin-top:2px;">喀纳斯 1374m</div>
-                <div style="color:#94a3b8; font-size:9px;">Day 6</div>
+                <div style="color:#38bdf8; font-weight:700;">🏔️ 最高海拔</div>
+                <div style="color:var(--text-heading); font-weight:700; margin-top:2px;">喀纳斯 1374m</div>
+                <div style="color:var(--text-muted); font-size:9px;">Day 6</div>
               </div>
               <div style="background:rgba(99,102,241,0.1); border:1px solid rgba(99,102,241,0.3); border-radius:6px; padding:6px 4px;">
-                <div style="color:#a5b4fc; font-weight:700;">❄️ 极端极寒</div>
-                <div style="color:#fff; font-weight:700; margin-top:2px;">禾木 -18°C</div>
-                <div style="color:#94a3b8; font-size:9px;">Day 5 晨雾日出</div>
+                <div style="color:#818cf8; font-weight:700;">❄️ 极端极寒</div>
+                <div style="color:var(--text-heading); font-weight:700; margin-top:2px;">禾木 -18°C</div>
+                <div style="color:var(--text-muted); font-size:9px;">Day 5 晨雾日出</div>
               </div>
               <div style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:6px; padding:6px 4px;">
-                <div style="color:#fca5a5; font-weight:700;">☀️ 温暖暖阳</div>
-                <div style="color:#fff; font-weight:700; margin-top:2px;">吐鲁番 19°C</div>
-                <div style="color:#94a3b8; font-size:9px;">Day 10/11 火洲秋日</div>
+                <div style="color:#f87171; font-weight:700;">☀️ 温暖暖阳</div>
+                <div style="color:var(--text-heading); font-weight:700; margin-top:2px;">吐鲁番 19°C</div>
+                <div style="color:var(--text-muted); font-size:9px;">Day 10/11 火洲秋日</div>
               </div>
             </div>
           </div>
 
-          <!-- 极寒冰雪装备 -->
+          <!-- 3. 极寒冰雪装备 -->
           <div class="m-sub-card">
             <h3>❄️ 高尔夫极寒冰雪行车自检清单</h3>
-            <div style="font-size:11.5px; color:#cbd5e1; line-height:1.6;">
+            <div style="font-size:11.5px; color:var(--text); line-height:1.6;">
               • <b>雪地胎：</b>驱动轮在布尔津必须换装深度花纹雪地胎。<br>
               • <b>防滑链：</b>后备箱常备匹配高尔夫尺寸的金属防滑链（提前试装）。<br>
               • <b>应急物资：</b>折叠雪铲、搭电宝、拖车绳、-35#极寒防冻玻璃水。<br>
@@ -1719,10 +2090,10 @@ def build_mobile_split_screen_html():
             </div>
           </div>
 
-          <!-- 安全规则机制 -->
+          <!-- 4. 安全规则机制 -->
           <div class="m-sub-card">
             <h3>🛡️ 新疆自驾核心安全与避坑守则</h3>
-            <div style="font-size:11.5px; color:#fde68a; line-height:1.6;">
+            <div style="font-size:11.5px; color:var(--text); line-height:1.6;">
               • <b>防暗冰：</b>喀纳斯/禾木盘山公路背阴弯道易结暗冰，使用低速挡平稳减速，严禁猛打方向。<br>
               • <b>闭馆时间：</b>可可托海 08:30 启程避开极寒；北庭故城 14:30 抵达避开冬季提前闭馆。<br>
               • <b>达坂城横风缓冲：</b>返程预留百里风区车速控制与安检时间。
@@ -1798,9 +2169,9 @@ def build_mobile_split_screen_html():
         <div class="m-dock-icon">🏛️</div>
         <span>国保</span>
       </div>
-      <div class="m-dock-item" onclick="mSwitch('tips', this)">
-        <div class="m-dock-icon">🔔</div>
-        <span>提醒</span>
+      <div class="m-dock-item" onclick="mSwitch('more', this)">
+        <div class="m-dock-icon">⚙️</div>
+        <span>其他</span>
       </div>
     </div>
 
@@ -2749,7 +3120,8 @@ def build_mobile_split_screen_html():
         if (mainLayout) mainLayout.style.display = 'flex';
       }}
 
-      if (viewId === 'tips') {{
+      const isMore = (viewId === 'more' || viewId === 'tips');
+      if (isMore) {{
         mapZone.classList.add('mode-hidden');
         if (rail) rail.style.display = 'none';
       }} else {{
@@ -2760,7 +3132,9 @@ def build_mobile_split_screen_html():
       document.getElementById('m-view-dining').style.display = (viewId === 'dining') ? 'block' : 'none';
       document.getElementById('m-view-birding').style.display = (viewId === 'birding') ? 'block' : 'none';
       document.getElementById('m-view-culture').style.display = (viewId === 'culture') ? 'block' : 'none';
-      document.getElementById('m-view-tips').style.display = (viewId === 'tips') ? 'block' : 'none';
+      
+      const moreView = document.getElementById('m-view-more') || document.getElementById('m-view-tips');
+      if (moreView) moreView.style.display = isMore ? 'block' : 'none';
 
       const tripCtx = getCurrentTripContext();
       const targetDay = currentActiveDay || tripCtx.dayNum;
@@ -2788,7 +3162,7 @@ def build_mobile_split_screen_html():
         currentDineDay = null;
         currentDineMeal = null;
         mFocusHeritDay(targetDay, false);
-      }} else if (viewId === 'tips') {{
+      }} else if (isMore) {{
         renderMChart();
       }}
     }}
@@ -2816,6 +3190,8 @@ def build_mobile_split_screen_html():
     // 7. 页面加载初始化
     // ==========================================
     document.addEventListener('DOMContentLoaded', () => {{
+      initAppTheme();
+
       mTripData.birding_guide.forEach(b => {{
         const card = document.getElementById('bird-day-' + b.day);
         if (card) {{
@@ -2853,7 +3229,71 @@ def build_mobile_split_screen_html():
     }});
 
     // ==========================================
-    // 8. Chart.js 滑动 X 轴实时显示 Y 轴竖向虚线插件
+    // 8. 外观偏好与主题控制 (跟随系统 / 白天模式 / 暗黑模式)
+    // ==========================================
+    let currentThemePreference = 'system';
+
+    function initAppTheme() {{
+      const saved = localStorage.getItem('xinjiang_trip_theme') || 'system';
+      setAppTheme(saved, false);
+      
+      // 监听系统深浅色切换
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {{
+        if (currentThemePreference === 'system') {{
+          applyThemeMode(e.matches);
+        }}
+      }});
+    }}
+
+    function applyThemeMode(isDark) {{
+      const actualTheme = isDark ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', actualTheme);
+      document.body.setAttribute('data-theme', actualTheme);
+      updateChartTheme();
+    }}
+
+    function setAppTheme(mode, save = true) {{
+      currentThemePreference = mode;
+      if (save) {{
+        localStorage.setItem('xinjiang_trip_theme', mode);
+      }}
+
+      // 更新按钮 active 状态
+      ['system', 'light', 'dark'].forEach(m => {{
+        const btn = document.getElementById(`theme-btn-${{m}}`);
+        if (btn) {{
+          btn.classList.toggle('active', m === mode);
+        }}
+      }});
+
+      // 更新状态标签
+      const badge = document.getElementById('theme-status-badge');
+      if (badge) {{
+        if (mode === 'system') badge.innerText = '跟随系统';
+        else if (mode === 'light') badge.innerText = '白天模式';
+        else if (mode === 'dark') badge.innerText = '暗黑模式';
+      }}
+
+      let isDark = true;
+      if (mode === 'system') {{
+        isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      }} else {{
+        isDark = (mode === 'dark');
+      }}
+
+      applyThemeMode(isDark);
+    }}
+
+    function updateChartTheme() {{
+      if (mChartInstance) {{
+        mChartInstance.destroy();
+        mChartInstance = null;
+        renderMChart();
+      }}
+    }}
+
+    // ==========================================
+    // 9. Chart.js 滑动 X 轴实时显示 Y 轴竖向虚线插件
     // ==========================================
     const verticalCrosshairPlugin = {{
       id: 'verticalCrosshair',
@@ -2888,11 +3328,18 @@ def build_mobile_split_screen_html():
     let mChartInstance = null;
     function renderMChart() {{
       if (mChartInstance) return;
-      const ctx = document.getElementById('mChart').getContext('2d');
+      const chartCanvas = document.getElementById('mChart');
+      if (!chartCanvas) return;
+      const ctx = chartCanvas.getContext('2d');
       const labels = mTripData.days.map(d => `D${{d.day}}`);
       const elevations = mTripData.days.map(d => d.elevation_m);
       const minTemps = mTripData.days.map(d => d.temp_min);
       const maxTemps = mTripData.days.map(d => d.temp_max);
+
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const gridColor = isLight ? 'rgba(0, 0, 0, 0.07)' : 'rgba(255, 255, 255, 0.07)';
+      const tickColor = isLight ? '#64748b' : '#94a3b8';
+      const legendColor = isLight ? '#334155' : '#cbd5e1';
 
       mChartInstance = new Chart(ctx, {{
         type: 'line',
@@ -2903,8 +3350,8 @@ def build_mobile_split_screen_html():
             {{
               label: '落脚点海拔 (米)',
               data: elevations,
-              borderColor: '#38bdf8',
-              backgroundColor: 'rgba(56, 189, 248, 0.12)',
+              borderColor: '#0284c7',
+              backgroundColor: isLight ? 'rgba(2, 132, 199, 0.15)' : 'rgba(56, 189, 248, 0.12)',
               fill: true,
               tension: 0.3,
               pointBackgroundColor: '#0284c7',
@@ -2915,7 +3362,7 @@ def build_mobile_split_screen_html():
             {{
               label: '最高气温 (°C)',
               data: maxTemps,
-              borderColor: '#f87171',
+              borderColor: '#ef4444',
               backgroundColor: 'transparent',
               borderWidth: 2,
               pointBackgroundColor: '#ef4444',
@@ -2927,7 +3374,7 @@ def build_mobile_split_screen_html():
             {{
               label: '最低气温 (°C)',
               data: minTemps,
-              borderColor: '#818cf8',
+              borderColor: '#6366f1',
               backgroundColor: 'transparent',
               borderWidth: 2,
               borderDash: [4, 4],
@@ -2956,11 +3403,11 @@ def build_mobile_split_screen_html():
               title: {{
                 display: true,
                 text: '海拔 (m)',
-                color: '#38bdf8',
+                color: isLight ? '#0284c7' : '#38bdf8',
                 font: {{ size: 10, weight: 'bold' }}
               }},
-              grid: {{ color: 'rgba(255,255,255,0.06)' }},
-              ticks: {{ color: '#94a3b8', font: {{ size: 9.5 }} }}
+              grid: {{ color: gridColor }},
+              ticks: {{ color: tickColor, font: {{ size: 9.5 }} }}
             }},
             yTemp: {{
               type: 'linear',
@@ -2969,15 +3416,15 @@ def build_mobile_split_screen_html():
               title: {{
                 display: true,
                 text: '气温 (°C)',
-                color: '#f87171',
+                color: '#ef4444',
                 font: {{ size: 10, weight: 'bold' }}
               }},
               grid: {{ drawOnChartArea: false }},
-              ticks: {{ color: '#fca5a5', font: {{ size: 9.5 }} }}
+              ticks: {{ color: isLight ? '#dc2626' : '#fca5a5', font: {{ size: 9.5 }} }}
             }},
             x: {{
-              grid: {{ color: 'rgba(255,255,255,0.05)' }},
-              ticks: {{ color: '#94a3b8', font: {{ size: 9.5 }} }}
+              grid: {{ color: gridColor }},
+              ticks: {{ color: tickColor, font: {{ size: 9.5 }} }}
             }}
           }},
           plugins: {{
@@ -2985,17 +3432,17 @@ def build_mobile_split_screen_html():
               display: true,
               position: 'top',
               labels: {{
-                color: '#cbd5e1',
+                color: legendColor,
                 boxWidth: 12,
                 font: {{ size: 10, weight: '600' }}
               }}
             }},
             tooltip: {{
               enabled: true,
-              backgroundColor: 'rgba(15, 23, 42, 0.95)',
-              titleColor: '#fff',
+              backgroundColor: isLight ? 'rgba(255, 255, 255, 0.96)' : 'rgba(15, 23, 42, 0.95)',
+              titleColor: isLight ? '#0f172a' : '#fff',
               titleFont: {{ size: 12, weight: 'bold' }},
-              bodyColor: '#f1f5f9',
+              bodyColor: isLight ? '#334155' : '#f1f5f9',
               borderColor: '#f87171',
               borderWidth: 1,
               padding: 10,
