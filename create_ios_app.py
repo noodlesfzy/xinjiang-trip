@@ -227,6 +227,13 @@ info_plist = '''<?xml version="1.0" encoding="UTF-8"?>
         <string>UIInterfaceOrientationLandscapeLeft</string>
         <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
+    <key>UILaunchScreen</key>
+    <dict>
+        <key>UIColorName</key>
+        <string></string>
+        <key>UIImageName</key>
+        <string></string>
+    </dict>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
 </dict>
@@ -541,6 +548,7 @@ project_pbx = f'''// !$*UTF8*$!
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = XinjiangTrip/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "辣鸡喵";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -576,6 +584,7 @@ project_pbx = f'''// !$*UTF8*$!
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = XinjiangTrip/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "辣鸡喵";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
