@@ -247,6 +247,7 @@ def gen_id():
     return uuid.uuid4().hex[:24].upper()
 
 app_id = gen_id()
+assets_id = gen_id()
 swift_id = gen_id()
 html_id = gen_id()
 plist_id = gen_id()
@@ -275,6 +276,7 @@ project_pbx = f'''// !$*UTF8*$!
 /* Begin PBXBuildFile section */
 		{swift_id} /* XinjiangTripApp.swift in Sources */ = {{isa = PBXBuildFile; fileRef = {swift_id}F /* XinjiangTripApp.swift */; }};
 		{html_id} /* index.html in Resources */ = {{isa = PBXBuildFile; fileRef = {html_id}F /* index.html */; }};
+		{assets_id} /* Assets.xcassets in Resources */ = {{isa = PBXBuildFile; fileRef = {assets_id}F /* Assets.xcassets */; }};
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -282,6 +284,7 @@ project_pbx = f'''// !$*UTF8*$!
 		{swift_id}F /* XinjiangTripApp.swift */ = {{isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XinjiangTripApp.swift; sourceTree = "<group>"; }};
 		{html_id}F /* index.html */ = {{isa = PBXFileReference; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; }};
 		{plist_id}F /* Info.plist */ = {{isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; }};
+		{assets_id}F /* Assets.xcassets */ = {{isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; }};
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -308,6 +311,7 @@ project_pbx = f'''// !$*UTF8*$!
 			children = (
 				{swift_id}F /* XinjiangTripApp.swift */,
 				{html_id}F /* index.html */,
+				{assets_id}F /* Assets.xcassets */,
 				{plist_id}F /* Info.plist */,
 			);
 			path = XinjiangTrip;
@@ -372,6 +376,7 @@ project_pbx = f'''// !$*UTF8*$!
 			buildActionMask = 2147483647;
 			files = (
 				{html_id} /* index.html in Resources */,
+				{assets_id} /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		}};
