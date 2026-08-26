@@ -255,6 +255,13 @@ with open(os.path.join(APP_DIR, "Info.plist"), "w", encoding="utf-8") as f:
 
 # 4. 自动检测并永久锁定当前开发者的 Apple Team ID (解决每次重新选择 Team 报错)
 def detect_development_team():
+    try:
+        out = subprocess.check_output(["defaults", "read", "com.apple.dt.Xcode", "IDEProvisioningTeams"]).decode("utf-8", errors="ignore")
+        m = re.search(r'teamID\s*=\s*"?([A-Z0-9]{10})"?', out)
+        if m and m.group(1):
+            return m.group(1)
+    except Exception:
+        pass
     pbx_path = os.path.join(PBX_DIR, "project.pbxproj")
     if os.path.exists(pbx_path):
         try:
@@ -265,14 +272,7 @@ def detect_development_team():
                     return m.group(1)
         except Exception:
             pass
-    try:
-        sec_out = subprocess.check_output(["security", "find-identity", "-p", "codesigning", "-v"]).decode("utf-8", errors="ignore")
-        m = re.search(r'\(([A-Z0-9]{10})\)', sec_out)
-        if m:
-            return m.group(1)
-    except Exception:
-        pass
-    return "4D96GR74B6"
+    return "D2953L7MB6"
 
 team_id = detect_development_team()
 
