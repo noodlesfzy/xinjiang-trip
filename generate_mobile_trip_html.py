@@ -2635,7 +2635,7 @@ def build_mobile_split_screen_html():
 
             function createRobustTileLayer(mapInstance, primaryStyle = 7) {{
       // autonavi:// 伪协议 → Swift WKURLSchemeHandler 代理 + 注入 Referer: https://www.amap.com/
-      const url = 'autonavi://webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}';
+      const url = 'tripapp://localhost/autonavi/webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}';
       const layer = L.tileLayer(url, {{
         subdomains: '1234',
         minZoom: 3,
@@ -3364,14 +3364,14 @@ const dynamicLayers = L.layerGroup().addTo(mMap);
         attributionControl: false
       }}).setView([45.5, 87.5], 6);
 
-      transitLayer = L.tileLayer('autonavi://webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={{x}}&y={{y}}&z={{z}}', {{
+      transitLayer = L.tileLayer('tripapp://localhost/autonavi/webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={{x}}&y={{y}}&z={{z}}', {{
         subdomains: '1234',
         minZoom: 3,
         maxZoom: 18,
         referrerPolicy: 'no-referrer'
       }}).addTo(dedicatedMap);
 
-      standardLayer = L.tileLayer('autonavi://wprd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={{x}}&y={{y}}&z={{z}}', {{
+      standardLayer = L.tileLayer('tripapp://localhost/autonavi/wprd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={{x}}&y={{y}}&z={{z}}', {{
         subdomains: '1234',
         minZoom: 3,
         maxZoom: 18,
