@@ -2635,7 +2635,7 @@ def build_mobile_split_screen_html():
 
             function createRobustTileLayer(mapInstance, primaryStyle = 7) {{
       // autonavi:// 伪协议 → Swift WKURLSchemeHandler 代理 + 注入 Referer: https://www.amap.com/
-      const url = 'https://webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}';
+      const url = 'tripapp://localhost/autonavi/webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=' + primaryStyle + '&x={{x}}&y={{y}}&z={{z}}';
       const layer = L.tileLayer(url, {{
         subdomains: '1234',
         minZoom: 3,
@@ -2644,39 +2644,6 @@ def build_mobile_split_screen_html():
       return layer;
     }}
 
-    // ─── JS fetch + Blob URL 瓦片加载（绕过 WKWebView 所有安全限制）────────────
-    // WKWebView 内 <img> 直接请求第三方域名时存在诸多限制，
-    // 改用 fetch() 获取 blob 再赋给 img.src，完全绕过这些限制
-    (function patchLeafletTileLoading() {{
-      const _origCreateTile = L.TileLayer.prototype.createTile;
-      L.TileLayer.prototype.createTile = function(coords, done) {{
-        const img = document.createElement('img');
-        img.alt = '';
-        const url = this.getTileUrl(coords);
-        fetch(url, {{
-          method: 'GET',
-          referrerPolicy: 'no-referrer',
-          mode: 'cors',
-          cache: 'force-cache'
-        }})
-        .then(function(resp) {{
-          if (!resp.ok) throw new Error('HTTP ' + resp.status);
-          return resp.blob();
-        }})
-        .then(function(blob) {{
-          const objUrl = URL.createObjectURL(blob);
-          img.onload = function() {{ URL.revokeObjectURL(objUrl); }};
-          img.src = objUrl;
-          done(null, img);
-        }})
-        .catch(function(err) {{
-          console.warn('瓦片加载失败:', url.substring(0,80), err.message);
-          done(err, img);
-        }});
-        return img;
-      }};
-      console.log('✅ Leaflet createTile 已覆盖为 fetch()+Blob 模式');
-    }})();
     createRobustTileLayer(mMap, 7);
 
     // 引入现代浏览器 ResizeObserver，当容器尺寸改变时 100% 自动唤醒并校准地图瓦片
@@ -3385,14 +3352,14 @@ const dynamicLayers = L.layerGroup().addTo(mMap);
         attributionControl: false
       }}).setView([45.5, 87.5], 6);
 
-      transitLayer = L.tileLayer('https://webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={{x}}&y={{y}}&z={{z}}', {{
+      transitLayer = L.tileLayer('tripapp://localhost/autonavi/webrd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={{x}}&y={{y}}&z={{z}}', {{
         subdomains: '1234',
         minZoom: 3,
         maxZoom: 18,
         referrerPolicy: 'no-referrer'
       }}).addTo(dedicatedMap);
 
-      standardLayer = L.tileLayer('https://wprd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={{x}}&y={{y}}&z={{z}}', {{
+      standardLayer = L.tileLayer('tripapp://localhost/autonavi/wprd0{{s}}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={{x}}&y={{y}}&z={{z}}', {{
         subdomains: '1234',
         minZoom: 3,
         maxZoom: 18,
