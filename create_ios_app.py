@@ -198,11 +198,11 @@ info_plist = '''<?xml version="1.0" encoding="UTF-8"?>
     <key>CFBundleDevelopmentRegion</key>
     <string>zh_CN</string>
     <key>CFBundleDisplayName</key>
-    <string>新疆自驾路书</string>
+    <string>辣鸡喵</string>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIdentifier</key>
-    <string>com.noodles.xinjiangtrip</string>
+    <string>com.noodles.trip</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
@@ -506,13 +506,13 @@ project_pbx = f'''// !$*UTF8*$!
 				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = XinjiangTrip/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "新疆自驾路书";
+				INFOPLIST_KEY_CFBundleDisplayName = "辣鸡喵";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.noodles.xinjiangtrip;
+				PRODUCT_BUNDLE_IDENTIFIER = com.noodles.trip;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
@@ -534,13 +534,13 @@ project_pbx = f'''// !$*UTF8*$!
 				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = XinjiangTrip/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "新疆自驾路书";
+				INFOPLIST_KEY_CFBundleDisplayName = "辣鸡喵";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.noodles.xinjiangtrip;
+				PRODUCT_BUNDLE_IDENTIFIER = com.noodles.trip;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";

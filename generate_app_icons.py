@@ -4,7 +4,7 @@ from PIL import Image
 
 PROJECT_DIR = "/Users/Noodles/Documents/AG_Project"
 IOS_APPICON_DIR = os.path.join(PROJECT_DIR, "ios", "XinjiangTrip", "Assets.xcassets", "AppIcon.appiconset")
-MAC_BUILD_RES_DIR = os.path.join(PROJECT_DIR, "build", "新疆自驾路书.app", "Contents", "Resources")
+MAC_BUILD_RES_DIR = os.path.join(PROJECT_DIR, "build", "辣鸡喵.app", "Contents", "Resources")
 
 os.makedirs(IOS_APPICON_DIR, exist_ok=True)
 os.makedirs(MAC_BUILD_RES_DIR, exist_ok=True)

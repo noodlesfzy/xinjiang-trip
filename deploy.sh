@@ -16,6 +16,6 @@ python3 build_mac_app.py
 
 echo "📱 [5/5] 正在自动调用 Xcode 并启动原生 App..."
 open ios/XinjiangTrip.xcodeproj
-open "build/新疆自驾路书.app"
+open "build/辣鸡喵.app"
 
 echo "🎉 自动部署与编译全部完成！Xcode 已自动打开，原生 App 已在桌面启动！"

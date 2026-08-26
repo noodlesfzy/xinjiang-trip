@@ -4,7 +4,7 @@ import subprocess
 
 PROJECT_DIR = "/Users/Noodles/Documents/AG_Project"
 BUILD_DIR = os.path.join(PROJECT_DIR, "build")
-APP_BUNDLE = os.path.join(BUILD_DIR, "新疆自驾路书.app")
+APP_BUNDLE = os.path.join(BUILD_DIR, "辣鸡喵.app")
 CONTENTS_DIR = os.path.join(APP_BUNDLE, "Contents")
 MACOS_DIR = os.path.join(CONTENTS_DIR, "MacOS")
 RESOURCES_DIR = os.path.join(CONTENTS_DIR, "Resources")
@@ -23,15 +23,15 @@ info_plist = '''<?xml version="1.0" encoding="UTF-8"?>
     <key>CFBundleDevelopmentRegion</key>
     <string>zh_CN</string>
     <key>CFBundleDisplayName</key>
-    <string>新疆自驾路书</string>
+    <string>辣鸡喵</string>
     <key>CFBundleExecutable</key>
     <string>XinjiangTrip</string>
     <key>CFBundleIdentifier</key>
-    <string>com.noodles.xinjiangtrip.mac</string>
+    <string>com.noodles.trip.mac</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>新疆自驾路书</string>
+    <string>辣鸡喵</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
@@ -75,7 +75,7 @@ struct XinjiangMacApp: App {
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         if let window = NSApplication.shared.windows.first {
-            window.title = "新疆14天自驾路书"
+            window.title = "辣鸡喵"
             window.titlebarAppearsTransparent = true
             window.isOpaque = false
             window.backgroundColor = NSColor(red: 7/255, green: 10/255, blue: 18/255, alpha: 1.0)
