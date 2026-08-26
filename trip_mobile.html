@@ -11763,6 +11763,18 @@ svg.leaflet-image-layer.leaflet-interactive path {
       return layer;
     }
 
+    // 🔍 诊断：测试 autonavi:// 协议瓦片是否可以正常加载
+    (function diagTile() {
+      const testUrl = 'autonavi://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x=853&y=390&z=10';
+      console.log('🗺️ [TileDiag] 正在测试 autonavi:// 伪协议瓦片...');
+      fetch(testUrl)
+        .then(function(r) {
+          console.log('🗺️ [TileDiag] HTTP状态:', r.status, r.ok ? '✅ 成功' : '❌ 失败');
+          return r.blob();
+        })
+        .then(function(b) { console.log('🗺️ [TileDiag] 瓦片大小:', b.size, 'bytes, type:', b.type); })
+        .catch(function(e) { console.error('🗺️ [TileDiag] ❌ 错误:', e.message || e); });
+    })();
     createRobustTileLayer(mMap, 7);
 
     // 引入现代浏览器 ResizeObserver，当容器尺寸改变时 100% 自动唤醒并校准地图瓦片
