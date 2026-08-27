@@ -1039,8 +1039,8 @@ def build_mobile_split_screen_html():
     .m-rules-banner h4 {{ color: #fca5a5; font-size: 11.5px; margin-bottom: 3px; }}
     .m-rules-banner ul {{ list-style: none; display: flex; flex-direction: column; gap: 3px; color: #e2e8f0; }}
 
-    /* ========================================================
-       1. 行程卡片 (Liquid Glass Squircles)
+        /* ========================================================
+       1. 行程卡片 (Liquid Glass Squircles) 完美排版适配
        ======================================================== */
     .m-card {{
       background: var(--card-bg);
@@ -1054,6 +1054,50 @@ def build_mobile_split_screen_html():
       transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
     }}
     .m-card:active {{ transform: scale(0.99); }}
+    
+    .m-card-header {{
+      padding: 11px 14px 6px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }}
+    .m-day-badge {{
+      font-size: 13px;
+      font-weight: 800;
+      color: #38bdf8;
+      letter-spacing: 0.3px;
+    }}
+    .m-day-date {{
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }}
+    .m-card-title {{
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-heading);
+      padding: 8px 14px 4px 14px;
+      line-height: 1.45;
+    }}
+    .m-chips-row {{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      padding: 4px 14px 10px 14px;
+    }}
+    .m-chip {{
+      display: inline-flex;
+      align-items: center;
+      font-size: 10.5px;
+      line-height: 1.35;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      color: #7dd3fc;
+    }}
     
     /* 整张卡片整体反差深红变色高亮 */
     .m-card.active {{
@@ -1603,15 +1647,52 @@ def build_mobile_split_screen_html():
     .m-culture-view {{
       display: none;
     }}
-    .m-culture-intro {{
-      background: linear-gradient(135deg, rgba(147, 51, 234, 0.18) 0%, rgba(217, 119, 6, 0.18) 100%);
-      border: 1px solid rgba(147, 51, 234, 0.4);
+        .m-culture-intro {{
+      background: linear-gradient(135deg, rgba(147, 51, 234, 0.22) 0%, rgba(126, 34, 206, 0.30) 100%);
+      border: 1px solid rgba(192, 132, 252, 0.45);
       border-radius: 12px;
       padding: 12px 14px;
       margin-bottom: 14px;
-      font-size: 11.5px;
-      color: #e9d5ff;
-      line-height: 1.5;
+      font-size: 12px;
+      color: #f3e8ff;
+      line-height: 1.55;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }}
+    .m-culture-intro b {{
+      color: #ffffff;
+      font-weight: 700;
+    }}
+    [data-theme="light"] .m-culture-intro {{
+      background: #faf5ff;
+      border: 1px solid #d8b4fe;
+      color: #581c87;
+    }}
+    [data-theme="light"] .m-culture-intro b {{
+      color: #3b0764;
+    }}
+
+    .m-birding-intro {{
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.20) 0%, rgba(5, 150, 105, 0.28) 100%);
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      font-size: 12px;
+      color: #ecfdf5;
+      line-height: 1.55;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }}
+    .m-birding-intro b {{
+      color: #ffffff;
+      font-weight: 700;
+    }}
+    [data-theme="light"] .m-birding-intro {{
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+    }}
+    [data-theme="light"] .m-birding-intro b {{
+      color: #022c22;
     }}
     .m-herit-card {{
       background: var(--card-bg);
@@ -2748,794 +2829,22 @@ const dynamicLayers = L.layerGroup().addTo(mMap);
       rail.style.display = 'flex';
 
       let availableDays = [];
-      if (viewId === 'timeline') {{
-        availableDays = mTripData.days.map(d => d.day);
-      }} else if (viewId === 'dining') {{
-        availableDays = mTripData.dining_guide.map(d => d.day);
-      }} else if (viewId === 'birding') {{
-        availableDays = mTripData.birding_guide.map(b => b.day);
-      }} else if (viewId === 'culture') {{
-        availableDays = Array.from(new Set(mTripData.heritage_guide.map(h => h.day))).sort((a, b) => a - b);
-      }}
-
-      rail.innerHTML = availableDays.map(d => `
-        <div class="m-rail-pill ${{d === activeDay ? 'active' : ''}}" id="rail-pill-${{d}}" onclick="quickJumpDay(${{d}}, this)">D${{d}}</div>
-      `).join('');
-
-      if (!availableDays.includes(activeDay)) {{
-        activeDay = availableDays[0] || 1;
-      }}
-      syncRailActive(activeDay);
-    }}
-
-    function syncRailActive(dayNum) {{
-      document.querySelectorAll('.m-rail-pill').forEach(p => p.classList.remove('active'));
-      const target = document.getElementById('rail-pill-' + dayNum);
-      if (target) {{
-        target.classList.add('active');
-        if (target.scrollIntoView) {{
-          target.scrollIntoView({{ behavior: 'smooth', block: 'nearest' }});
-        }}
-      }}
-    }}
-
-    let isManualScrolling = false;
-    let manualScrollTimer = null;
-
-    function quickJumpDay(dayNum, btn) {{
-      isManualScrolling = true;
-      syncRailActive(dayNum);
-      currentActiveDay = dayNum;
-
-      if (currentViewTab === 'timeline') {{
-        mFocusDay(dayNum, true);
-      }} else if (currentViewTab === 'dining') {{
-        const tripCtx = getCurrentTripContext();
-        mFocusDineDay(dayNum, true, tripCtx.mealKey, 0);
-      }} else if (currentViewTab === 'birding') {{
-        mFocusBirdDay(dayNum, true);
-      }} else if (currentViewTab === 'culture') {{
-        mFocusHeritDay(dayNum, true);
-      }}
-
-      clearTimeout(manualScrollTimer);
-      manualScrollTimer = setTimeout(() => {{
-        isManualScrolling = false;
-      }}, 800);
-    }}
-
-    // ==========================================
-    // 页面滚动实时侦测 (Scroll Spy)
-    // ==========================================
-    function detectCurrentVisibleDay() {{
-      const container = document.getElementById('m-content-container');
-      if (!container) return;
-
-      const containerRect = container.getBoundingClientRect();
-      const triggerY = containerRect.top + 70;
-
-      let selector = '';
-      if (currentViewTab === 'timeline') {{
-        selector = '.m-card';
-      }} else if (currentViewTab === 'dining') {{
-        selector = '.m-dining-day-group';
-      }} else if (currentViewTab === 'birding') {{
-        selector = '.m-birding-card';
-      }} else if (currentViewTab === 'culture') {{
-        selector = '.m-herit-card';
-      }}
-
-      if (!selector) return;
-
-      const elements = document.querySelectorAll(selector);
-      let bestEl = null;
-      let minDistance = Infinity;
-
-      elements.forEach(el => {{
-        const r = el.getBoundingClientRect();
-        if (r.top <= triggerY && r.bottom >= triggerY) {{
-          bestEl = el;
-          minDistance = 0;
-        }} else if (minDistance > 0) {{
-          const dist = Math.abs(r.top - triggerY);
-          if (dist < minDistance) {{
-            minDistance = dist;
-            bestEl = el;
-          }}
-        }}
-      }});
-
-      if (bestEl) {{
-        const elId = bestEl.id;
-        const match = elId.match(/day-(\d+)/);
-        if (match) {{
-          const dayNum = parseInt(match[1], 10);
-
-          syncRailActive(dayNum);
-
-          if (currentViewTab === 'timeline') {{
-            document.querySelectorAll('.m-card').forEach(c => c.classList.remove('active'));
-            bestEl.classList.add('active');
-          }} else if (currentViewTab === 'dining') {{
-            document.querySelectorAll('.m-dining-day-group').forEach(g => g.classList.remove('active'));
-            bestEl.classList.add('active');
-          }} else if (currentViewTab === 'birding') {{
-            document.querySelectorAll('.m-birding-card').forEach(c => c.classList.remove('active'));
-            bestEl.classList.add('active');
-          }} else if (currentViewTab === 'culture') {{
-            document.querySelectorAll('.m-herit-card').forEach(c => c.classList.remove('active'));
-            bestEl.classList.add('active');
-          }}
-
-          if (currentActiveDay !== dayNum) {{
-            currentActiveDay = dayNum;
-            if (currentViewTab === 'timeline') {{
-              const target = mMarkers.find(m => m.day === dayNum);
-              if (target) {{
-                mMap.flyTo([target.lat, target.lng], 8, {{ duration: 0.5 }});
-                target.mk.openPopup();
-              }}
-            }} else if (currentViewTab === 'dining') {{
-              // 单餐5选1严格隔离，仅展示当前激活餐别的5家
-              showDiningDayOnMap(dayNum, null, -1, false);
-            }} else if (currentViewTab === 'birding') {{
-              showBirdingDayOnMap(dayNum);
-            }} else if (currentViewTab === 'culture') {{
-              showHeritageDayOnMap(dayNum);
-            }}
-          }}
-        }}
-      }}
-    }}
-
-    function setupScrollSpy() {{
-      const container = document.getElementById('m-content-container');
-      if (!container) return;
-
-      let scrollTicking = false;
-      container.addEventListener('scroll', () => {{
-        if (isManualScrolling) return;
-
-        if (!scrollTicking) {{
-          window.requestAnimationFrame(() => {{
-            detectCurrentVisibleDay();
-            scrollTicking = false;
-          }});
-          scrollTicking = true;
-        }}
-      }}, {{ passive: true }});
-    }}
-
-    // 行程卡片聚焦
-    function mFocusDay(dayNum, shouldScroll = true) {{
-      const routeInfo = ROUTES_GEOJSON[dayNum];
-      if (routeInfo && routeInfo.points) {{
-        notifyNativeMap('focusDay', {{
-          day: dayNum,
-          points: routeInfo.points,
-          waypoints: (routeInfo.stops || []).map(s => ({{ name: s.name, time: s.time, lat: s.lat, lng: s.lng }}))
-        }});
-      }}
-      currentActiveDay = dayNum;
-      syncRailActive(dayNum);
-      document.querySelectorAll('.m-card').forEach(c => c.classList.remove('active'));
-      const activeCard = document.getElementById('m-day-' + dayNum);
-      if (activeCard) {{
-        activeCard.classList.add('active');
-        if (shouldScroll) {{
-          activeCard.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
-        }}
-      }}
-
-      const target = mMarkers.find(m => m.day === dayNum);
-      if (target) {{
-        mMap.flyTo([target.lat, target.lng], 8, {{ duration: 0.6 }});
-        target.mk.openPopup();
-      }}
-    }}
-
-    // 地图高度三档循环切换（标准 35% ➔ 全屏 70% ➔ 小窗 18%）
-    let timelineMapMode = 0;
-    function cycleTimelineMapHeight() {{
-      const zone = document.getElementById('m-map-zone');
-      const text = document.getElementById('pill-text');
-      timelineMapMode = (timelineMapMode + 1) % 3;
-      zone.classList.remove('mode-compact', 'mode-expanded');
-      if (timelineMapMode === 0) {{
-        text.innerText = "高度 35%";
-      }} else if (timelineMapMode === 1) {{
-        zone.classList.add('mode-expanded');
-        text.innerText = "全屏 70%";
-      }} else if (timelineMapMode === 2) {{
-        zone.classList.add('mode-compact');
-        text.innerText = "小窗 18%";
-      }}
-      setTimeout(() => {{ mMap.invalidateSize(); }}, 250);
-    }}
-
-    // ==========================================
-    // 2. 餐饮专区 (单餐5选1严格隔离 + 大众点评100%真实直达)
-    // ==========================================
-    let currentDineDay = null;
-    let currentDineMeal = null;
-    let currentDineMarkers = [];
-
-    function showDiningDayOnMap(dayNum, targetMealKey = null, activeIdx = -1, flyToActive = false) {{
-      const dayData = mTripData.dining_guide.find(d => d.day === dayNum);
-      if (!dayData) return;
-
-      const mealConfigs = {{
-        'breakfast': {{ label: '早', color: '#f59e0b', name: '早餐' }},
-        'lunch': {{ label: '午', color: '#ef4444', name: '午餐' }},
-        'dinner': {{ label: '晚', color: '#111827', name: '晚餐' }}
-      }};
-
-      const hint = document.getElementById('m-top-map-hint');
-      const cleanCity = dayData.city.split('(')[0].split('/')[0].trim();
-
-      // 当切换天数或首次加载时，全量绘制当天 15 家餐馆点位（早5 + 午5 + 晚5）
-      if (currentDineDay !== dayNum || currentDineMarkers.length === 0) {{
-        dynamicLayers.clearLayers();
-        currentDineMarkers = [];
-        currentDineDay = dayNum;
-
-        const cityMap = {{
-          '乌鲁木齐': 325, '福海': 2278, '布尔津': 2276, '禾木': 338, '喀纳斯': 338,
-          '富蕴': 2277, '奇台': 2248, '吉木萨尔': 2249, '吐鲁番': 327, '鄯善': 2231, '柴窝堡': 325
-        }};
-        const cityId = cityMap[cleanCity] || 325;
-        const allPts = [];
-
-        ['breakfast', 'lunch', 'dinner'].forEach(mKey => {{
-          const list = dayData.meals[mKey] || [];
-          list.forEach((opt, idx) => {{
-            const lat = opt.lat;
-            const lng = opt.lng;
-            allPts.push([lat, lng]);
-
-            const fullName = opt.restaurant;
-            const shopId = opt.shop_id || '';
-            const cleanName = fullName;
-            const fullSearch = `${{cleanCity}} ${{cleanName}}`;
-            const encodedSearch = encodeURIComponent(fullSearch);
-            const dpHref = (shopId && /^\\d+$/.test(shopId)) ? `dianping://shopinfo?id=${{shopId}}` : `dianping://searchshoplist?keyword=${{encodedSearch}}&cityid=${{cityId}}`;
-            const noteId = opt.note_id || '6a7d9b71000000002c001b44';
-            const xhsHref = `xhsdiscover://item/${{noteId}}`;
-
-            // 地图定位点：纯净虚化发光小圆点，0文字无重复
-            const isMatch = (targetMealKey === mKey && idx === activeIdx);
-            const actCls = isMatch ? 'active' : '';
-            const html = `<div class="custom-dine-dot ${{actCls}} meal-${{mKey}}" id="dine-dot-${{dayNum}}-${{mKey}}-${{idx}}"><div class="dine-dot-inner"></div></div>`;
-            const icon = L.divIcon({{ className: 'dine-div-icon', html: html, iconSize: [18, 18], iconAnchor: [9, 9] }});
-
-            const mk = L.marker([lat, lng], {{ icon: icon, zIndexOffset: isMatch ? 9999 : 10 }}).addTo(dynamicLayers);
-
-            // 定位点上方精简弹出：仅显示店名 + 两个官方精简图标按钮，避免遮挡地图
-            mk.bindPopup(`
-              <div class="m-dine-compact-popup">
-                <span class="m-popup-title">${{fullName}}</span>
-                <div class="m-popup-btn-group">
-                  <a href="${{dpHref}}" onclick="openDianpingDirect(event, '${{shopId}}', '${{cleanName}}', '${{cleanCity}}')" class="m-popup-icon-btn" title="大众点评">
-                    <img src="{DP_ICON_URI}" alt="大众点评" />
-                  </a>
-                  <a href="${{xhsHref}}" onclick="openXiaohongshuDirect(event, '${{noteId}}', '${{cleanName}}', '${{cleanCity}}')" class="m-popup-icon-btn" title="小红书">
-                    <img src="{XHS_ICON_URI}" alt="小红书" />
-                  </a>
-                </div>
-              </div>
-            `, {{ autoPan: false, offset: [0, -9], closeButton: false, className: 'm-compact-leaflet-popup' }});
-
-            mk.on('click', () => {{
-              switchMealOption(dayNum, mKey, idx, null, true);
-              const optCard = document.getElementById(`opt-${{dayNum}}-${{mKey}}-${{idx}}`);
-              if (optCard) {{
-                optCard.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
-              }}
-            }});
-
-            currentDineMarkers.push({{ dayNum, mealKey: mKey, idx, mk, lat, lng, opt, fullName, cleanName, cleanCity }});
-          }});
-        }});
-
-        // 首次加载或切换天数且未明确指定餐馆时，自适应框选全天15家餐馆
-        if (activeIdx < 0 && allPts.length > 0) {{
-          const bounds = L.latLngBounds(allPts);
-          mMap.fitBounds(bounds, {{ padding: [35, 35], maxZoom: 15, duration: 0.5 }});
-        }}
-      }}
-
-      // 实时精准更新全天 15 个 Marker 的激活高亮状态与 Z-index
-      let activeMarkerObj = null;
-      currentDineMarkers.forEach((m) => {{
-        const isMatch = (m.mealKey === targetMealKey && m.idx === activeIdx);
-        m.mk.setZIndexOffset(isMatch ? 9999 : 10);
-
-        const el = m.mk.getElement();
-        if (el) {{
-          const dot = el.querySelector('.custom-dine-dot') || el;
-          if (isMatch) {{
-            dot.classList.add('active');
-          }} else {{
-            dot.classList.remove('active');
-          }}
-        }}
-        if (isMatch) {{
-          activeMarkerObj = m;
-        }}
-      }});
-
-      // 若指定了具体餐馆，执行高亮与平滑飞至定位
-      if (activeMarkerObj) {{
-        const mCfg = mealConfigs[targetMealKey] || mealConfigs['breakfast'];
-        if (hint) {{
-          hint.innerText = `🍽️ Day ${{dayNum}} · ${{mCfg.name}} · 正在查看：${{activeMarkerObj.fullName}}`;
-        }}
-
-        if (flyToActive) {{
-          mMap.flyTo([activeMarkerObj.lat, activeMarkerObj.lng], 15, {{ animate: true, duration: 0.6 }});
-          setTimeout(() => {{
-            activeMarkerObj.mk.openPopup();
-          }}, 300);
-        }} else {{
-          activeMarkerObj.mk.openPopup();
-        }}
-      }} else {{
-        if (hint) {{
-          hint.innerText = `🍽️ Day ${{dayNum}} · ${{dayData.city.split('(')[0]}} (全天15家地道餐饮名店)`;
-        }}
-      }}
-    }}
-
-    function mFocusDineDay(dayNum, shouldScroll = true, defaultMealKey = null, defaultIdx = 0) {{
-      currentActiveDay = dayNum;
-      syncRailActive(dayNum);
-      document.querySelectorAll('.m-dining-day-group').forEach(g => g.classList.remove('active'));
-      const activeGroup = document.getElementById('dine-day-' + dayNum);
-      if (activeGroup) {{
-        activeGroup.classList.add('active');
-        if (shouldScroll) {{
-          activeGroup.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
-        }}
-      }}
-
-      if (defaultMealKey) {{
-        switchMealOption(dayNum, defaultMealKey, defaultIdx, null, false);
-        showDiningDayOnMap(dayNum, defaultMealKey, defaultIdx, true);
-      }} else {{
-        showDiningDayOnMap(dayNum, null, -1, false);
-      }}
-    }}
-
-    // 在卡片中选择不同餐馆选项，在地图上平滑飞至并高亮打开 popup
-    function switchMealOption(dayNum, mealKey, optIdx, btnEl, shouldFly = true) {{
-      isManualScrolling = true;
-      currentActiveDay = dayNum;
-
-      const dayGroup = document.getElementById(`dine-day-${{dayNum}}`);
-      if (dayGroup) {{
-        dayGroup.querySelectorAll('.m-meal-section-box').forEach(sec => {{
-          sec.classList.remove('active-meal');
-        }});
-        const activeSec = document.getElementById(`meal-sec-${{dayNum}}-${{mealKey}}`);
-        if (activeSec) {{
-          activeSec.classList.add('active-meal');
-          
-          activeSec.querySelectorAll('.m-dine-pill').forEach((pill, idx) => {{
-            if (idx === optIdx) pill.classList.add('active');
-            else pill.classList.remove('active');
-          }});
-
-          activeSec.querySelectorAll('.m-meal-option-detail').forEach((detail, idx) => {{
-            if (idx === optIdx) detail.style.display = 'block';
-            else detail.style.display = 'none';
-          }});
-        }}
-      }}
-
-      showDiningDayOnMap(dayNum, mealKey, optIdx, shouldFly);
-
-      clearTimeout(manualScrollTimer);
-      manualScrollTimer = setTimeout(() => {{
-        isManualScrolling = false;
-      }}, 800);
-    }}
-
-    function focusDineMapMarker(dayNum, mealKey, idx) {{
-      isManualScrolling = true;
-      syncRailActive(dayNum);
-      currentActiveDay = dayNum;
-      
-      document.querySelectorAll('.m-dining-day-group').forEach(g => g.classList.remove('active'));
-      const activeGroup = document.getElementById('dine-day-' + dayNum);
-      if (activeGroup) {{
-        activeGroup.classList.add('active');
-      }}
-
-      switchMealOption(dayNum, mealKey, idx, null, true);
-
-      clearTimeout(manualScrollTimer);
-      manualScrollTimer = setTimeout(() => {{
-        isManualScrolling = false;
-      }}, 800);
-    }}
-
-    // ==========================================
-    // 3. 观鸟专区 (去除重复名称，仅保留一个清晰地标)
-    // ==========================================
-    function showBirdingDayOnMap(dayNum) {{
-      const b = mTripData.birding_guide.find(item => item.day === dayNum);
-      if (!b) return;
-
+                  // 切换视图时彻底重置并同步顶部地图状态
+      mMap.closePopup();
       dynamicLayers.clearLayers();
+      currentDineMarkers = [];
       currentDineDay = null;
       currentDineMeal = null;
 
-      const hint = document.getElementById('m-top-map-hint');
-      hint.innerText = `🦉 Day ${{dayNum}} · ${{b.city}} 观鸟点: ${{b.location}}`;
-
-      const html = `<div class="custom-bird-pin">🦉 <b>${{b.location}}</b></div>`;
-      const icon = L.divIcon({{ className: 'bird-div-icon', html: html, iconSize: null, iconAnchor: [20, 12] }});
-
-      L.marker([b.lat, b.lng], {{ icon: icon }}).addTo(dynamicLayers);
-      
-      L.circle([b.lat, b.lng], {{
-        radius: 1200,
-        color: '#10b981',
-        fillColor: '#10b981',
-        fillOpacity: 0.15,
-        weight: 1.5,
-        dashArray: '3, 3'
-      }}).addTo(dynamicLayers);
-
-      mMap.flyTo([b.lat, b.lng], 13, {{ duration: 0.6 }});
-    }}
-
-    function mFocusBirdDay(dayNum, shouldScroll = true) {{
-      const routeInfo = ROUTES_GEOJSON[dayNum];
-      if (routeInfo && routeInfo.points) {{
-        notifyNativeMap('focusDay', {{ day: dayNum, points: routeInfo.points }});
-      }}
-      currentActiveDay = dayNum;
-      syncRailActive(dayNum);
-      document.querySelectorAll('.m-birding-card').forEach(c => c.classList.remove('active'));
-      const activeCard = document.getElementById('bird-day-' + dayNum);
-      if (activeCard) {{
-        activeCard.classList.add('active');
-        if (shouldScroll) {{
-          activeCard.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
-        }}
-      }}
-      showBirdingDayOnMap(dayNum);
-    }}
-
-    // ==========================================
-    // 4. 国保专区
-    // ==========================================
-    function showHeritageDayOnMap(dayNum) {{
-      const routeInfo = mTripData.heritage_routes[dayNum];
-      if (!routeInfo) return;
-
-      dynamicLayers.clearLayers();
-      currentDineDay = null;
-      currentDineMeal = null;
-
-      const hint = document.getElementById('m-top-map-hint');
-      hint.innerText = `🏛️ Day ${{dayNum}} · 国保实景照片与行进路线`;
-
-      const pts = [];
-
-      routeInfo.stops.forEach((s, idx) => {{
-        pts.push([s.lat, s.lng]);
-        
-        const html = `
-          <div class="custom-herit-photo-marker">
-            <div class="herit-marker-thumb" style="background-image: url('${{s.img}}');">
-              <span class="herit-marker-order">${{s.order}}</span>
-            </div>
-            <div class="herit-marker-info">
-              <div class="herit-marker-name">${{s.name}}</div>
-              <div class="herit-marker-time">⏰ ${{s.time}}</div>
-            </div>
-          </div>
-        `;
-        const icon = L.divIcon({{ className: 'herit-photo-div-icon', html: html, iconSize: null, iconAnchor: [35, 18] }});
-
-        const mk = L.marker([s.lat, s.lng], {{ icon: icon }}).addTo(dynamicLayers);
-        
-        mk.bindPopup(`
-          <div style="font-size:12px; line-height:1.45; color:#0f172a; width:220px;">
-            <div style="width:100%; aspect-ratio:16/9; overflow:hidden; border-radius:6px; margin-bottom:6px; background:#000;">
-              <img src="${{s.img}}" style="width:100%; height:100%; object-fit:cover; display:block;" />
-            </div>
-            <b style="color:#7e22ce;">第${{s.order}}站：${{s.name}}</b><br/>
-            <small style="color:#64748b;">📷 ${{s.caption || ''}}</small><br/>
-            ⏰ 计划到达: <b>${{s.time}}</b><br/>
-            <a href="https://uri.amap.com/navigation?to=${{s.lng}},${{s.lat}}&mode=car" target="_blank" style="display:inline-block; margin-top:6px; color:#7e22ce; font-weight:700;">🚗 高德一键导航</a>
-          </div>
-        `, {{ autoPan: false, offset: [0, -10] }});
-      }});
-
-      if (pts.length > 1) {{
-        const heritPolyline = L.polyline(pts, {{
-          color: '#c084fc',
-          weight: 3.5,
-          opacity: 0.9,
-          dashArray: '6, 6'
-        }}).addTo(dynamicLayers);
-
-        if (window.L && L.polylineDecorator) {{
-          try {{
-            L.polylineDecorator(heritPolyline, {{
-              patterns: [
-                {{
-                  offset: '25%',
-                  repeat: '50%',
-                  symbol: L.Symbol.arrowHead({{
-                    pixelSize: 10,
-                    polygon: false,
-                    pathOptions: {{ stroke: true, color: '#fde68a', weight: 3, opacity: 1 }}
-                  }})
-                }}
-              ]
-            }}).addTo(dynamicLayers);
-          }} catch(e) {{
-            console.warn("Decorator error", e);
-          }}
-        }}
-
-        if (routeInfo.legs && routeInfo.legs.length > 0) {{
-          routeInfo.legs.forEach((leg, i) => {{
-            const p1 = pts[i];
-            const p2 = pts[i+1];
-            if (p1 && p2) {{
-              const midLat = (p1[0] + p2[0]) / 2;
-              const midLng = (p1[1] + p2[1]) / 2;
-
-              const badgeHtml = `<div class="custom-herit-leg-badge">🚗 ${{leg.distance_km}}km · ${{leg.duration_min}}分</div>`;
-              const badgeIcon = L.divIcon({{ className: 'leg-badge-icon', html: badgeHtml, iconSize: null, iconAnchor: [35, 10] }});
-              L.marker([midLat, midLng], {{ icon: badgeIcon }}).addTo(dynamicLayers);
-            }}
-          }});
-        }}
-
-        mMap.fitBounds(heritPolyline.getBounds(), {{ padding: [35, 35], duration: 0.6 }});
-      }} else if (pts.length === 1) {{
-        mMap.flyTo(pts[0], 13, {{ duration: 0.6 }});
-      }}
-    }}
-
-    function mFocusHeritDay(dayNum, shouldScroll = true) {{
-      const routeInfo = ROUTES_GEOJSON[dayNum];
-      if (routeInfo && routeInfo.points) {{
-        notifyNativeMap('focusDay', {{ day: dayNum, points: routeInfo.points }});
-      }}
-      currentActiveDay = dayNum;
-      syncRailActive(dayNum);
-      document.querySelectorAll('.m-herit-card').forEach(c => c.classList.remove('active'));
-      
-      let targetCard = document.getElementById('herit-day-' + dayNum + '-1') || document.querySelector('[id^="herit-day-' + dayNum + '"]');
-      if (targetCard) {{
-        targetCard.classList.add('active');
-        if (shouldScroll) {{
-          targetCard.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
-        }}
-        showHeritageDayOnMap(dayNum);
-      }} else {{
-        const heritDays = [1, 8, 9, 10, 11, 12, 13];
-        const closest = heritDays.reduce((prev, curr) => Math.abs(curr - dayNum) < Math.abs(prev - dayNum) ? curr : prev);
-        targetCard = document.getElementById('herit-day-' + closest + '-1') || document.querySelector('[id^="herit-day-' + closest + '"]');
-        if (targetCard) {{
-          targetCard.classList.add('active');
-          if (shouldScroll) {{
-            targetCard.scrollIntoView({{ behavior: 'smooth', block: 'start' }});
-          }}
-          showHeritageDayOnMap(closest);
-          syncRailActive(closest);
-        }}
-      }}
-    }}
-
-    // ==========================================
-    // 5. 初始化独立全屏大地图探索台
-    // ==========================================
-    let dedicatedMap = null;
-    let transitLayer = null;
-    let standardLayer = null;
-    let isStandardMode = false;
-    const dedicatedMarkers = [];
-    let dedicatedPolyline = null;
-
-        function initDedicatedMap() {{
-      if (dedicatedMap) return;
-
-      dedicatedMap = L.map('m-dedicated-map', {{
-        zoomControl: false,
-        attributionControl: false
-      }}).setView([45.5, 87.5], 6);
-
-      transitLayer = L.tileLayer('http://127.0.0.1:8088/maptile?s={{s}}&style=7&x={{x}}&y={{y}}&z={{z}}', {{
-        subdomains: '1234',
-        minZoom: 3,
-        maxZoom: 18,
-        referrerPolicy: 'no-referrer'
-      }}).addTo(dedicatedMap);
-
-      standardLayer = L.tileLayer('http://127.0.0.1:8088/maptile?s={{s}}&style=8&x={{x}}&y={{y}}&z={{z}}', {{
-        subdomains: '1234',
-        minZoom: 3,
-        maxZoom: 18,
-        referrerPolicy: 'no-referrer'
-      }});
-mTripData.days.forEach(d => {{
-        const lat = d.to.lat;
-        const lng = d.to.lng;
-
-        const iconHtml = `<div style="background:#96382d; color:#fff; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; border:2px solid #fff; box-shadow:0 3px 8px rgba(0,0,0,0.6); cursor:pointer;">${{d.day}}</div>`;
-        const cIcon = L.divIcon({{ className: 'custom-d-marker', html: iconHtml, iconSize: [26, 26], iconAnchor: [13, 13] }});
-
-        const mk = L.marker([lat, lng], {{ icon: cIcon }}).addTo(dedicatedMap);
-        mk.on('click', () => {{
-          focusDedicatedDay(d.day, document.querySelectorAll('.m-map-day-pill')[d.day]);
-        }});
-        dedicatedMarkers.push({{ day: d.day, mk, lat, lng, data: d }});
-      }});
-
-      dedicatedPolyline = L.polyline(mLatLngs, {{
-        color: '#f87171',
-        weight: 3.5,
-        opacity: 0.9,
-        dashArray: '5, 5'
-      }}).addTo(dedicatedMap);
-
-      if (window.L && L.polylineDecorator) {{
-        try {{
-          L.polylineDecorator(dedicatedPolyline, {{
-            patterns: [
-              {{
-                offset: 25,
-                repeat: 60,
-                symbol: L.Symbol.arrowHead({{
-                  pixelSize: 10,
-                  polygon: false,
-                  pathOptions: {{ stroke: true, color: '#fca5a5', weight: 3, opacity: 0.95 }}
-                }})
-              }}
-            ]
-          }}).addTo(dedicatedMap);
-        }} catch(e) {{
-          console.warn("Decorator error", e);
-        }}
-      }}
-
-      if (mLatLngs.length > 0) {{
-        dedicatedMap.fitBounds(dedicatedPolyline.getBounds(), {{ padding: [30, 30] }});
-      }}
-    }}
-
-    function toggleMapLayer() {{
-      if (!dedicatedMap) return;
-      isStandardMode = !isStandardMode;
-      const btn = document.querySelector('.m-layer-toggle-btn');
-      if (isStandardMode) {{
-        dedicatedMap.removeLayer(transitLayer);
-        dedicatedMap.addLayer(standardLayer);
-        btn.innerText = "🚌 切换公共交通";
-      }} else {{
-        dedicatedMap.removeLayer(standardLayer);
-        dedicatedMap.addLayer(transitLayer);
-        btn.innerText = "🗺️ 切换标准路网";
-      }}
-    }}
-
-    function focusDedicatedDay(dayNum, btn) {{
-      document.querySelectorAll('.m-map-day-pill').forEach(p => p.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-
-      const infoTitle = document.getElementById('m-info-title');
-      const infoBadge = document.getElementById('m-info-badge');
-      const infoDist = document.getElementById('m-info-dist');
-      const infoTime = document.getElementById('m-info-time');
-      const infoElev = document.getElementById('m-info-elev');
-      const infoTolls = document.getElementById('m-info-tolls');
-      const infoBtnDine = document.getElementById('m-info-btn-dine');
-      const infoBtnNav = document.getElementById('m-info-btn-nav');
-
-      if (dayNum === 0) {{
-        dedicatedMap.flyToBounds(dedicatedPolyline.getBounds(), {{ padding: [30, 30], duration: 0.8 }});
-        infoTitle.innerText = "新疆14天自驾全景路线";
-        infoBadge.innerText = "总览 2380km";
-        infoDist.innerText = "2380 km";
-        infoTime.innerText = "37.5 h";
-        infoElev.innerText = "30~1374m";
-        infoTolls.innerText = "¥820";
-        infoBtnDine.onclick = () => {{ jumpToDining(1); }};
-        infoBtnNav.href = "https://uri.amap.com/navigation?to=87.616848,43.825592&mode=car";
-      }} else {{
-        const dayItem = mTripData.days.find(d => d.day === dayNum);
-        if (dayItem) {{
-          dedicatedMap.flyTo([dayItem.to.lat, dayItem.to.lng], 9, {{ duration: 0.8 }});
-          infoTitle.innerText = `Day ${{dayItem.day}}: ${{dayItem.title.split('·')[0]}}`;
-          infoBadge.innerText = `${{dayItem.date}} · ${{dayItem.weekday}}`;
-          infoDist.innerText = `${{dayItem.distance_km}} km`;
-          infoTime.innerText = `${{dayItem.duration}}`;
-          infoElev.innerText = `${{dayItem.elevation_m}} m`;
-          infoTolls.innerText = `¥${{dayItem.tolls_rmb}}`;
-          infoBtnDine.onclick = () => {{ jumpToDining(dayItem.day); }};
-          infoBtnNav.href = `https://uri.amap.com/navigation?from=${{dayItem.from.lng}},${{dayItem.from.lat}}&to=${{dayItem.to.lng}},${{dayItem.to.lat}}&mode=car`;
-        }}
-      }}
-    }}
-
-    // ==========================================
-    // 6. 通用 Tab 切换引擎 (满足需求2：智能时间同步)
-    // ==========================================
-    function mSwitch(viewId, el) {{
-      currentViewTab = viewId;
-      document.body.setAttribute('data-tab', viewId);
-      updateLiquidDockSlider(viewId, true);
-      const mapZone = document.getElementById('m-map-zone');
-      const mainLayout = document.getElementById('m-main-layout');
-      const dedicatedMapView = document.getElementById('m-view-map');
-      const rail = document.getElementById('m-quick-nav-rail');
-
-      if (viewId === 'map') {{
-        notifyNativeMap('toggleFullScreen', {{ isFullScreen: true }});
-        mapZone.classList.add('mode-hidden');
-        if (mainLayout) mainLayout.style.display = 'none';
-        if (rail) rail.style.display = 'none';
-        dedicatedMapView.style.display = 'block';
-        initDedicatedMap();
-        setTimeout(() => {{
-          if (dedicatedMap) dedicatedMap.invalidateSize();
-        }}, 150);
-        return;
-      }} else {{
-        dedicatedMapView.style.display = 'none';
-        notifyNativeMap('toggleFullScreen', {{ isFullScreen: false }});
-        if (mainLayout) mainLayout.style.display = 'flex';
-      }}
-
-      const isMore = (viewId === 'more' || viewId === 'tips');
-      if (isMore) {{
-        mapZone.classList.add('mode-hidden');
-        if (rail) rail.style.display = 'none';
-      }} else {{
-        mapZone.classList.remove('mode-hidden');
-      }}
-
-      document.getElementById('m-view-timeline').style.display = (viewId === 'timeline') ? 'block' : 'none';
-      document.getElementById('m-view-dining').style.display = (viewId === 'dining') ? 'block' : 'none';
-      document.getElementById('m-view-birding').style.display = (viewId === 'birding') ? 'block' : 'none';
-      document.getElementById('m-view-culture').style.display = (viewId === 'culture') ? 'block' : 'none';
-      
-      const moreView = document.getElementById('m-view-more') || document.getElementById('m-view-tips');
-      if (moreView) moreView.style.display = isMore ? 'block' : 'none';
-
-      const tripCtx = getCurrentTripContext();
-      const targetDay = currentActiveDay || tripCtx.dayNum;
-
-      updateQuickNavRail(viewId, targetDay);
-
-      setTimeout(() => {{ mMap.invalidateSize(); }}, 200);
-
       if (viewId === 'timeline') {{
-        currentDineDay = null;
-        currentDineMeal = null;
         document.getElementById('m-top-map-hint').innerText = "🗺️ 行程路线 · 滚动卡片实时联动";
         setupRouteWithArrows();
-        mMap.fitBounds(mPolyline.getBounds(), {{ padding: [15, 15] }});
         mFocusDay(targetDay, false);
       }} else if (viewId === 'dining') {{
-        currentDineDay = null;
-        currentDineMeal = null;
         mFocusDineDay(targetDay, false, tripCtx.mealKey, 0);
       }} else if (viewId === 'birding') {{
-        currentDineDay = null;
-        currentDineMeal = null;
         mFocusBirdDay(targetDay, false);
       }} else if (viewId === 'culture') {{
-        currentDineDay = null;
-        currentDineMeal = null;
         mFocusHeritDay(targetDay, false);
       }} else if (isMore) {{
         renderMChart();

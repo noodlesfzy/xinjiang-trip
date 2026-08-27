@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 东航脚本管理中心 & Shadowrocket 自动回传 API (运行在路由器 8090 端口)
-智能防抖版：只有 Token 真正变化时才重置日期并弹窗通知，未变化时保持天数统计
+智能防抖版：展示历史签到日志、支持在线测试与状态监控
 """
 
 from bottle import route, run, template, request, post, response
@@ -13,8 +13,8 @@ import subprocess
 from datetime import datetime, date
 
 SCRIPT_PATH = "/jffs/scripts/custom/ceair_task.py"
+LOG_PATH = "/jffs/scripts/custom/ceair_sign.log"
 
-# Shadowrocket 脚本内容
 SHADOWROCKET_JS = '''/**
  * 东航 App Token 自动同步脚本 (Shadowrocket / Surge / Loon / QX)
  * 智能防抖：仅当 Token 发生变化时才弹出手机横幅通知
@@ -46,7 +46,6 @@ function main() {
             if (!error && data) {
                 try {
                     let res = JSON.parse(data);
-                    // 仅当 Token 真正变更时才弹窗通知，避免日常刷 App 时频繁打扰
                     if (res.status === "updated") {
                         $notification.post(
                             "✈️ 东航 Token 已自动更新",
@@ -90,7 +89,7 @@ HTML_TPL = '''
         .msg { padding: 12px; border-radius: 8px; font-size: 14px; margin-bottom: 15px; line-height: 1.5; }
         .msg-success { background: #e6f4ea; color: #137333; border: 1px solid #ceead6; }
         .msg-error { background: #fce8e6; color: #c5221f; border: 1px solid #fad2cf; }
-        pre { background: #282c34; color: #abb2bf; padding: 12px; border-radius: 8px; font-size: 12px; overflow-x: auto; white-space: pre-wrap; word-break: break-all; }
+        pre { background: #282c34; color: #abb2bf; padding: 12px; border-radius: 8px; font-size: 12px; overflow-x: auto; white-space: pre-wrap; word-break: break-all; max-height: 250px; }
         .tips { font-size: 12px; color: #666; margin-top: 15px; line-height: 1.6; border-top: 1px solid #eee; padding-top: 10px; }
     </style>
 </head>
@@ -112,8 +111,15 @@ HTML_TPL = '''
 
         % if test_output:
             <div style="margin-top: 15px;">
-                <label>实时测试输出：</label>
+                <label>在线测试输出：</label>
                 <pre>{{test_output}}</pre>
+            </div>
+        % end
+
+        % if recent_logs:
+            <div style="margin-top: 15px;">
+                <label>📜 历史签到日志 (最近记录)：</label>
+                <pre>{{recent_logs}}</pre>
             </div>
         % end
 
@@ -132,12 +138,22 @@ HTML_TPL = '''
         </form>
 
         <div class="tips">
-            <b>💡 自动更新方式：</b>配合 Shadowrocket 规则，手机浏览东航 APP 时将自动检查并回传新 Token（Token 未改变时天数不会被误重置）。
+            <b>💡 自动更新：</b>配合 Shadowrocket 规则，手机浏览东航 APP 时将自动检查并回传新 Token。
         </div>
     </div>
 </body>
 </html>
 '''
+
+def get_recent_logs():
+    if os.path.exists(LOG_PATH):
+        try:
+            with open(LOG_PATH, 'r', encoding='utf-8', errors='ignore') as f:
+                lines = f.readlines()
+                return "".join(lines[-25:])
+        except Exception:
+            pass
+    return "暂无历史执行日志"
 
 def get_script_meta():
     token_preview = "未知"
@@ -166,11 +182,6 @@ def get_script_meta():
     return token_raw, token_preview, token_date, max(0, days_used)
 
 def update_token_in_file(new_token, new_body=None, force_date=False):
-    """
-    智能更新：
-    - 如果 Token 没有变化且未强制更新日期 -> 保持原日期和天数不变
-    - 如果 Token 发生变化 -> 写入新 Token 并重置日期为今天
-    """
     with open(SCRIPT_PATH, 'r', encoding='utf-8') as f:
         content = f.read()
 
@@ -183,7 +194,6 @@ def update_token_in_file(new_token, new_body=None, force_date=False):
     if not is_changed:
         return False, "Token 未发生变化，已保留原使用天数"
 
-    # 执行替换
     content = re.sub(r'("ceair-ecuser-token":\s*")[^"]+(")', r'\g<1>' + new_token + r'\g<2>', content)
     content = re.sub(r'(TOKEN_UPDATE_DATE\s*=\s*")[^"]+(")', r'\g<1>' + today_str + r'\g<2>', content)
     
@@ -198,8 +208,10 @@ def update_token_in_file(new_token, new_body=None, force_date=False):
 @route('/')
 def index():
     _, token_preview, token_date, days_used = get_script_meta()
+    recent_logs = get_recent_logs()
     return template(HTML_TPL, msg=None, is_success=True, test_output=None,
-                    token_preview=token_preview, token_date=token_date, days_used=days_used)
+                    token_preview=token_preview, token_date=token_date, days_used=days_used,
+                    recent_logs=recent_logs)
 
 @post('/')
 def do_update():
@@ -208,20 +220,25 @@ def do_update():
     
     if not token:
         _, token_preview, token_date, days_used = get_script_meta()
+        recent_logs = get_recent_logs()
         return template(HTML_TPL, msg="❌ 错误：Token 不能为空！", is_success=False, test_output=None,
-                        token_preview=token_preview, token_date=token_date, days_used=days_used)
+                        token_preview=token_preview, token_date=token_date, days_used=days_used,
+                        recent_logs=recent_logs)
 
     try:
         changed, msg = update_token_in_file(token, body, force_date=True)
         _, token_preview, token_date, days_used = get_script_meta()
+        recent_logs = get_recent_logs()
         return template(HTML_TPL, msg=f"✅ {msg}", is_success=True, test_output=None,
-                        token_preview=token_preview, token_date=token_date, days_used=days_used)
+                        token_preview=token_preview, token_date=token_date, days_used=days_used,
+                        recent_logs=recent_logs)
     except Exception as e:
         _, token_preview, token_date, days_used = get_script_meta()
+        recent_logs = get_recent_logs()
         return template(HTML_TPL, msg=f"❌ 更新失败: {str(e)}", is_success=False, test_output=None,
-                        token_preview=token_preview, token_date=token_date, days_used=days_used)
+                        token_preview=token_preview, token_date=token_date, days_used=days_used,
+                        recent_logs=recent_logs)
 
-# 供 Shadowrocket 调用的自动回传 API
 @post('/api/update')
 def api_update():
     response.content_type = 'application/json'
@@ -267,12 +284,21 @@ def do_test():
         )
         output = res.stdout
         is_success = "判定成功" in output or "200" in output
+        
+        # 写入日志
+        with open(LOG_PATH, 'a', encoding='utf-8') as f:
+            f.write(f"\n--- 手动在线测试 ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')}) ---\n{output}\n")
+            
+        recent_logs = get_recent_logs()
         return template(HTML_TPL, msg="测试已执行完成，请查看下方日志及微信通知！" if is_success else "测试返回异常，请检查！",
                         is_success=is_success, test_output=output,
-                        token_preview=token_preview, token_date=token_date, days_used=days_used)
+                        token_preview=token_preview, token_date=token_date, days_used=days_used,
+                        recent_logs=recent_logs)
     except Exception as e:
+        recent_logs = get_recent_logs()
         return template(HTML_TPL, msg=f"执行测试出错: {str(e)}", is_success=False, test_output=str(e),
-                        token_preview=token_preview, token_date=token_date, days_used=days_used)
+                        token_preview=token_preview, token_date=token_date, days_used=days_used,
+                        recent_logs=recent_logs)
 
 if __name__ == "__main__":
     run(host='192.168.50.1', port=8090)
