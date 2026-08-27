@@ -269,78 +269,78 @@ def build_mobile_split_screen_html():
   </script>
 
   <style>
-        :root {{
+            :root {{
       --primary: #0284c7;
       
-      /* Dark Theme (默认暗黑模式 - 深邃黑曜石) */
-      --bg: #070a12;
-      --card-bg: rgba(18, 26, 44, 0.80);
-      --card-border: rgba(255, 255, 255, 0.08);
+      /* Dark Theme - Apple Liquid Glass (Deep Obsidian & Specular Glass) */
+      --bg: #07090e;
+      --card-bg: rgba(22, 27, 40, 0.75);
+      --card-border: rgba(255, 255, 255, 0.12);
       --text: #f8fafc;
       --text-muted: #94a3b8;
       --text-heading: #ffffff;
       
       /* Apple Liquid Glass Material Tokens - Dark */
-      --liquid-glass-bg: rgba(15, 23, 42, 0.80);
-      --liquid-glass-bg-subtle: rgba(24, 34, 58, 0.65);
-      --liquid-glass-border: rgba(255, 255, 255, 0.14);
-      --liquid-glass-specular: inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.25), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.35);
-      --liquid-glass-shadow: 0 14px 40px 0 rgba(0, 0, 0, 0.55), 0 2px 8px 0 rgba(0, 0, 0, 0.35);
-      --liquid-blur: blur(30px) saturate(190%);
+      --liquid-glass-bg: rgba(18, 24, 38, 0.78);
+      --liquid-glass-bg-subtle: rgba(26, 34, 52, 0.65);
+      --liquid-glass-border: rgba(255, 255, 255, 0.16);
+      --liquid-glass-specular: inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.28), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.40);
+      --liquid-glass-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.55), 0 2px 10px 0 rgba(0, 0, 0, 0.35);
+      --liquid-blur: blur(28px) saturate(190%);
       
       /* Active Accent Glow - Dark */
-      --active-card-bg: linear-gradient(145deg, rgba(14, 40, 70, 0.88) 0%, rgba(10, 24, 46, 0.94) 100%);
+      --active-card-bg: linear-gradient(145deg, rgba(30, 41, 59, 0.90) 0%, rgba(15, 23, 42, 0.95) 100%);
       --active-card-border: #38bdf8;
       --active-glow: rgba(56, 189, 248, 0.35);
-      --sub-card-bg: rgba(18, 26, 44, 0.80);
+      --sub-card-bg: rgba(22, 27, 40, 0.75);
       
-            /* Apple Official Liquid Glass Tab Bar Tokens - Dark (App Store Today Style) */
-      --liquid-dock-bg: rgba(30, 30, 32, 0.78);
-      --liquid-dock-border: rgba(255, 255, 255, 0.16);
-      --liquid-dock-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
-      --liquid-bubble-bg: rgba(255, 255, 255, 0.14);
-      --liquid-bubble-border: rgba(255, 255, 255, 0.18);
-      --liquid-bubble-glow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      /* Apple Official Liquid Glass Tab Bar Tokens - Dark (App Store Today Style) */
+      --liquid-dock-bg: rgba(32, 32, 36, 0.82);
+      --liquid-dock-border: rgba(255, 255, 255, 0.18);
+      --liquid-dock-shadow: 0 16px 40px rgba(0, 0, 0, 0.50);
+      --liquid-bubble-bg: rgba(255, 255, 255, 0.16);
+      --liquid-bubble-border: rgba(255, 255, 255, 0.24);
+      --liquid-bubble-glow: 0 4px 14px rgba(0, 0, 0, 0.3);
       
-/* Continuous Hardware Curves (Apple Squircles) */
+      /* Continuous Hardware Curves (Apple Squircles) */
       --radius-pill: 9999px;
       --radius-island: 26px;
       --radius-card: 20px;
-      --radius-sub: 16px;
+      --radius-sub: 14px;
     }}
 
     /* ========================================================
-       ☀️ LIGHT THEME (极简高级明亮模式 - 参考 nanoTV Pro)
+       ☀️ LIGHT THEME - Apple Liquid Glass Light
        ======================================================== */
     [data-theme="light"] {{
-      --bg: #f4f6fa;
-      --card-bg: #ffffff;
-      --card-border: rgba(0, 0, 0, 0.06);
+      --bg: #f2f4f8;
+      --card-bg: rgba(255, 255, 255, 0.88);
+      --card-border: rgba(0, 0, 0, 0.08);
       --text: #0f172a;
       --text-muted: #64748b;
       --text-heading: #020617;
       
       /* Liquid Glass Tokens - Light */
-      --liquid-glass-bg: rgba(255, 255, 255, 0.88);
-      --liquid-glass-bg-subtle: rgba(244, 246, 250, 0.85);
+      --liquid-glass-bg: rgba(255, 255, 255, 0.85);
+      --liquid-glass-bg-subtle: rgba(245, 247, 250, 0.80);
       --liquid-glass-border: rgba(255, 255, 255, 0.95);
-      --liquid-glass-specular: inset 0 1px 2px 0 rgba(255, 255, 255, 0.98), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.03);
+      --liquid-glass-specular: inset 0 1px 2px 0 rgba(255, 255, 255, 0.98), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.04);
       --liquid-glass-shadow: 0 12px 32px 0 rgba(15, 23, 42, 0.08), 0 2px 6px 0 rgba(15, 23, 42, 0.03);
-      --liquid-blur: blur(30px) saturate(190%);
+      --liquid-blur: blur(28px) saturate(190%);
       
       /* Active Accent Glow - Light */
-      --active-card-bg: #ffffff;
+      --active-card-bg: rgba(255, 255, 255, 0.98);
       --active-card-border: #0284c7;
       --active-glow: rgba(2, 132, 199, 0.18);
-      --sub-card-bg: #ffffff;
+      --sub-card-bg: rgba(255, 255, 255, 0.90);
       
-            /* Apple Official Liquid Glass Tab Bar Tokens - Light (App Store Today Style) */
-      --liquid-dock-bg: rgba(255, 255, 255, 0.82);
-      --liquid-dock-border: rgba(255, 255, 255, 0.90);
-      --liquid-dock-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
-      --liquid-bubble-bg: rgba(0, 122, 255, 0.10);
-      --liquid-bubble-border: rgba(0, 122, 255, 0.22);
-      --liquid-bubble-glow: 0 2px 8px rgba(0, 122, 255, 0.12);
+      /* Apple Official Liquid Glass Tab Bar Tokens - Light */
+      --liquid-dock-bg: rgba(255, 255, 255, 0.86);
+      --liquid-dock-border: rgba(255, 255, 255, 0.95);
+      --liquid-dock-shadow: 0 14px 36px rgba(15, 23, 42, 0.10);
+      --liquid-bubble-bg: rgba(2, 132, 199, 0.12);
+      --liquid-bubble-border: rgba(2, 132, 199, 0.28);
+      --liquid-bubble-glow: 0 2px 10px rgba(2, 132, 199, 0.15);
     }}
 
     [data-theme="light"] .m-map-pinned-zone {{
