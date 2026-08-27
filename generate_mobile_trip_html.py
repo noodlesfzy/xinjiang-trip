@@ -348,12 +348,7 @@ def build_mobile_split_screen_html():
       border-color: rgba(0, 0, 0, 0.06);
     }}
     [data-theme="light"] .m-map-pill,
-    [data-theme="light"] .m-map-hint {{
-      color: #0f172a;
-      background: rgba(255, 255, 255, 0.92);
-      border-color: rgba(0, 0, 0, 0.06);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
-    }}
+    [data-theme="light"] 
     [data-theme="light"] .m-quick-nav-pill {{
       color: #64748b;
       background: rgba(255, 255, 255, 0.85);
@@ -602,27 +597,7 @@ def build_mobile_split_screen_html():
     }}
     .m-map-pill:active {{ transform: scale(0.92); background: #96382d; }}
 
-    .m-map-hint {{
-      position: absolute;
-      top: 6px;
-      left: 8px;
-      z-index: 500;
-      background: var(--liquid-glass-bg);
-      backdrop-filter: var(--liquid-blur);
-      -webkit-backdrop-filter: var(--liquid-blur);
-      border: 1px solid var(--liquid-glass-border);
-      padding: 3px 10px;
-      border-radius: 12px;
-      font-size: 10.5px;
-      font-weight: 600;
-      color: #f8fafc;
-      pointer-events: none;
-      max-width: 84%;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      box-shadow: var(--liquid-glass-specular), 0 4px 12px rgba(0,0,0,0.4);
-    }}
+    
 
     /* Custom Map Markers */
     .custom-m-marker {{
@@ -2251,7 +2226,7 @@ def build_mobile_split_screen_html():
     <!-- 顶部自适应联动常驻小地图 (支持标准 38% ➔ 全屏 72% ➔ 小窗 20%) -->
     <div class="m-map-pinned-zone" id="m-map-zone">
       <div id="m-map"></div>
-      <div class="m-map-hint" id="m-top-map-hint">🗺️ 行程路线 · 滚动卡片实时联动</div>
+      
       <button class="m-map-pill" onclick="cycleTimelineMapHeight()">
         <span id="pill-icon">↕️</span> <span id="pill-text">高度 35%</span>
       </button>
@@ -3359,8 +3334,7 @@ const dynamicLayers = L.layerGroup().addTo(mMap);
       currentDineMeal = null;
       if (mMap) mMap.closePopup();
 
-      const hint = document.getElementById('m-top-map-hint');
-      if (hint) hint.innerText = `🦉 Day ${{dayNum}} · ${{b.city}} 观鸟点: ${{b.location}}`;
+      // Top map hint removed per user request
 
       const html = `<div class="custom-bird-pin">🦉 <b>${{b.location}}</b></div>`;
       const icon = L.divIcon({{ className: 'bird-div-icon', html: html, iconSize: null, iconAnchor: [20, 12] }});
@@ -3415,8 +3389,7 @@ const dynamicLayers = L.layerGroup().addTo(mMap);
       currentDineMeal = null;
       if (mMap) mMap.closePopup();
 
-      const hint = document.getElementById('m-top-map-hint');
-      if (hint) hint.innerText = `🏛️ Day ${{actualDay}} · 国保实景照片与行进路线`;
+      // Top map hint removed per user request
 
       const pts = [];
 
@@ -3729,8 +3702,7 @@ mTripData.days.forEach(d => {{
       currentDineMeal = null;
 
       if (viewId === 'timeline') {{
-        const hint = document.getElementById('m-top-map-hint');
-        if (hint) hint.innerText = "🗺️ 行程路线 · 滚动卡片实时联动";
+        // Top map hint removed per user request
         setupRouteWithArrows();
         if (mLatLngs.length > 0) {{
           mMap.fitBounds(mPolyline.getBounds(), {{ padding: [15, 15] }});
