@@ -1469,37 +1469,125 @@ svg.leaflet-image-layer.leaflet-interactive path {
     .m-rules-banner h4 { color: #fca5a5; font-size: 11.5px; margin-bottom: 3px; }
     .m-rules-banner ul { list-style: none; display: flex; flex-direction: column; gap: 3px; color: #e2e8f0; }
 
-    /* ========================================================
-       1. 行程卡片 (Liquid Glass Squircles)
+        /* ========================================================
+       1. 行程卡片 (Apple Liquid Glass Squircles · 完美呼吸留白与无遮挡设计)
        ======================================================== */
     .m-card {
       background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: var(--liquid-blur);
+      -webkit-backdrop-filter: var(--liquid-blur);
       border: 1px solid var(--liquid-glass-border);
       border-radius: var(--radius-card);
-      margin-bottom: 14px;
+      margin-bottom: 16px;
       overflow: hidden;
-      box-shadow: var(--liquid-glass-specular), 0 8px 24px rgba(0,0,0,0.4);
-      transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+      box-shadow: var(--liquid-glass-specular), 0 8px 24px rgba(0, 0, 0, 0.35);
+      transition: all 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+      box-sizing: border-box;
     }
     .m-card:active { transform: scale(0.99); }
-    
-    /* 整张卡片整体反差深红变色高亮 */
+
+    .m-card-header {
+      padding: 14px 16px 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      box-sizing: border-box;
+    }
+    .m-day-badge {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #38bdf8;
+      letter-spacing: 0.3px;
+    }
+    .m-day-date {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .m-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-heading);
+      padding: 10px 16px 6px 16px;
+      line-height: 1.5;
+      box-sizing: border-box;
+    }
+    .m-chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 4px 16px 12px 16px;
+      box-sizing: border-box;
+    }
+    .m-chip {
+      display: inline-flex;
+      align-items: center;
+      font-size: 11px;
+      line-height: 1.4;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      color: #7dd3fc;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    /* 浅色模式卡片排版与色彩适配 */
+    [data-theme="light"] .m-card {
+      background: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+    }
+    [data-theme="light"] .m-card-header {
+      background: #f8fafc;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    [data-theme="light"] .m-day-badge {
+      color: #0284c7;
+    }
+    [data-theme="light"] .m-day-date {
+      color: #64748b;
+    }
+    [data-theme="light"] .m-card-title {
+      color: #0f172a;
+    }
+    [data-theme="light"] .m-chip {
+      background: #f0f9ff;
+      border-color: #bae6fd;
+      color: #0369a1;
+    }
+
+    /* 激活卡片 Liquid Glass 高亮 */
     .m-card.active {
-      background: linear-gradient(145deg, rgba(61, 20, 20, 0.88) 0%, rgba(31, 11, 11, 0.94) 100%) !important;
-      border: 1.5px solid #f87171 !important;
-      box-shadow: var(--liquid-glass-specular), 0 12px 32px rgba(248, 113, 113, 0.35) !important;
+      background: linear-gradient(145deg, rgba(14, 42, 71, 0.88) 0%, rgba(10, 26, 48, 0.94) 100%) !important;
+      border: 1.5px solid #38bdf8 !important;
+      box-shadow: var(--liquid-glass-specular), 0 12px 32px rgba(56, 189, 248, 0.30) !important;
       transform: translateY(-2px);
     }
     .m-card.active .m-card-header {
-      background: rgba(248, 113, 113, 0.18) !important;
-      border-bottom-color: rgba(248, 113, 113, 0.4) !important;
+      background: rgba(56, 189, 248, 0.15) !important;
+      border-bottom-color: rgba(56, 189, 248, 0.35) !important;
     }
     .m-card.active .m-card-title {
       color: #fff !important;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
     }
+    [data-theme="light"] .m-card.active {
+      background: #ffffff !important;
+      border: 1.5px solid #0284c7 !important;
+      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.16) !important;
+    }
+    [data-theme="light"] .m-card.active .m-card-header {
+      background: #f0f9ff !important;
+      border-bottom-color: #bae6fd !important;
+    }
+    [data-theme="light"] .m-card.active .m-card-title {
+      color: #0284c7 !important;
+    }
+
     .m-stats-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -11827,14 +11915,6 @@ const dynamicLayers = L.layerGroup().addTo(mMap);
       const cIcon = L.divIcon({ className: 'm-div-icon', html: iconHtml, iconSize: [22, 22], iconAnchor: [11, 11] });
 
       const mk = L.marker([lat, lng], { icon: cIcon });
-      mk.bindPopup(`
-        <div style="font-size:12px; color:#0f172a; line-height:1.4;">
-          <b style="color:#96382d;">Day ${d.day}: ${d.title}</b><br/>
-          🏔️ 海拔: ${d.elevation_m}m ｜ 🚗 ${d.distance_km}km<br/>
-          🌡️ 气温: ${d.weather || ''}<br/>
-          🏨 ${d.stay}
-        </div>
-      `, { autoPan: false, offset: [0, -10] });
       mk.on('click', () => { mFocusDay(d.day, true); });
       mMarkers.push({ day: d.day, mk, lat, lng });
     });
@@ -12074,7 +12154,6 @@ const dynamicLayers = L.layerGroup().addTo(mMap);
       const target = mMarkers.find(m => m.day === dayNum);
       if (target) {
         mMap.flyTo([target.lat, target.lng], 8, { duration: 0.6 });
-        target.mk.openPopup();
       }
     }
 
