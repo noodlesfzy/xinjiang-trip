@@ -677,7 +677,26 @@ svg.leaflet-image-layer.leaflet-interactive path {
     body.is-native-app .m-main-content-layout {
       height: 100vh !important;
     }
-  </style>
+          .m-live-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #10b981;
+      border-radius: 50%;
+      margin-right: 4px;
+      vertical-align: middle;
+      box-shadow: 0 0 6px #10b981;
+      animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot {
+      0% {{ transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }}
+      70% {{ transform: scale(1.15); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }}
+      100% {{ transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }}
+    }
+      70% { transform: scale(1.15); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+</style>
   <script>
     /* @preserve
  * Leaflet 1.9.4, a JS library for interactive maps. https://leafletjs.com
@@ -1845,15 +1864,32 @@ svg.leaflet-image-layer.leaflet-interactive path {
     .m-dining-view {
       display: none;
     }
-    .m-dining-intro {
-      background: linear-gradient(135deg, rgba(217, 119, 6, 0.18) 0%, rgba(150, 56, 45, 0.18) 100%);
-      border: 1px solid rgba(245, 158, 11, 0.4);
-      border-radius: 12px;
-      padding: 12px 14px;
-      margin-bottom: 14px;
-      font-size: 11.5px;
-      color: #fde68a;
-      line-height: 1.45;
+        .m-dining-intro {
+      background: linear-gradient(135deg, rgba(217, 119, 6, 0.22) 0%, rgba(180, 83, 9, 0.32) 100%);
+      backdrop-filter: var(--liquid-blur);
+      -webkit-backdrop-filter: var(--liquid-blur);
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      border-radius: var(--radius-sub);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      color: #fef3c7;
+      line-height: 1.55;
+      box-shadow: var(--liquid-glass-specular), 0 4px 16px rgba(0, 0, 0, 0.25);
+    }
+    .m-dining-intro b {
+      color: #ffffff;
+      font-weight: 700;
+    }
+    [data-theme="light"] .m-dining-intro {
+      background: #fffbeb !important;
+      border: 1.5px solid #fcd34d !important;
+      color: #78350f !important;
+      box-shadow: 0 4px 16px rgba(217, 119, 6, 0.10) !important;
+    }
+    [data-theme="light"] .m-dining-intro b {
+      color: #451a03 !important;
+      font-weight: 800 !important;
     }
 
     .m-dining-day-group {
@@ -2647,7 +2683,26 @@ svg.leaflet-image-layer.leaflet-interactive path {
     body.is-native-app .m-main-content-layout {
       height: 100vh !important;
     }
-  </style>
+          .m-live-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #10b981;
+      border-radius: 50%;
+      margin-right: 4px;
+      vertical-align: middle;
+      box-shadow: 0 0 6px #10b981;
+      animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot {
+      0% {{ transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }}
+      70% {{ transform: scale(1.15); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }}
+      100% {{ transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }}
+    }
+      70% { transform: scale(1.15); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+</style>
 </head>
 <body data-tab="timeline">
 
@@ -2687,7 +2742,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
         <div class="m-card" id="m-day-1" onclick="mFocusDay(1, false)">
           <div class="m-card-header">
             <span class="m-day-badge">Day 1 · 周日</span>
-            <span class="m-day-date">10/25 · 晴 3°C ~ 14°C</span>
+            <span class="m-day-date" id="m-day-weather-1">10/25 · 晴 3°C ~ 14°C</span>
           </div>
           <div class="m-card-title">抵达乌鲁木齐 · 提车深度检修 ➔ 【乌鲁木齐文庙】 ➔ 老城美食</div>
           
@@ -2722,7 +2777,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
         <div class="m-card" id="m-day-2" onclick="mFocusDay(2, false)">
           <div class="m-card-header">
             <span class="m-day-badge">Day 2 · 周一</span>
-            <span class="m-day-date">10/26 · 晴朗微风 -2°C ~ 11°C</span>
+            <span class="m-day-date" id="m-day-weather-2">10/26 · 晴朗微风 -2°C ~ 11°C</span>
           </div>
           <div class="m-card-title">穿越古尔班通古特沙漠 · 【S21沙漠公路】 ➔ 乌伦古湖 ➔ 福海</div>
           
@@ -2757,7 +2812,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
         <div class="m-card" id="m-day-3" onclick="mFocusDay(3, false)">
           <div class="m-card-header">
             <span class="m-day-badge">Day 3 · 周二</span>
-            <span class="m-day-date">10/27 · 晴间多云 -4°C ~ 7°C</span>
+            <span class="m-day-date" id="m-day-weather-3">10/27 · 晴间多云 -4°C ~ 7°C</span>
           </div>
           <div class="m-card-title">福海 ➔ 科克苏湿地 ➔ 布尔津 · 冰雪硬核整备</div>
           
@@ -2792,7 +2847,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
         <div class="m-card" id="m-day-4" onclick="mFocusDay(4, false)">
           <div class="m-card-header">
             <span class="m-day-badge">Day 4 · 周三</span>
-            <span class="m-day-date">10/28 · 小雪/暗冰 -16°C ~ -2°C</span>
+            <span class="m-day-date" id="m-day-weather-4">10/28 · 小雪/暗冰 -16°C ~ -2°C</span>
           </div>
           <div class="m-card-title">挺进阿尔泰雪山 · 盘山公路谨慎慢行 ➔ 【禾木】</div>
           
@@ -2827,7 +2882,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
         <div class="m-card" id="m-day-5" onclick="mFocusDay(5, false)">
           <div class="m-card-header">
             <span class="m-day-badge">Day 5 · 周四</span>
-            <span class="m-day-date">10/29 · 阵雪转晴 -18°C ~ 0°C</span>
+            <span class="m-day-date" id="m-day-weather-5">10/29 · 阵雪转晴 -18°C ~ 0°C</span>
           </div>
           <div class="m-card-title">禾木村内停留 · 冰雪童话 ➔ 哈登平台晨雾日出</div>
           
@@ -2862,7 +2917,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
         <div class="m-card" id="m-day-6" onclick="mFocusDay(6, false)">
           <div class="m-card-header">
             <span class="m-day-badge">Day 6 · 周五</span>
-            <span class="m-day-date">10/30 · 多云微雪 -15°C ~ 1°C</span>
+            <span class="m-day-date" id="m-day-weather-6">10/30 · 多云微雪 -15°C ~ 1°C</span>
           </div>
           <div class="m-card-title">雪原林海 ➔ 探秘喀纳斯湖与泰加林河道“雪蘑菇”</div>
           
@@ -2897,7 +2952,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
         <div class="m-card" id="m-day-7" onclick="mFocusDay(7, false)">
           <div class="m-card-header">
             <span class="m-day-badge">Day 7 · 周六</span>
-            <span class="m-day-date">10/31 · 晴空万里 -6°C ~ 8°C</span>
+            <span class="m-day-date" id="m-day-weather-7">10/31 · 晴空万里 -6°C ~ 8°C</span>
           </div>
           <div class="m-card-title">喀纳斯水汽晨雾 ➔ 下山回布尔津 ➔ 五彩滩夕阳雅丹</div>
           
@@ -2932,7 +2987,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
         <div class="m-card" id="m-day-8" onclick="mFocusDay(8, false)">
           <div class="m-card-header">
             <span class="m-day-badge">Day 8 · 周日</span>
-            <span class="m-day-date">11/01 · 多云微风 -12°C ~ 3°C</span>
+            <span class="m-day-date" id="m-day-weather-8">11/01 · 多云微风 -12°C ~ 3°C</span>
           </div>
           <div class="m-card-title">布尔津直奔可可托海 ➔ 探秘神钟山绝壁 ➔ 富蕴县</div>
           
@@ -2967,7 +3022,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
         <div class="m-card" id="m-day-9" onclick="mFocusDay(9, false)">
           <div class="m-card-header">
             <span class="m-day-badge">Day 9 · 周一</span>
-            <span class="m-day-date">11/02 · 晴朗干燥 -2°C ~ 9°C</span>
+            <span class="m-day-date" id="m-day-weather-9">11/02 · 晴朗干燥 -2°C ~ 9°C</span>
           </div>
           <div class="m-card-title">富蕴 ➔ 卡拉麦里 G216 ➔ 抢先抵达【北庭故城】 ➔ 奇台</div>
           
@@ -3002,7 +3057,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
         <div class="m-card" id="m-day-10" onclick="mFocusDay(10, false)">
           <div class="m-card-header">
             <span class="m-day-badge">Day 10 · 周二</span>
-            <span class="m-day-date">11/03 · 晴朗温暖 4°C ~ 18°C</span>
+            <span class="m-day-date" id="m-day-weather-10">11/03 · 晴朗温暖 4°C ~ 18°C</span>
           </div>
           <div class="m-card-title">奇台 ➔ 大河沿 ➔ 吐鲁番 · 探访【交河故城】落日</div>
           
@@ -3037,7 +3092,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
         <div class="m-card" id="m-day-11" onclick="mFocusDay(11, false)">
           <div class="m-card-header">
             <span class="m-day-badge">Day 11 · 周三</span>
-            <span class="m-day-date">11/04 · 晴空万里 5°C ~ 19°C</span>
+            <span class="m-day-date" id="m-day-weather-11">11/04 · 晴空万里 5°C ~ 19°C</span>
           </div>
           <div class="m-card-title">吐鲁番 ➔ 【吐峪沟麻扎村】 ➔ 【高昌故城】 ➔ 鄯善库木塔格</div>
           
@@ -3072,7 +3127,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
         <div class="m-card" id="m-day-12" onclick="mFocusDay(12, false)">
           <div class="m-card-header">
             <span class="m-day-badge">Day 12 · 周四</span>
-            <span class="m-day-date">11/05 · 晴间多云 5°C ~ 18°C</span>
+            <span class="m-day-date" id="m-day-weather-12">11/05 · 晴间多云 5°C ~ 18°C</span>
           </div>
           <div class="m-card-title">鄯善 ➔ 【台藏塔】 ➔ 【阿斯塔那古墓群】 ➔ 【柏孜克里克千佛洞】 ➔ 葡萄沟</div>
           
@@ -3107,7 +3162,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
         <div class="m-card" id="m-day-13" onclick="mFocusDay(13, false)">
           <div class="m-card-header">
             <span class="m-day-badge">Day 13 · 周五</span>
-            <span class="m-day-date">11/06 · 晴朗舒适 6°C ~ 17°C</span>
+            <span class="m-day-date" id="m-day-weather-13">11/06 · 晴朗舒适 6°C ~ 17°C</span>
           </div>
           <div class="m-card-title">吐鲁番国保研学 · 水利与清代砖构 ➔ 干果采购顺丰直发</div>
           
@@ -3142,7 +3197,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
         <div class="m-card" id="m-day-14" onclick="mFocusDay(14, false)">
           <div class="m-card-header">
             <span class="m-day-badge">Day 14 · 周六</span>
-            <span class="m-day-date">11/07 · 晴间多云 2°C ~ 12°C</span>
+            <span class="m-day-date" id="m-day-weather-14">11/07 · 晴间多云 2°C ~ 12°C</span>
           </div>
           <div class="m-card-title">吐鲁番 ➔ 达坂城风区缓冲 ➔ G30直达地窝堡机场从容返程</div>
           
@@ -12752,7 +12807,87 @@ mTripData.days.forEach(d => {
       }
     }
 
+    
+    
     // ==========================================
+    // 7. 实时在线气象调度引擎 (Live Online Weather Sync Engine)
+    // ==========================================
+    const CITY_WEATHER_MAP = {
+      1: 'Urumqi',
+      2: 'Fuhai',
+      3: 'Burqin',
+      4: 'Altay',
+      5: 'Altay',
+      6: 'Burqin',
+      7: 'Burqin',
+      8: 'Fuyun',
+      9: 'Qitai',
+      10: 'Turpan',
+      11: 'Turpan',
+      12: 'Shanshan',
+      13: 'Turpan',
+      14: 'Urumqi'
+    };
+
+    function translateWeatherCondition(desc) {
+      if (!desc) return '☀️ 晴';
+      const d = desc.toLowerCase();
+      if (d.includes('sun') || d.includes('clear')) return '☀️ 晴';
+      if (d.includes('partly cloudy')) return '⛅ 多云';
+      if (d.includes('cloud') || d.includes('overcast')) return '☁️ 阴';
+      if (d.includes('rain') || d.includes('drizzle') || d.includes('shower')) return '🌧️ 小雨';
+      if (d.includes('snow') || d.includes('ice') || d.includes('blizzard')) return '🌨️ 降雪';
+      if (d.includes('sand') || d.includes('dust')) return '🌪️ 沙尘';
+      if (d.includes('fog') || d.includes('mist')) return '🌫️ 晨雾';
+      if (d.includes('thunder')) return '⛈️ 雷阵雨';
+      return '🌤️ ' + desc;
+    }
+
+    async function syncLiveWeatherData() {
+      const liveCities = ['Urumqi', 'Burqin', 'Altay', 'Fuyun', 'Turpan'];
+      const cityResults = {};
+
+      for (const city of liveCities) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3500);
+          const res = await fetch('https://wttr.in/' + city + '?format=j1', { signal: controller.signal });
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            const data = await res.json();
+            const cur = data.current_condition && data.current_condition[0];
+            const w = data.weather && data.weather[0];
+            if (cur && w) {
+              cityResults[city] = {
+                temp: cur.temp_C,
+                min: w.mintempC,
+                max: w.maxtempC,
+                desc: translateWeatherCondition(cur.weatherDesc && cur.weatherDesc[0] && cur.weatherDesc[0].value),
+                humidity: cur.humidity,
+                wind: cur.windspeedKmph
+              };
+            }
+          }
+        } catch (e) {
+          // Graceful fallback on network timeout or offline
+        }
+      }
+
+      // Inject live weather into itinerary cards
+      mTripData.days.forEach(d => {
+        const queryCity = CITY_WEATHER_MAP[d.day] || 'Urumqi';
+        const liveInfo = cityResults[queryCity];
+        const weatherEl = document.getElementById('m-day-weather-' + d.day);
+        if (weatherEl && liveInfo) {
+          weatherEl.innerHTML = '<span class="m-live-dot" title="实时联网气象"></span>' + d.date + ' · ' + liveInfo.desc + ' 实时' + liveInfo.temp + '℃ (' + liveInfo.min + '°~' + liveInfo.max + '℃)';
+        }
+      });
+    }
+
+    // Auto trigger on page load
+    setTimeout(syncLiveWeatherData, 800);
+
+// ==========================================
     // 6. 通用 Tab 切换引擎 (满足需求2：智能时间同步)
     // ==========================================
     function mSwitch(viewId, el) {

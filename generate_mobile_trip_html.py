@@ -180,7 +180,7 @@ def build_mobile_split_screen_html():
         <div class="m-card" id="m-day-{d['day']}" onclick="mFocusDay({d['day']}, false)">
           <div class="m-card-header">
             <span class="m-day-badge">Day {d['day']} · {d['weekday']}</span>
-            <span class="m-day-date">{d['date']} · {d.get('weather', '')}</span>
+            <span class="m-day-date" id="m-day-weather-{d['day']}">{d['date']} · {d.get('weather', '')}</span>
           </div>
           <div class="m-card-title">{d['title']}</div>
           
@@ -257,7 +257,26 @@ def build_mobile_split_screen_html():
     body.is-native-app .m-main-content-layout {{
       height: 100vh !important;
     }}
-  </style>
+          .m-live-dot {{
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #10b981;
+      border-radius: 50%;
+      margin-right: 4px;
+      vertical-align: middle;
+      box-shadow: 0 0 6px #10b981;
+      animation: pulse-dot 2s infinite;
+    }}
+    @keyframes pulse-dot {{
+      0% {{{{ transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }}}}
+      70% {{{{ transform: scale(1.15); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }}}}
+      100% {{{{ transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }}}}
+    }}
+      70% {{ transform: scale(1.15); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }}
+      100% {{ transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }}
+    }}
+</style>
   <script>
     {leaflet_js}
   </script>
@@ -1415,15 +1434,32 @@ def build_mobile_split_screen_html():
     .m-dining-view {{
       display: none;
     }}
-    .m-dining-intro {{
-      background: linear-gradient(135deg, rgba(217, 119, 6, 0.18) 0%, rgba(150, 56, 45, 0.18) 100%);
-      border: 1px solid rgba(245, 158, 11, 0.4);
-      border-radius: 12px;
-      padding: 12px 14px;
-      margin-bottom: 14px;
-      font-size: 11.5px;
-      color: #fde68a;
-      line-height: 1.45;
+        .m-dining-intro {{
+      background: linear-gradient(135deg, rgba(217, 119, 6, 0.22) 0%, rgba(180, 83, 9, 0.32) 100%);
+      backdrop-filter: var(--liquid-blur);
+      -webkit-backdrop-filter: var(--liquid-blur);
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      border-radius: var(--radius-sub);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      color: #fef3c7;
+      line-height: 1.55;
+      box-shadow: var(--liquid-glass-specular), 0 4px 16px rgba(0, 0, 0, 0.25);
+    }}
+    .m-dining-intro b {{
+      color: #ffffff;
+      font-weight: 700;
+    }}
+    [data-theme="light"] .m-dining-intro {{
+      background: #fffbeb !important;
+      border: 1.5px solid #fcd34d !important;
+      color: #78350f !important;
+      box-shadow: 0 4px 16px rgba(217, 119, 6, 0.10) !important;
+    }}
+    [data-theme="light"] .m-dining-intro b {{
+      color: #451a03 !important;
+      font-weight: 800 !important;
     }}
 
     .m-dining-day-group {{
@@ -2217,7 +2253,26 @@ def build_mobile_split_screen_html():
     body.is-native-app .m-main-content-layout {{
       height: 100vh !important;
     }}
-  </style>
+          .m-live-dot {{
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #10b981;
+      border-radius: 50%;
+      margin-right: 4px;
+      vertical-align: middle;
+      box-shadow: 0 0 6px #10b981;
+      animation: pulse-dot 2s infinite;
+    }}
+    @keyframes pulse-dot {{
+      0% {{{{ transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }}}}
+      70% {{{{ transform: scale(1.15); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }}}}
+      100% {{{{ transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }}}}
+    }}
+      70% {{ transform: scale(1.15); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }}
+      100% {{ transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }}
+    }}
+</style>
 </head>
 <body data-tab="timeline">
 
@@ -3635,7 +3690,87 @@ mTripData.days.forEach(d => {{
       }}
     }}
 
+    
+    
     // ==========================================
+    // 7. 实时在线气象调度引擎 (Live Online Weather Sync Engine)
+    // ==========================================
+    const CITY_WEATHER_MAP = {{
+      1: 'Urumqi',
+      2: 'Fuhai',
+      3: 'Burqin',
+      4: 'Altay',
+      5: 'Altay',
+      6: 'Burqin',
+      7: 'Burqin',
+      8: 'Fuyun',
+      9: 'Qitai',
+      10: 'Turpan',
+      11: 'Turpan',
+      12: 'Shanshan',
+      13: 'Turpan',
+      14: 'Urumqi'
+    }};
+
+    function translateWeatherCondition(desc) {{
+      if (!desc) return '☀️ 晴';
+      const d = desc.toLowerCase();
+      if (d.includes('sun') || d.includes('clear')) return '☀️ 晴';
+      if (d.includes('partly cloudy')) return '⛅ 多云';
+      if (d.includes('cloud') || d.includes('overcast')) return '☁️ 阴';
+      if (d.includes('rain') || d.includes('drizzle') || d.includes('shower')) return '🌧️ 小雨';
+      if (d.includes('snow') || d.includes('ice') || d.includes('blizzard')) return '🌨️ 降雪';
+      if (d.includes('sand') || d.includes('dust')) return '🌪️ 沙尘';
+      if (d.includes('fog') || d.includes('mist')) return '🌫️ 晨雾';
+      if (d.includes('thunder')) return '⛈️ 雷阵雨';
+      return '🌤️ ' + desc;
+    }}
+
+    async function syncLiveWeatherData() {{
+      const liveCities = ['Urumqi', 'Burqin', 'Altay', 'Fuyun', 'Turpan'];
+      const cityResults = {{}};
+
+      for (const city of liveCities) {{
+        try {{
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3500);
+          const res = await fetch('https://wttr.in/' + city + '?format=j1', {{ signal: controller.signal }});
+          clearTimeout(timeoutId);
+          if (res.ok) {{
+            const data = await res.json();
+            const cur = data.current_condition && data.current_condition[0];
+            const w = data.weather && data.weather[0];
+            if (cur && w) {{
+              cityResults[city] = {{
+                temp: cur.temp_C,
+                min: w.mintempC,
+                max: w.maxtempC,
+                desc: translateWeatherCondition(cur.weatherDesc && cur.weatherDesc[0] && cur.weatherDesc[0].value),
+                humidity: cur.humidity,
+                wind: cur.windspeedKmph
+              }};
+            }}
+          }}
+        }} catch (e) {{
+          // Graceful fallback on network timeout or offline
+        }}
+      }}
+
+      // Inject live weather into itinerary cards
+      mTripData.days.forEach(d => {{
+        const queryCity = CITY_WEATHER_MAP[d.day] || 'Urumqi';
+        const liveInfo = cityResults[queryCity];
+        const weatherEl = document.getElementById('m-day-weather-' + d.day);
+        if (weatherEl && liveInfo) {{
+          weatherEl.innerHTML = '<span class="m-live-dot" title="实时联网气象"></span>' + d.date + ' · ' + liveInfo.desc + ' 实时' + liveInfo.temp + '℃ (' + liveInfo.min + '°~' + liveInfo.max + '℃)';
+        }}
+      }});
+    }}
+
+    // Auto trigger on page load
+    setTimeout(syncLiveWeatherData, 800);
+
+// ==========================================
     // 6. 通用 Tab 切换引擎 (满足需求2：智能时间同步)
     // ==========================================
     function mSwitch(viewId, el) {{
