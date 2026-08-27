@@ -917,32 +917,33 @@ def build_mobile_split_screen_html():
       height: 100%;
     }}
 
-    .m-quick-nav-rail {{
+        .m-quick-nav-rail {{
       position: absolute;
-      left: 5px;
-      top: 4px;
+      left: 6px;
+      top: 6px;
       bottom: calc(76px + env(safe-area-inset-bottom));
       width: 28px;
-      z-index: 700;
+      z-index: 100;
       display: flex;
       flex-direction: column;
       gap: 3px;
-      padding: 4px 1px;
+      padding: 6px 2px;
       background: var(--liquid-glass-bg);
       backdrop-filter: var(--liquid-blur);
       -webkit-backdrop-filter: var(--liquid-blur);
       border: 1px solid var(--liquid-glass-border);
-      border-radius: 14px;
+      border-radius: 16px;
       box-shadow: var(--liquid-glass-specular), var(--liquid-glass-shadow);
       overflow-y: auto;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
+      box-sizing: border-box;
     }}
     .m-quick-nav-rail::-webkit-scrollbar {{ display: none; }}
 
     .m-rail-pill {{
-      flex: 0 0 22px;
-      height: 22px;
+      flex: 0 0 20px;
+      height: 20px;
       width: 24px;
       margin: 0 auto;
       display: flex;
@@ -951,28 +952,36 @@ def build_mobile_split_screen_html():
       font-size: 9.5px;
       font-weight: 700;
       color: var(--text-muted);
-      border-radius: 11px;
+      border-radius: 10px;
       cursor: pointer;
-      transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: all 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+      box-sizing: border-box;
     }}
-    .m-rail-pill:active {{ transform: scale(0.85); }}
+    .m-rail-pill:active {{ transform: scale(0.9); }}
     .m-rail-pill.active {{
-      background: var(--primary-vibrant);
-      color: #fff;
-      box-shadow: inset 0 1px 1.5px rgba(255, 255, 255, 0.45), 0 2px 10px rgba(41, 151, 255, 0.6);
-      transform: scale(1.15);
+      background: #0284c7 !important;
+      color: #ffffff !important;
+      font-weight: 800;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.5);
     }}
     body[data-tab="dining"] .m-rail-pill.active {{
-      background: #d97706;
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 0 10px rgba(245, 158, 11, 0.7);
+      background: #d97706 !important;
+      color: #ffffff !important;
+      box-shadow: 0 2px 8px rgba(217, 119, 6, 0.45);
+      border-color: rgba(255, 255, 255, 0.5);
     }}
     body[data-tab="birding"] .m-rail-pill.active {{
-      background: #059669;
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 0 10px rgba(16, 185, 129, 0.7);
+      background: #059669 !important;
+      color: #ffffff !important;
+      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.45);
+      border-color: rgba(255, 255, 255, 0.5);
     }}
     body[data-tab="culture"] .m-rail-pill.active {{
-      background: #7e22ce;
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 0 10px rgba(192, 132, 252, 0.7);
+      background: #7e22ce !important;
+      color: #ffffff !important;
+      box-shadow: 0 2px 8px rgba(126, 34, 206, 0.45);
+      border-color: rgba(255, 255, 255, 0.5);
     }}
 
     /* ========================================================
@@ -2214,10 +2223,7 @@ def build_mobile_split_screen_html():
             <div class="m-m-box"><div class="m-lbl">总预算</div><div class="m-val">¥{TRIP_DATA['summary']['total_budget_rmb']}</div></div>
           </div>
 
-          <div class="m-rules-banner">
-            <h4>🛡️ 核心安全与关键规则</h4>
-            <ul>{rules_html}</ul>
-          </div>
+          
 
           {all_days}
         </div>
@@ -2327,15 +2333,29 @@ def build_mobile_split_screen_html():
             </div>
           </div>
 
-          <!-- 4. 安全规则机制 -->
+                    <!-- 4. 自驾核心安全与全景应急守则 (深度整合关键安全规则) -->
           <div class="m-sub-card">
-            <h3>🛡️ 新疆自驾核心安全与避坑守则</h3>
-            <div style="font-size:11.5px; color:var(--text); line-height:1.6;">
-              • <b>防暗冰：</b>喀纳斯/禾木盘山公路背阴弯道易结暗冰，使用低速挡平稳减速，严禁猛打方向。<br>
-              • <b>闭馆时间：</b>可可托海 08:30 启程避开极寒；北庭故城 14:30 抵达避开冬季提前闭馆。<br>
-              • <b>达坂城横风缓冲：</b>返程预留百里风区车速控制与安检时间。
+            <h3>🛡️ 新疆自驾核心安全与全景避坑守则</h3>
+            <div style="display:flex; flex-direction:column; gap:8px; font-size:12px; color:var(--text); line-height:1.6; margin-top:8px;">
+              <div style="background:rgba(239, 68, 68, 0.12); border:1px solid rgba(239, 68, 68, 0.35); border-radius:10px; padding:9px 12px;">
+                <b style="color:#f87171;">❄️ 极寒冰雪与雪地胎强制要求：</b><br>
+                布尔津进山前（D3）必须换装驱动轮深度花纹雪地胎；后备箱常备金属防滑链（提前试装）、折叠雪铲、搭电宝与拖车绳；全车加注 -35# 极寒防冻玻璃水。
+              </div>
+              <div style="background:rgba(245, 158, 11, 0.12); border:1px solid rgba(245, 158, 11, 0.35); border-radius:10px; padding:9px 12px;">
+                <b style="color:#fcd34d;">⚠️ 山路暗冰与盘山防御驾驶：</b><br>
+                前驱车在喀纳斯/禾木背阴盘山公路严禁猛踩油门和急打方向；下坡利用低速挡（L/M挡）发动机制动平稳减速，弯道提前减速慢行。
+              </div>
+              <div style="background:rgba(147, 51, 234, 0.12); border:1px solid rgba(147, 51, 234, 0.35); border-radius:10px; padding:9px 12px;">
+                <b style="color:#c084fc;">🕒 景区冬季闭馆时间窗口把控：</b><br>
+                北庭故城必须 14:30 前抵达；可可托海 08:30 启程避开极寒与日落；交河故城 16:30 抢占落日黄金光线点。
+              </div>
+              <div style="background:rgba(56, 189, 248, 0.12); border:1px solid rgba(56, 189, 248, 0.35); border-radius:10px; padding:9px 12px;">
+                <b style="color:#7dd3fc;">🌡️ 极端气温骤变与风区应对：</b><br>
+                阿尔泰山（-18°C）穿戴极地防寒装；吐鲁番（18°C）干燥大漠及时补水防晒；返程达坂城百里风区注意横风控制车速。
+              </div>
             </div>
           </div>
+        </div>
         </div>
 
       </div>
